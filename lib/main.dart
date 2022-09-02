@@ -19,8 +19,8 @@ void main() async {
         '${record.loggerName} -> ${record.level.name}: ${record.message}');
   });
   await dotenv.load();
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   Logger("Root").fine("Utopia Initialised");
   runApp(Utopia());
 }
