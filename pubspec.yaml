@@ -33,6 +33,8 @@ dependencies:
   firebase_core: ^1.21.1
   flutter:
     sdk: flutter
+  flutter_dotenv: ^5.0.2
+  logging: ^1.0.2
   provider: ^6.0.3
 
 dev_dependencies:
