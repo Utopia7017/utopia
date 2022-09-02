@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "566783945705",
+    "project_id": "utopia-a7a8a",
+    "storage_bucket": "utopia-a7a8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566783945705:android:ee0d853eba46cb0cd27978",
+        "android_client_info": {
+          "package_name": "com.utopia.prod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566783945705-fa8gmton3vi6surustin9o26t9ig0g2f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuIuRIJop76038c9cmN6dL1SvZSXXN4Cg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566783945705-fa8gmton3vi6surustin9o26t9ig0g2f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
