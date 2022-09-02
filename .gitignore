@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+.env
 migrate_working_dir/
 
 # IntelliJ related
@@ -34,6 +35,7 @@ migrate_working_dir/
 
 # Web related
 lib/generated_plugin_registrant.dart
+android/app/google-services.json
 
 # Symbolication related
 app.*.symbols
