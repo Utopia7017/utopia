@@ -20,15 +20,19 @@ class SignUpScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 38, 39, 41),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 100),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 "Create an account",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 28,
+                    fontFamily: "Play",
+                    letterSpacing: 1.2,
+                    color: Colors.white),
               ),
               const SizedBox(height: 40),
               AuthTextField(
@@ -84,23 +88,21 @@ class SignUpScreen extends StatelessWidget {
                 },
               ),
               space,
-              MaterialButton(
-                onPressed: () {},
-                color: Color.fromARGB(255, 255, 226, 174),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text("Create an account"),
-              ),
-              space,
-              Row(
-                children: [
-                  Text("Already have an account?"),
-                  SizedBox(
-                    width: 5,
+              Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: MaterialButton(
+                    onPressed: () {},
+                    color: Color.fromARGB(255, 255, 226, 174),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      "Register",
+                      style: TextStyle(fontSize: 15.5),
+                    ),
                   ),
-                  Text("login"),
-                ],
+                ),
               ),
             ],
           ),
