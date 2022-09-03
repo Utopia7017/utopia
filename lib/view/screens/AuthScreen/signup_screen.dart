@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
+import 'package:utopia/constants/color_constants.dart';
 
 class SignUpScreen extends StatelessWidget {
   final Logger _logger = Logger("SignUpScreen");
@@ -18,10 +19,15 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 38, 39, 41),
+      appBar: AppBar(
+        backgroundColor: authBackground,
+        elevation: 0,
+        leading: Icon(Icons.arrow_back,color: Colors.white,),
+      ),
+      backgroundColor: authBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 100),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -90,14 +96,15 @@ class SignUpScreen extends StatelessWidget {
               space,
               Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.55,
                   child: MaterialButton(
+                    height: MediaQuery.of(context).size.height*0.055,
                     onPressed: () {},
-                    color: Color.fromARGB(255, 255, 226, 174),
+                    color: authMaterialButtonColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Text(
+                    child: const Text(
                       "Register",
                       style: TextStyle(fontSize: 15.5),
                     ),

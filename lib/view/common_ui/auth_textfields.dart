@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utopia/constants/color_constants.dart';
 
 class AuthTextField extends StatelessWidget {
   final String label;
@@ -22,21 +23,20 @@ class AuthTextField extends StatelessWidget {
       obscureText: !visible,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color.fromARGB(
-          255,
-          54,
-          55,
-          59,
-        ),
+        fillColor: authTextBoxColor,
         prefixIcon: prefixIcon,
         labelText: label,
-        labelStyle: TextStyle(color: Colors.white60),
+        labelStyle: const TextStyle(color: Colors.white60),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white30),
+          borderSide: const BorderSide(color:authTextBoxBorderColor),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder:  OutlineInputBorder(
+          borderSide: const BorderSide(color: authTextBoxBorderColor),
           borderRadius: BorderRadius.circular(10),
         ),
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white30),
+          borderSide: const BorderSide(color: authTextBoxBorderColor),
           borderRadius: BorderRadius.circular(10),
         ),
         errorBorder: OutlineInputBorder(
