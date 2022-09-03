@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -70,9 +71,9 @@ class LoginScreen extends StatelessWidget {
               ),
               Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.55,
+                  width: displayWidth(context) * 0.55,
                   child: MaterialButton(
-                    height: MediaQuery.of(context).size.height * 0.055,
+                    height: displayHeight(context) * 0.055,
                     onPressed: () {},
                     color: authMaterialButtonColor,
                     shape: RoundedRectangleBorder(

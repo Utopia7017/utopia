@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
-import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
+import 'package:utopia/utils/device_size.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -37,9 +36,9 @@ class AuthScreen extends StatelessWidget {
               space,
               Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.83,
+                  width: displayWidth(context) * 0.83,
                   child: MaterialButton(
-                    height: MediaQuery.of(context).size.height * 0.055,
+                    height: displayHeight(context) * 0.055,
                     onPressed: () {
                       Navigator.pushNamed(context, '/login');
                     },
@@ -57,9 +56,9 @@ class AuthScreen extends StatelessWidget {
               const SizedBox(height: 10),
               Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.83,
+                  width: displayWidth(context) * 0.83,
                   child: MaterialButton(
-                    height: MediaQuery.of(context).size.height * 0.055,
+                    height: displayHeight(context) * 0.055,
                     onPressed: () {
                       Navigator.pushNamed(context, '/signup');
                     },
