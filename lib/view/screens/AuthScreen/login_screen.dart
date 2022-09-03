@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/view/common_ui/auth_textfields.dart';
 
 class LoginScreen extends StatelessWidget {
   final Logger _logger = Logger("LoginScreen");
-
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  final space = const SizedBox(height: 30);
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: authBackground,
-        appBar: AppBar(
+    return Scaffold(
+      backgroundColor: authBackground,
+      appBar: AppBar(
         backgroundColor: authBackground,
         elevation: 0,
-        leading: Icon(Icons.arrow_back,color: Colors.white,),
+        leading: const Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
       ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 60),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,62 +31,58 @@ class LoginScreen extends StatelessWidget {
                 "Login",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                 fontSize: 23,
-                 fontFamily: "Play",
-                 letterSpacing: 1.2,
-                 color: Colors.white,
-                 ),
-                
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: authTextBoxColor,
-                  prefixIcon: Icon(
-                    Icons.email,
-                    color: Colors.white60,
-                    ),
-                  labelText: "Email",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  fontSize: 28,
+                  fontFamily: "Play",
+                  letterSpacing: 1.2,
+                  color: Colors.white,
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: authTextBoxColor,
-                  prefixIcon: Icon(
-                    Icons.password,
-                    color: Colors.white60,
-                    ),
-                  labelText: "Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+              const SizedBox(height: 40),
+              AuthTextField(
+                controller: emailController,
+                label: "Email",
+                visible: true,
+                prefixIcon: const Icon(
+                  Icons.email,
+                  color: Colors.white60,
                 ),
+                validator: (val) {
+                  if (val!.isEmpty) {
+                    return "Cannot be empty";
+                  }
+                  return null;
+                },
               ),
-              SizedBox(
-                height: 35,
+              space,
+              AuthTextField(
+                controller: passwordController,
+                label: "Password",
+                visible: false,
+                prefixIcon: const Icon(
+                  Icons.email,
+                  color: Colors.white60,
+                ),
+                validator: (val) {
+                  if (val!.isEmpty) {
+                    return "Cannot be empty";
+                  }
+                  return null;
+                },
               ),
-              
+              const SizedBox(
+                height: 40,
+              ),
               Center(
                 child: SizedBox(
-                   width: MediaQuery.of(context).size.width * 0.33,
+                  width: MediaQuery.of(context).size.width * 0.55,
                   child: MaterialButton(
-                    height: MediaQuery.of(context).size.height*0.055,
+                    height: MediaQuery.of(context).size.height * 0.055,
                     onPressed: () {},
-                    child: Text("Login"),
                     color: authMaterialButtonColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
+                    child: const Text("Login",style: TextStyle(fontSize: 15.5),),
                   ),
                 ),
               ),
