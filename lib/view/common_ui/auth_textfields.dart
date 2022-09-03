@@ -21,6 +21,8 @@ class AuthTextField extends StatelessWidget {
       controller: controller,
       validator: validator,
       obscureText: !visible,
+      cursorColor: Colors.white30,
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         filled: true,
         fillColor: authTextBoxColor,
