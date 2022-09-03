@@ -15,14 +15,10 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: authBackground,
         elevation: 0,
-        leading: const Icon(
-          Icons.arrow_back,
-          color: Colors.white,
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 60),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +78,10 @@ class LoginScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: const Text("Login",style: TextStyle(fontSize: 15.5),),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(fontSize: 15.5),
+                    ),
                   ),
                 ),
               ),

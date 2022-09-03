@@ -22,7 +22,6 @@ class SignUpScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: authBackground,
         elevation: 0,
-        leading: Icon(Icons.arrow_back,color: Colors.white,),
       ),
       backgroundColor: authBackground,
       body: SafeArea(
@@ -98,7 +97,7 @@ class SignUpScreen extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.55,
                   child: MaterialButton(
-                    height: MediaQuery.of(context).size.height*0.055,
+                    height: MediaQuery.of(context).size.height * 0.055,
                     onPressed: () {},
                     color: authMaterialButtonColor,
                     shape: RoundedRectangleBorder(
