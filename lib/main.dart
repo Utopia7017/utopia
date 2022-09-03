@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
+import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 
 /*
   Project Name : Utoppia - 
@@ -31,7 +32,7 @@ class Utopia extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AppScreen(),
+      home: SignUpScreen(),
     );
   }
 }
