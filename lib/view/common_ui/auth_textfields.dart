@@ -30,10 +30,10 @@ class AuthTextField extends StatelessWidget {
         labelText: label,
         labelStyle: const TextStyle(color: Colors.white60),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color:authTextBoxBorderColor),
+          borderSide: const BorderSide(color: authTextBoxBorderColor),
           borderRadius: BorderRadius.circular(10),
         ),
-        enabledBorder:  OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: authTextBoxBorderColor),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -42,6 +42,7 @@ class AuthTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.red),
           borderRadius: BorderRadius.circular(10),
         ),
       ),
