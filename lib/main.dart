@@ -1,11 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
+import 'package:utopia/controlller/auth_screen_controller.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
+
+import 'services/firebase/auth_services.dart';
+import 'services/firebase/firebase_user_service.dart';
 
 /*
   Project Name : Utoppia - 
@@ -33,14 +39,49 @@ class Utopia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/auth': (context) => AuthScreen(),
-        '/login': (context) => LoginScreen(),
-        '/signup': (context) => SignUpScreen(),
-        '/app': (context) => AppScreen(),
-      },
-      initialRoute: '/auth',
+    return MultiProvider(
+      providers: [
+        // Auth Controllers
+        ChangeNotifierProvider(
+          create: (context) => AuthNotifier(),
+        ),
+        Provider<Authservice>(
+            create: (_) => Authservice(FirebaseAuth.instance)),
+        StreamProvider(
+          create: (context) => context.read<Authservice>().austhStateChanges,
+          initialData: null,
+        ),
+        // Screen Controllers
+        ChangeNotifierProvider(create: (context) => AuthScreenController(),),
+      ],
+      child: MaterialApp(
+        routes: {
+          '/auth': (context) => AuthScreen(),
+          '/login': (context) => LoginScreen(),
+          '/signup': (context) => SignUpScreen(),
+          '/app': (context) => AppScreen(),
+        },
+        home: Consumer<AuthNotifier>(
+          builder: (context, notifier, child) {
+            return notifier.user != null ? const AppScreen() : const Wrapper();
+          },
+        ),
+      ),
     );
+  }
+}
+
+class Wrapper extends StatelessWidget {
+  const Wrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final firebaseUser = context.watch<User?>();
+
+    if (firebaseUser != null) {
+      return const AppScreen();
+    } else {
+      return const AuthScreen();
+    }
   }
 }
