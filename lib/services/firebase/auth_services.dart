@@ -38,7 +38,7 @@ class Authservice {
       String? returnResponse;
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
-      return returnResponse;
+      return 'valid';
     } on FirebaseAuthException catch (e) {
       return e.message;
     }

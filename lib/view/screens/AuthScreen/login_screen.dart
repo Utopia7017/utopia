@@ -99,7 +99,7 @@ class LoginScreen extends StatelessWidget {
                             }
                             else {
                               sms.showSnackBar(
-                                SnackBar(content: Text(loginResponse!,style: TextStyle(color: Colors.black,fontSize: 13.5
+                                SnackBar(content: Text(loginResponse!,style: const TextStyle(color: Colors.black,fontSize: 13.5
                                 ),),
                                 backgroundColor: authMaterialButtonColor
                                 ),
