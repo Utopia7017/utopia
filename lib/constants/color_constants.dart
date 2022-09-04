@@ -12,3 +12,5 @@ const authTextBoxBorderColor =  Colors.white30;
 const authMaterialButtonColor = Color.fromARGB(255, 255, 226, 174);
 
 const authBackground = Color.fromARGB(255, 38, 39, 41);
+
+const drawerBackground = Color.fromARGB(255, 38, 39, 41);
