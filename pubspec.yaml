@@ -61,3 +61,7 @@ flutter:
     - family: Play
       fonts:
         - asset: fonts/Play.ttf
+    - family: Fira
+      fonts:
+        - asset: fonts/Fira.ttf
+
