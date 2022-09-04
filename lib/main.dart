@@ -63,7 +63,7 @@ class Utopia extends StatelessWidget {
         },
         home: Consumer<AuthNotifier>(
           builder: (context, notifier, child) {
-            return notifier.user != null ? const AppScreen() : const Wrapper();
+            return notifier.user != null ?  AppScreen() : const Wrapper();
           },
         ),
       ),
@@ -79,7 +79,7 @@ class Wrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser != null) {
-      return const AppScreen();
+      return  AppScreen();
     } else {
       return const AuthScreen();
     }

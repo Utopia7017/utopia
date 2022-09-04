@@ -1,38 +1,26 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:utopia/services/firebase/auth_services.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 
 class AppScreen extends StatelessWidget {
-  const AppScreen({Key? key}) : super(key: key);
+
+
+  final Authservice _auth = Authservice(FirebaseAuth.instance);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
-                      ));
-                },
-                child: Text("Login Screen")),
-            TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignUpScreen(),
-                      ));
-                },
-                child: Text("Sign up Screen")),
-          ],
-        ),
+        child: TextButton(
+          onPressed: () async{
+          final navigator= Navigator.of(context);
+          await _auth.signOut();
+         navigator.pushReplacementNamed('/auth');
+        },
+        child: Text('Logout')),
       ),
     );
   }
