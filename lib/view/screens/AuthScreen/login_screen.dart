@@ -14,8 +14,8 @@ class LoginScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-   final _formKey = GlobalKey<FormState>();
-   final Authservice _auth = Authservice(FirebaseAuth.instance);
+  final _formKey = GlobalKey<FormState>();
+  final Authservice _auth = Authservice(FirebaseAuth.instance);
 
   final space = const SizedBox(height: 30);
   @override
@@ -85,38 +85,42 @@ class LoginScreen extends StatelessWidget {
                     width: displayWidth(context) * 0.55,
                     child: Consumer<AuthScreenController>(
                       builder: (context, controller, child) {
-                        return  MaterialButton(
-                        height: displayHeight(context) * 0.055,
-                        onPressed: () async {
-                          controller.startLogin();
-                          if(_formKey.currentState!.validate()) {
-                            final navigator= Navigator.of(context);
-                            final sms = ScaffoldMessenger.of(context);
-                            final loginResponse = await _auth.signIn(email: emailController.text,password: passwordController.text);
-                            controller.stopLogin();
-                            if(loginResponse == 'valid') {
-                              navigator.pushReplacementNamed('/app');
+                        return MaterialButton(
+                          height: displayHeight(context) * 0.055,
+                          onPressed: () async {
+                            controller.startLogin();
+                            if (_formKey.currentState!.validate()) {
+                              final navigator = Navigator.of(context);
+                              final sms = ScaffoldMessenger.of(context);
+                              final loginResponse = await _auth.signIn(
+                                  email: emailController.text,
+                                  password: passwordController.text);
+                              controller.stopLogin();
+                              if (loginResponse == 'valid') {
+                                navigator.pushReplacementNamed('/app');
+                              } else {
+                                sms.showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                        loginResponse!,
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 13.5),
+                                      ),
+                                      backgroundColor: authMaterialButtonColor),
+                                );
+                              }
                             }
-                            else {
-                              sms.showSnackBar(
-                                SnackBar(content: Text(loginResponse!,style: const TextStyle(color: Colors.black,fontSize: 13.5
-                                ),),
-                                backgroundColor: authMaterialButtonColor
-                                ),
-                              );
-                            }
-                            
-                          }
-                        },
-                        color: authMaterialButtonColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(fontSize: 15.5),
-                        ),
-                      );
+                          },
+                          color: authMaterialButtonColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(fontSize: 15.5),
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -136,8 +140,6 @@ class LoginScreen extends StatelessWidget {
                     }
                   },
                 )
-
-
               ],
             ),
           ),

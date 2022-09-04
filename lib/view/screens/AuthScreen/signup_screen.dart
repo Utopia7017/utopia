@@ -111,11 +111,10 @@ class SignUpScreen extends StatelessWidget {
                         return MaterialButton(
                           height: displayHeight(context) * 0.055,
                           onPressed: () async {
-
                             if (_formKey.currentState!.validate() &&
                                 controller.signupStatus ==
                                     AuthSignUpStatus.notLoading) {
-                              final navigator= Navigator.of(context);
+                              final navigator = Navigator.of(context);
                               final sms = ScaffoldMessenger.of(context);
                               _logger.info("Form validated");
                               controller.startSigningUp();
@@ -124,15 +123,18 @@ class SignUpScreen extends StatelessWidget {
                                   password: passwordController.text,
                                   context: context);
                               controller.stopSigningUp();
-                              if(singupResponse == 'valid') {
+                              if (singupResponse == 'valid') {
                                 navigator.pushReplacementNamed('/app');
-                              }
-                              else {
+                              } else {
                                 sms.showSnackBar(
-                                  SnackBar(content: Text(singupResponse!,style: const TextStyle(color: Colors.black,fontSize: 13.5
-                                  ),),
-                                      backgroundColor: authMaterialButtonColor
-                                  ),
+                                  SnackBar(
+                                      content: Text(
+                                        singupResponse!,
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 13.5),
+                                      ),
+                                      backgroundColor: authMaterialButtonColor),
                                 );
                               }
                             }
