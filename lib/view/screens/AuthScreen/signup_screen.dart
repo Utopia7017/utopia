@@ -112,15 +112,15 @@ class SignUpScreen extends StatelessWidget {
                           height: displayHeight(context) * 0.055,
                           onPressed: () async {
                             if (_formKey.currentState!.validate() &&
-                                controller.status ==
+                                controller.signupStatus ==
                                     AuthSignUpStatus.notLoading) {
                               _logger.info("Form validated");
-                              controller.startLoding();
+                              controller.startSigningUp();
                               final singupResponse = await _auth.signUp(
                                   email: emailController.text,
                                   password: passwordController.text,
                                   context: context);
-                              controller.stopLoding();
+                              controller.stopSigningUp();
                               if (singupResponse == 'valid') {
                                 _logger.info("Registration successfull");
                               }
@@ -142,7 +142,7 @@ class SignUpScreen extends StatelessWidget {
                 space,
                 Consumer<AuthScreenController>(
                   builder: (context, controller, child) {
-                    switch (controller.status) {
+                    switch (controller.signupStatus) {
                       case AuthSignUpStatus.loading:
                         return const Center(
                           child: CircularProgressIndicator(

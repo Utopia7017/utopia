@@ -2,15 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:utopia/enums/enums.dart';
 
 class AuthScreenController with ChangeNotifier {
-  AuthSignUpStatus status = AuthSignUpStatus.notLoading;
+  AuthSignUpStatus signupStatus = AuthSignUpStatus.notLoading;
+  AuthLoginStatus  loginStatus = AuthLoginStatus.notloading;
 
-  startLoding() {
-    status = AuthSignUpStatus.loading;
+  startSigningUp() {
+    signupStatus = AuthSignUpStatus.loading;
     notifyListeners();
   }
 
-  stopLoding() {
-    status = AuthSignUpStatus.notLoading;
+  stopSigningUp() {
+    signupStatus = AuthSignUpStatus.notLoading;
+    notifyListeners();
+  }
+
+  startLogin() {
+    loginStatus = AuthLoginStatus.loading;
+    notifyListeners();
+  }
+  stopLogin() {
+    loginStatus = AuthLoginStatus.notloading;
     notifyListeners();
   }
 }

@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/controlller/auth_screen_controller.dart';
+import 'package:utopia/enums/enums.dart';
 import 'package:utopia/services/firebase/auth_services.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
@@ -12,7 +15,7 @@ class LoginScreen extends StatelessWidget {
   TextEditingController passwordController = TextEditingController();
 
    final _formKey = GlobalKey<FormState>();
-  final Authservice _auth = Authservice(FirebaseAuth.instance);
+   final Authservice _auth = Authservice(FirebaseAuth.instance);
 
   final space = const SizedBox(height: 30);
   @override
@@ -80,24 +83,61 @@ class LoginScreen extends StatelessWidget {
                 Center(
                   child: SizedBox(
                     width: displayWidth(context) * 0.55,
-                    child: MaterialButton(
-                      height: displayHeight(context) * 0.055,
-                      onPressed: () {
-                        if(_formKey.currentState!.validate()) {
-                          _logger.fine('form validated');
-                        }
+                    child: Consumer<AuthScreenController>(
+                      builder: (context, controller, child) {
+                        return  MaterialButton(
+                        height: displayHeight(context) * 0.055,
+                        onPressed: () async {
+                          controller.startLogin();
+                          if(_formKey.currentState!.validate()) {
+                            final navigator= Navigator.of(context);
+                            final sms = ScaffoldMessenger.of(context);
+                            final loginResponse = await _auth.signIn(email: emailController.text,password: passwordController.text);
+                            controller.stopLogin();
+                            if(loginResponse == 'valid') {
+                              navigator.pushReplacementNamed('/app');
+                            }
+                            else {
+                              sms.showSnackBar(
+                                SnackBar(content: Text(loginResponse!,style: TextStyle(color: Colors.black,fontSize: 13.5
+                                ),),
+                                backgroundColor: authMaterialButtonColor
+                                ),
+                              );
+                            }
+                            
+                          }
+                        },
+                        color: authMaterialButtonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(fontSize: 15.5),
+                        ),
+                      );
                       },
-                      color: authMaterialButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(fontSize: 15.5),
-                      ),
                     ),
                   ),
                 ),
+                space,
+                Consumer<AuthScreenController>(
+                  builder: (context, controller, child) {
+                    switch (controller.loginStatus) {
+                      case AuthLoginStatus.loading:
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: authMaterialButtonColor,
+                          ),
+                        );
+                      case AuthLoginStatus.notloading:
+                        return const SizedBox();
+                    }
+                  },
+                )
+
+
               ],
             ),
           ),
