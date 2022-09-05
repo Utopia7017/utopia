@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/controlller/auth_screen_controller.dart';
+import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
-import 'package:utopia/services/firebase/auth_services.dart';
+import 'package:utopia/models/user_model.dart' as user;
+import 'package:utopia/services/firebase/auth_services.dart' as firebase;
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
 import 'package:utopia/constants/color_constants.dart';
@@ -21,7 +23,8 @@ class SignUpScreen extends StatelessWidget {
   TextEditingController confirmPasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  final Authservice _auth = Authservice(FirebaseAuth.instance);
+  final firebase.Authservice _auth =
+      firebase.Authservice(FirebaseAuth.instance);
   final space = const SizedBox(height: 30);
 
   @override
@@ -116,20 +119,33 @@ class SignUpScreen extends StatelessWidget {
                                     AuthSignUpStatus.notLoading) {
                               final navigator = Navigator.of(context);
                               final sms = ScaffoldMessenger.of(context);
+                              final userController =
+                                  Provider.of<UserController>(context,
+                                      listen: false);
                               _logger.info("Form validated");
                               controller.startSigningUp();
-                              final singupResponse = await _auth.signUp(
+                              final dynamic signupResponse = await _auth.signUp(
                                   email: emailController.text,
                                   password: passwordController.text,
                                   context: context);
                               controller.stopSigningUp();
-                              if (singupResponse == 'valid') {
+                              if (signupResponse.runtimeType ==
+                                  UserCredential) {
+                                // successfully created new account
+                                await userController.createUser(user.User(
+                                    name: nameController.text,
+                                    dp: '',
+                                    email: emailController.text,
+                                    followers: [],
+                                    userId: signupResponse.user.uid,
+                                    bio: '',
+                                    following: []));
                                 navigator.pushReplacementNamed('/app');
                               } else {
                                 sms.showSnackBar(
                                   SnackBar(
                                       content: Text(
-                                        singupResponse!,
+                                        signupResponse!,
                                         style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 13.5),

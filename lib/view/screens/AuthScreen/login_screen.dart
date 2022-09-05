@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/auth_screen_controller.dart';
+import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/services/firebase/auth_services.dart';
 import 'package:utopia/utils/device_size.dart';
@@ -88,15 +89,20 @@ class LoginScreen extends StatelessWidget {
                         return MaterialButton(
                           height: displayHeight(context) * 0.055,
                           onPressed: () async {
+                            final userController = Provider.of<UserController>(
+                                context,
+                                listen: false);
                             controller.startLogin();
                             if (_formKey.currentState!.validate()) {
                               final navigator = Navigator.of(context);
                               final sms = ScaffoldMessenger.of(context);
-                              final loginResponse = await _auth.signIn(
+                              final dynamic loginResponse = await _auth.signIn(
                                   email: emailController.text,
                                   password: passwordController.text);
                               controller.stopLogin();
-                              if (loginResponse == 'valid') {
+                              if (loginResponse.runtimeType == UserCredential) {
+                                await userController
+                                    .setUser(loginResponse.user.uid);
                                 navigator.pushReplacementNamed('/app');
                               } else {
                                 sms.showSnackBar(
