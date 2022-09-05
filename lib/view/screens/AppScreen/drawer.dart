@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
+import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/controlller/user_controller.dart';
+import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
 import '../../../services/firebase/auth_services.dart';
 
@@ -29,120 +33,145 @@ class CustomDrawer extends StatelessWidget {
       child: Container(
         width: displayWidth(context) * 0.3,
         padding: const EdgeInsets.only(left: 20, top: 25, right: 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              radius: displayWidth(context) * 0.13,
-              backgroundImage: const NetworkImage(
-                  'https://i.pinimg.com/564x/17/b0/8f/17b08fc3ad0e62df60e15ef557ec3fe1.jpg'),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            const Text(
-              '@Subhojeet Sahoo',
-              style: TextStyle(
-                  color: Colors.white, fontSize: 18, fontFamily: "Fira"),
-            ),
-            const SizedBox(height: 16),
-            // Follower detail box
-            Container(
-              height: displayHeight(context) * 0.08,
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        '50',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400),
-                      ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Text(
-                        'Followers',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+        child: Consumer<UserController>(
+          builder: (context, controller, child) {
+            
+            switch (controller.profileStatus) {
+              case ProfileStatus.nil:
+                return Center(
+                  child: MaterialButton(
+                    color: authMaterialButtonColor,
+                    onPressed: () {
+                      controller
+                          .setUser(FirebaseAuth.instance.currentUser!.uid);
+                    },
+                    child: const Text('Refresh Profile'),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        '158',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400),
-                      ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Text(
-                        'Following',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
+                );
+              case ProfileStatus.loading:
+                return const Center(
+                  child:
+                      CircularProgressIndicator(color: authMaterialButtonColor),
+                );
+              case ProfileStatus.fetched:
+               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: displayWidth(context) * 0.13,
+                    backgroundImage: const NetworkImage(
+                        'https://i.pinimg.com/564x/17/b0/8f/17b08fc3ad0e62df60e15ef557ec3fe1.jpg'),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  const Text(
+                    '@Subhojeet Sahoo',
+                    style: TextStyle(
+                        color: Colors.white, fontSize: 18, fontFamily: "Fira"),
+                  ),
+                  const SizedBox(height: 16),
+                  // Follower detail box
+                  Container(
+                    height: displayHeight(context) * 0.08,
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              '50',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Text(
+                              'Followers',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              '158',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Text(
+                              'Following',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  drawerTile(
+                      'Write new article',
+                      const Icon(
+                        Icons.edit,
+                        color: Colors.white70,
                       ),
-                    ],
-                  )
+                      () => _logger.info("Add new article")),
+                  drawerTile(
+                      'Your articles',
+                      const Icon(
+                        Icons.book_sharp,
+                        color: Colors.white70,
+                      ),
+                      () => _logger.info("Your articles")),
+                  drawerTile(
+                      'Search articles',
+                      const Icon(
+                        Icons.search_rounded,
+                        color: Colors.white70,
+                      ),
+                      () => _logger.info("Search")),
+                  drawerTile(
+                      'Notifications',
+                      const Icon(
+                        Icons.notifications_none_rounded,
+                        color: Colors.white70,
+                      ),
+                      () => _logger.info("Notifications")),
+                  drawerTile(
+                      'Logout',
+                      const Icon(
+                        Icons.logout,
+                        color: Colors.white70,
+                      ), () async {
+                    final navigator = Navigator.of(context);
+                    await _auth.signOut();
+                    navigator.pushReplacementNamed('/auth');
+                  }),
                 ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            drawerTile(
-                'Write new article',
-                const Icon(
-                  Icons.edit,
-                  color: Colors.white70,
-                ),
-                () => _logger.info("Add new article")),
-            drawerTile(
-                'Your articles',
-                const Icon(
-                  Icons.book_sharp,
-                  color: Colors.white70,
-                ),
-                () => _logger.info("Your articles")),
-            drawerTile(
-                'Search articles',
-                const Icon(
-                  Icons.search_rounded,
-                  color: Colors.white70,
-                ),
-                () => _logger.info("Search")),
-            drawerTile(
-                'Notifications',
-                const Icon(
-                  Icons.notifications_none_rounded,
-                  color: Colors.white70,
-                ),
-                () => _logger.info("Notifications")),
-            drawerTile(
-                'Logout',
-                const Icon(
-                  Icons.logout,
-                  color: Colors.white70,
-                ), () async {
-              final navigator = Navigator.of(context);
-              await _auth.signOut();
-              navigator.pushReplacementNamed('/auth');
-            }),
-          ],
+              );
+            }
+           
+          },
         ),
       ),
     );

@@ -5,17 +5,17 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/controlller/auth_screen_controller.dart';
+import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
-
 import 'services/firebase/auth_services.dart';
 import 'services/firebase/firebase_user_service.dart';
 
 /*
   Project Name : Utoppia - 
-  Project Authors : { Subhojeet Sahoo, Gurudev Singh , Vishal Mahato , Abhishek Kumar }
+  Project Authors : { Subhojeet Sahoo, Vishal Mahato , Abhishek Kumar }
   Creation Date : 2nd Sep, 2022
   Project Aim : Building Blogging application for learning purpose.
 */
@@ -53,6 +53,8 @@ class Utopia extends StatelessWidget {
         ),
         // Screen Controllers
         ChangeNotifierProvider(create: (context) => AuthScreenController(),),
+
+        ChangeNotifierProvider(create: (context) => UserController(),)
       ],
       child: MaterialApp(
         routes: {

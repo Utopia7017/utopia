@@ -6,9 +6,6 @@ class Authservice {
   final FirebaseAuth _auth;
 
   Authservice(this._auth);
-  //auth is an private property !!
-
-  // ignore: non_constant_identifier_names
 
   Stream<User?> get austhStateChanges => _auth.authStateChanges();
 
@@ -20,25 +17,25 @@ class Authservice {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
 //sign in with email and password  !!
-  Future<String?> signIn(
+  Future<dynamic> signIn(
       {required String email, required String password}) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return "valid";
+      UserCredential? userCredential =  await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
 
-  Future<String?> signUp(
+  Future<dynamic> signUp(
       {required String email,
       required String password,
       required BuildContext context}) async {
     try {
-      String? returnResponse;
-      UserCredential userCredential = await _auth
+     
+      UserCredential? userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
-      return 'valid';
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
