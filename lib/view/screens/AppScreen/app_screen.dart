@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen_body.dart';
 import 'package:utopia/view/screens/AppScreen/drawer.dart';
-
 import '../../../constants/color_constants.dart';
 
 class AppScreen extends StatefulWidget {
@@ -33,23 +33,34 @@ class _AppScreenState extends State<AppScreen> {
       drawer: CustomDrawer(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Advanced Drawer Example'),
-          leading: IconButton(
-            onPressed: _handleMenuButtonPressed,
-            icon: ValueListenableBuilder<AdvancedDrawerValue>(
+          elevation: 0,
+          backgroundColor: primaryBackgroundColor,
+          title: const Text(
+            'Utopia',
+            style: TextStyle(
+                color: authBackground,
+                fontFamily: "Play",
+                fontSize: 22,
+                fontWeight: FontWeight.w400),
+          ),
+          centerTitle: true,
+          leading: InkWell(
+            onTap: _handleMenuButtonPressed,
+            child: ValueListenableBuilder<AdvancedDrawerValue>(
               valueListenable: _advancedDrawerController,
               builder: (_, value, __) {
                 return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: Icon(
-                    value.visible ? Icons.clear : Icons.menu,
-                    key: ValueKey<bool>(value.visible),
-                  ),
-                );
+                    duration: const Duration(milliseconds: 250),
+                    child: Image.asset(
+                      value.visible ? menuIconClose : menuIcon,
+                      height: 25,
+                      key: ValueKey<bool>(value.visible),
+                    ));
               },
             ),
           ),
         ),
+        backgroundColor: primaryBackgroundColor,
         body: AppScreenBody(),
       ),
     );
