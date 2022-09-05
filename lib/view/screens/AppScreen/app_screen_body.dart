@@ -8,17 +8,6 @@ class AppScreenBody extends StatelessWidget {
   final Authservice _auth = Authservice(FirebaseAuth.instance);
   @override
   Widget build(BuildContext context) {
-
-    return  Center(
-        child: TextButton(
-            onPressed: () async {
-              final navigator = Navigator.of(context);
-              await _auth.signOut();
-              navigator.pushReplacementNamed('/auth');
-            },
-            child: Text('Logout')),
-
-    );
+    return Container();
   }
 }
-

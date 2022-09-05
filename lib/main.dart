@@ -52,11 +52,16 @@ class Utopia extends StatelessWidget {
           initialData: null,
         ),
         // Screen Controllers
-        ChangeNotifierProvider(create: (context) => AuthScreenController(),),
+        ChangeNotifierProvider(
+          create: (context) => AuthScreenController(),
+        ),
 
-        ChangeNotifierProvider(create: (context) => UserController(),)
+        ChangeNotifierProvider(
+          create: (context) => UserController(),
+        )
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         routes: {
           '/auth': (context) => AuthScreen(),
           '/login': (context) => LoginScreen(),
@@ -65,7 +70,7 @@ class Utopia extends StatelessWidget {
         },
         home: Consumer<AuthNotifier>(
           builder: (context, notifier, child) {
-            return notifier.user != null ?  AppScreen() : const Wrapper();
+            return notifier.user != null ? AppScreen() : const Wrapper();
           },
         ),
       ),
@@ -81,7 +86,7 @@ class Wrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser != null) {
-      return  AppScreen();
+      return AppScreen();
     } else {
       return const AuthScreen();
     }
