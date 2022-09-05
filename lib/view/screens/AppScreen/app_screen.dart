@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/view/screens/AppScreen/app_screen_body.dart';
 import 'package:utopia/view/screens/AppScreen/drawer.dart';
+import 'package:utopia/view/screens/ExploreScreen/explore_screen.dart';
 import '../../../constants/color_constants.dart';
 
 class AppScreen extends StatefulWidget {
@@ -61,7 +61,7 @@ class _AppScreenState extends State<AppScreen> {
           ),
         ),
         backgroundColor: primaryBackgroundColor,
-        body: AppScreenBody(),
+        body: SafeArea(child: ExploreScreen()),
       ),
     );
   }
