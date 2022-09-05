@@ -48,7 +48,7 @@ class ApiServices {
     return null;
   }
 
-  Future<Response?> update(
+  Future<Response?> put(
       {required String endUrl, required Map<String, dynamic> data}) async {
     try {
       final Response response =
