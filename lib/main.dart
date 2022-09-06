@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:utopia/controlller/articles_controller.dart';
 import 'package:utopia/controlller/auth_screen_controller.dart';
 import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
@@ -55,10 +56,10 @@ class Utopia extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AuthScreenController(),
         ),
-
         ChangeNotifierProvider(
           create: (context) => UserController(),
-        )
+        ),
+        ChangeNotifierProvider(create: (context) => ArticlesController(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

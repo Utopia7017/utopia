@@ -9,12 +9,12 @@ class SearchBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Container(
         height: displayHeight(context) * 0.06,
         width: displayWidth(context),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(18),
           color: Colors.white,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16),
