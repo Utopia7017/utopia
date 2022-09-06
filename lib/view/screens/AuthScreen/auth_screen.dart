@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/utils/device_size.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -15,7 +16,7 @@ class AuthScreen extends StatelessWidget {
           child: Column(
             children: [
               Image.asset(
-                "assets/image.png",
+                loginLogo,
                 height: MediaQuery.of(context).size.height * 0.6,
                 fit: BoxFit.contain,
               ),

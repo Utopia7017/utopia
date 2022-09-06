@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:utopia/controlller/articles_controller.dart';
 import 'package:utopia/controlller/auth_screen_controller.dart';
 import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
@@ -52,11 +53,16 @@ class Utopia extends StatelessWidget {
           initialData: null,
         ),
         // Screen Controllers
-        ChangeNotifierProvider(create: (context) => AuthScreenController(),),
-
-        ChangeNotifierProvider(create: (context) => UserController(),)
+        ChangeNotifierProvider(
+          create: (context) => AuthScreenController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserController(),
+        ),
+        ChangeNotifierProvider(create: (context) => ArticlesController(),),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         routes: {
           '/auth': (context) => AuthScreen(),
           '/login': (context) => LoginScreen(),
@@ -65,7 +71,7 @@ class Utopia extends StatelessWidget {
         },
         home: Consumer<AuthNotifier>(
           builder: (context, notifier, child) {
-            return notifier.user != null ?  AppScreen() : const Wrapper();
+            return notifier.user != null ? AppScreen() : const Wrapper();
           },
         ),
       ),
@@ -81,7 +87,7 @@ class Wrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser != null) {
-      return  AppScreen();
+      return AppScreen();
     } else {
       return const AuthScreen();
     }

@@ -2,8 +2,8 @@ class User {
   String name;
   String userId;
   String email;
-  List<String>? followers;
-  List<String>? following;
+  List<String> followers;
+  List<String> following;
   String dp;
   String bio;
 
@@ -22,9 +22,9 @@ class User {
         bio: data['bio'],
         dp: data['dp'],
         email: data['email'],
-        followers: data['followers'],
+        followers: data['followers']??[],
         userId: data['userId'],
-        following: data['following']);
+        following: data['following']??[]);
   }
 
   Map<String,dynamic> toJson() {
