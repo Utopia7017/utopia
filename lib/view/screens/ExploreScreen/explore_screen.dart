@@ -13,7 +13,7 @@ class ExploreScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _logger.info("Add New Article");
+          Navigator.pushNamed(context, '/newArticle');
         },
         backgroundColor: authBackground,
         child: const Icon(
