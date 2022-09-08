@@ -4,6 +4,7 @@ import 'package:utopia/enums/enums.dart';
 class AuthScreenController with ChangeNotifier {
   AuthSignUpStatus signupStatus = AuthSignUpStatus.notLoading;
   AuthLoginStatus  loginStatus = AuthLoginStatus.notloading;
+  bool termsCondition = false;
 
   startSigningUp() {
     signupStatus = AuthSignUpStatus.loading;
@@ -21,6 +22,15 @@ class AuthScreenController with ChangeNotifier {
   }
   stopLogin() {
     loginStatus = AuthLoginStatus.notloading;
+    notifyListeners();
+  }
+
+  void acceptTermsCcondition() {
+    termsCondition=true;
+    notifyListeners();
+  }
+  void declineTermsCondition () {
+    termsCondition = false;
     notifyListeners();
   }
 }
