@@ -26,6 +26,7 @@ class SignUpScreen extends StatelessWidget {
   final firebase.Authservice _auth =
       firebase.Authservice(FirebaseAuth.instance);
   final space = const SizedBox(height: 30);
+  bool ischecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class SignUpScreen extends StatelessWidget {
       backgroundColor: authBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Form(
             key: _formKey,
             child: Column(
@@ -102,10 +103,43 @@ class SignUpScreen extends StatelessWidget {
                     color: Colors.white60,
                   ),
                   validator: (val) {
-                    if (val!.isEmpty) return "Confirm Password cannot be empty";
+                    if (val!.isEmpty)
+                    {
+                      return "Textfield cannot be empty";
+                    } 
+                    else if(passwordController.value != confirmPasswordController.value)
+                    {
+                      return "password didn't match" ;
+                    } 
+                    else 
+                    return null;
                   },
                 ),
                 space,
+                Row(
+                  children: [
+                    Consumer<AuthScreenController>(
+                      builder: (context, controller, child) {
+                        return IconButton(
+                          onPressed: () {
+                            if(controller.termsCondition ){
+                              controller.declineTermsCondition();
+                            }
+                            else
+                            {
+                              controller.acceptTermsCcondition();
+                            }
+
+                          },
+                           icon:Icon(controller.termsCondition? Icons.check_box : Icons.check_box_outline_blank_outlined) );
+                      },
+                    ),
+                Text('I accept all the Terms And Conditions ',style: TextStyle(color: Colors.white60, fontWeight: FontWeight.bold),)
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
                 Center(
                   child: SizedBox(
                     width: displayWidth(context) * 0.55,

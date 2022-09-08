@@ -36,6 +36,7 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
           builder: (context, controller, child) {
             return FloatingActionButton(
               onPressed: () async {
+                //FIXME: Add permission handler to request for camera and gallery permission before uploading any image @alpha17-2  
                 XFile? imageFile = await pickImage();
                 if (imageFile != null) {
                   controller.addImageField(imageFile);
