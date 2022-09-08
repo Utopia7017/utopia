@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/models/comment_model.dart';
@@ -17,6 +20,7 @@ class NewArticleScreenController with ChangeNotifier {
   List<BodyComponent> bodyComponents = [];
   List<String> articleBody = [];
   List<TextEditingController> textControllers = [];
+  List<XFile> images = [];
   final Logger _logger = Logger("NewArticleScreenController");
   final ApiServices _apiServices = ApiServices();
 
@@ -30,9 +34,9 @@ class NewArticleScreenController with ChangeNotifier {
     notifyListeners();
   }
 
-  addImageField() {
+  addImageField(XFile file) {
     bodyComponents.add(BodyComponent(
-        type: "image", img: const Image(image: AssetImage(loginLogo))));
+        type: "image", img: Image(image: FileImage(File(file.path)))));
     addTextField();
     // notifyListeners();
   }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/new_article_screen_controller.dart';
-import 'package:utopia/utils/device_size.dart';
+// import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:image_picker/image_picker.dart';
 
 class NewArticleScreen extends StatefulWidget {
   NewArticleScreen({Key? key}) : super(key: key);
@@ -14,10 +16,18 @@ class NewArticleScreen extends StatefulWidget {
 
 class _NewArticleScreenState extends State<NewArticleScreen> {
   final Logger _logger = Logger("NewArticleScreen");
-
+  final picker = ImagePicker();
   List<String> articles = [];
 
   TextEditingController textEditingController = TextEditingController();
+
+  Future<XFile?> pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      return pickedFile;
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +35,11 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
         floatingActionButton: Consumer<NewArticleScreenController>(
           builder: (context, controller, child) {
             return FloatingActionButton(
-              onPressed: () {
-                controller.addImageField();
+              onPressed: () async {
+                XFile? imageFile = await pickImage();
+                if (imageFile != null) {
+                  controller.addImageField(imageFile);
+                }
               },
               backgroundColor: authBackground,
               child: const Icon(
