@@ -39,7 +39,7 @@ class CustomDrawer extends StatelessWidget {
             if (controller.profileStatus == ProfileStatus.nil) {
               controller.setUser(FirebaseAuth.instance.currentUser!.uid);
             }
-
+            
             switch (controller.profileStatus) {
               case ProfileStatus.nil:
                 return Center(

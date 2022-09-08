@@ -6,11 +6,13 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/controlller/articles_controller.dart';
 import 'package:utopia/controlller/auth_screen_controller.dart';
+import 'package:utopia/controlller/new_article_screen_controller.dart';
 import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
+import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
 import 'services/firebase/auth_services.dart';
 import 'services/firebase/firebase_user_service.dart';
 
@@ -60,6 +62,7 @@ class Utopia extends StatelessWidget {
           create: (context) => UserController(),
         ),
         ChangeNotifierProvider(create: (context) => ArticlesController(),),
+        ChangeNotifierProvider(create: (context) => NewArticleScreenController(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -68,6 +71,7 @@ class Utopia extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
           '/app': (context) => AppScreen(),
+          '/newArticle':(context) => NewArticleScreen(),
         },
         home: Consumer<AuthNotifier>(
           builder: (context, notifier, child) {
