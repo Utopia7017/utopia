@@ -3,31 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/services/api/api_services.dart';
-import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
-
-class BodyComponent {
-  final String key;
-  final String type;
-  TextEditingController? textEditingController;
-  ArticleTextField? textFormField;
-  XFile? fileImage;
-  Image? imageProvider;
-
-  BodyComponent(
-      {required this.type,
-      required this.key,
-      this.textFormField,
-      this.fileImage,
-      this.imageProvider,
-      this.textEditingController});
-}
+import 'package:utopia/services/firebase/storage_service.dart';
+import '../utils/article_body_component.dart';
+import '../utils/article_textfield.dart';
 
 class NewArticleScreenController with ChangeNotifier {
   List<BodyComponent> bodyComponents = [];
   final Logger _logger = Logger("NewArticleScreenController");
   final ApiServices _apiServices = ApiServices();
 
-  addTextField() {
+  // adds a new text field to body component list
+  void addTextField() {
     TextEditingController textEditingController = TextEditingController();
     ArticleTextField textField =
         ArticleTextField(controller: textEditingController);
@@ -40,7 +26,8 @@ class NewArticleScreenController with ChangeNotifier {
     notifyListeners();
   }
 
-  addImageField(XFile file) {
+  // adds a new image provider to body component list
+  void addImageField(XFile file) {
     bodyComponents.add(BodyComponent(
         type: "image",
         key: DateTime.now().toString(),
@@ -49,13 +36,8 @@ class NewArticleScreenController with ChangeNotifier {
     addTextField();
   }
 
-  // copyText(int bodyComponentIndexTo, int bodyComponentIndexFrom) {}
-
-  removeImage(List<BodyComponent> sublist) {
-    _logger.info(sublist.length);
-    for (BodyComponent bc in sublist) {
-      print(bc.key);
-    }
+  // removes the selected image and its successive body component
+  void removeImage(List<BodyComponent> sublist) {
 
     int indexOfBodyComponentToBeUpdated = bodyComponents
         .indexWhere((element) => element.key == sublist.first.key);
@@ -72,17 +54,23 @@ class NewArticleScreenController with ChangeNotifier {
         key: DateTime.now().toString(),
         textEditingController: ctr,
         textFormField: textField));
-    // bodyComponents.removeAt(bodyComponentIndex);
-    // bodyComponents.removeAt(bodyComponentIndex + 1);
     notifyListeners();
   }
 
   publishArticle() async {
     try {
       List<String> stringList = [];
+      int index=-1;
       for(BodyComponent bc in bodyComponents){
+        index++;
         if(bc.type=='text'){
           stringList.add(bc.textEditingController!.text);
+        }
+        else{
+          String? url = await getImageUrl(File(bc.fileImage!.path),index);
+          if(url!=null){
+            stringList.add(url);
+          }
         }
       }
       _logger.info(stringList);
@@ -90,6 +78,5 @@ class NewArticleScreenController with ChangeNotifier {
       _logger.shout(error.toString());
     }
   }
-
   addArticleBody() {}
 }
