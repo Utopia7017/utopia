@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/new_article_screen_controller.dart';
-// import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:image_picker/image_picker.dart';
 
 class NewArticleScreen extends StatefulWidget {
   NewArticleScreen({Key? key}) : super(key: key);
@@ -22,11 +21,17 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
   TextEditingController textEditingController = TextEditingController();
 
   Future<XFile?> pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      return pickedFile;
+    if (await Permission.photos.isGranted) {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        return pickedFile;
+      }
+      return null;
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Permission denied !')));
+      return null;
     }
-    return null;
   }
 
   @override
@@ -84,16 +89,37 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
                 itemCount: bodyComponents.length,
                 itemBuilder: (context, index) {
                   switch (bodyComponents[index].type) {
-                    case "textfield":
+                    case "text":
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: bodyComponents[index].textFormField!,
                       );
                     case "image":
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: bodyComponents[index].img!,
-                      );
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              bodyComponents[index].imageProvider!,
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: authBackground,
+                                  child: IconButton(
+                                      iconSize: 18,
+                                      color: authMaterialButtonColor,
+                                      onPressed: () {
+                                        controller.removeImage(controller.bodyComponents.sublist(index-1,index+2));
+                                      },
+                                      icon: const Icon(
+                                        Icons.close,
+                                      )),
+                                ),
+                              )
+                            ],
+                          ));
+
                     default:
                       return Text("data");
                   }
