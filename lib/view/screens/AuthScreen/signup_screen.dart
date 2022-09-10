@@ -131,7 +131,7 @@ class SignUpScreen extends StatelessWidget {
                             }
 
                           },
-                           icon:Icon(controller.termsCondition? Icons.check_box : Icons.check_box_outline_blank_outlined) );
+                           icon:Icon(controller.termsCondition? Icons.check_box : Icons.check_box_outline_blank_outlined),color: Colors.white60, );
                       },
                     ),
                 Text('I accept all the Terms And Conditions ',style: TextStyle(color: Colors.white60, fontWeight: FontWeight.bold),)
@@ -148,6 +148,7 @@ class SignUpScreen extends StatelessWidget {
                         return MaterialButton(
                           height: displayHeight(context) * 0.055,
                           onPressed: () async {
+                          
                             if (_formKey.currentState!.validate() &&
                                 controller.signupStatus ==
                                     AuthSignUpStatus.notLoading) {
@@ -157,7 +158,8 @@ class SignUpScreen extends StatelessWidget {
                                   Provider.of<UserController>(context,
                                       listen: false);
                               _logger.info("Form validated");
-                              controller.startSigningUp();
+                              if(controller.termsCondition ) {
+                                controller.startSigningUp();
                               final dynamic signupResponse = await _auth.signUp(
                                   email: emailController.text,
                                   password: passwordController.text,
@@ -175,7 +177,9 @@ class SignUpScreen extends StatelessWidget {
                                     bio: '',
                                     following: []));
                                 navigator.pushReplacementNamed('/app');
-                              } else {
+                              } 
+                              
+                              else {
                                 sms.showSnackBar(
                                   SnackBar(
                                       content: Text(
@@ -187,6 +191,15 @@ class SignUpScreen extends StatelessWidget {
                                       backgroundColor: authMaterialButtonColor),
                                 );
                               }
+                              }
+                              else{
+                                sms.showSnackBar(
+                                    SnackBar(
+                                    content: Text('Please accept the Terms And Conditions '),
+                                    )
+                                );
+                              }
+                              
                             }
                           },
                           color: authMaterialButtonColor,
