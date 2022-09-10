@@ -4,8 +4,9 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/new_article_screen_controller.dart';
-// import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:image_picker/image_picker.dart';
+import 'package:utopia/utils/image_picker.dart';
+
+import '../../../utils/article_body_component.dart';
 
 class NewArticleScreen extends StatefulWidget {
   NewArticleScreen({Key? key}) : super(key: key);
@@ -16,18 +17,6 @@ class NewArticleScreen extends StatefulWidget {
 
 class _NewArticleScreenState extends State<NewArticleScreen> {
   final Logger _logger = Logger("NewArticleScreen");
-  final picker = ImagePicker();
-  List<String> articles = [];
-
-  TextEditingController textEditingController = TextEditingController();
-
-  Future<XFile?> pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      return pickedFile;
-    }
-    return null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +25,7 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
           builder: (context, controller, child) {
             return FloatingActionButton(
               onPressed: () async {
-                //FIXME: Add permission handler to request for camera and gallery permission before uploading any image @alpha17-2  
-                XFile? imageFile = await pickImage();
+                XFile? imageFile = await pickImage(context);
                 if (imageFile != null) {
                   controller.addImageField(imageFile);
                 }
@@ -65,7 +53,10 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
                     },
                     child: const Text(
                       'Publish',
-                      style: TextStyle(color: authBackground, fontSize: 15),
+                      style: TextStyle(
+                          color: Color(0xfb40B5AD),
+                          fontSize: 15,
+                          letterSpacing: 0.5),
                     ));
               },
             ),
@@ -84,16 +75,39 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
                 itemCount: bodyComponents.length,
                 itemBuilder: (context, index) {
                   switch (bodyComponents[index].type) {
-                    case "textfield":
+                    case "text":
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: bodyComponents[index].textFormField!,
                       );
                     case "image":
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: bodyComponents[index].img!,
-                      );
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              bodyComponents[index].imageProvider!,
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: authBackground,
+                                  child: IconButton(
+                                      iconSize: 18,
+                                      color: authMaterialButtonColor,
+                                      onPressed: () {
+                                        controller.removeImage(controller
+                                            .bodyComponents
+                                            .sublist(index - 1, index + 2));
+                                      },
+                                      icon: const Icon(
+                                        Icons.close,
+                                      )),
+                                ),
+                              )
+                            ],
+                          ));
+
                     default:
                       return Text("data");
                   }
@@ -102,23 +116,5 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
             },
           ),
         ));
-  }
-}
-
-class ArticleTextField extends StatelessWidget {
-  final TextEditingController controller;
-  ArticleTextField({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      maxLines: null,
-      minLines: null,
-      showCursor: true,
-      cursorColor: Colors.black,
-      controller: controller,
-      expands: false,
-      decoration: const InputDecoration(border: InputBorder.none),
-    );
   }
 }

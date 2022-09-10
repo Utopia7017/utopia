@@ -61,20 +61,30 @@ class CustomDrawer extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: displayWidth(context) * 0.13,
-                      backgroundImage: const NetworkImage(
-                          'https://i.pinimg.com/564x/17/b0/8f/17b08fc3ad0e62df60e15ef557ec3fe1.jpg'),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/profile');
+                      },
+                      child: CircleAvatar(
+                        radius: displayWidth(context) * 0.13,
+                        backgroundImage: const NetworkImage(
+                            'https://i.pinimg.com/564x/17/b0/8f/17b08fc3ad0e62df60e15ef557ec3fe1.jpg'),
+                      ),
                     ),
                     const SizedBox(
                       height: 8,
                     ),
-                    Text(
-                      '@${controller.user!.name}',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontFamily: "Fira"),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/profile');
+                      },
+                      child: Text(
+                        '@${controller.user!.name}',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontFamily: "Fira"),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     // Follower detail box

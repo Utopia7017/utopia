@@ -1,17 +1,17 @@
 import 'package:utopia/models/article_body_model.dart';
 import 'package:utopia/models/article_report_model.dart';
 
-import 'comment_model.dart';
-
 class Article {
   final String articleId;
   final String authorId;
   final List<ArticleBody> body;
   final DateTime articleCreated;
   final List<Report> reports;
+  final List<String> tags;
 
   Article({
     required this.body,
+    required this.tags,
     required this.reports,
     required this.articleCreated,
     required this.articleId,
@@ -21,6 +21,7 @@ class Article {
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
       body: json['body'],
+      tags: json['tags']??[],
       reports: json['reports'] ?? [],
       articleCreated: json['articleCreated'],
       articleId: json['articleId'],
@@ -34,7 +35,8 @@ class Article {
       'articleCreated': articleCreated.toString(),
       'articleId': articleId,
       'authorId': authorId,
-      'reports': []
+      'reports': [],
+      'tags':tags,
     };
   }
 }

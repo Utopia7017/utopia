@@ -1,84 +1,82 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
-import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/models/comment_model.dart';
 import 'package:utopia/services/api/api_services.dart';
-import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
-
-class BodyComponent {
-  final String type;
-  ArticleTextField? textFormField;
-  Image? img;
-
-  BodyComponent({required this.type, this.img, this.textFormField});
-}
+import 'package:utopia/services/firebase/storage_service.dart';
+import '../utils/article_body_component.dart';
+import '../utils/article_textfield.dart';
 
 class NewArticleScreenController with ChangeNotifier {
   List<BodyComponent> bodyComponents = [];
-  List<String> articleBody = [];
-  List<TextEditingController> textControllers = [];
-  List<XFile> images = [];
   final Logger _logger = Logger("NewArticleScreenController");
   final ApiServices _apiServices = ApiServices();
 
-  addTextField() {
+  // adds a new text field to body component list
+  void addTextField() {
     TextEditingController textEditingController = TextEditingController();
-    textControllers.add(textEditingController);
     ArticleTextField textField =
-        ArticleTextField(controller: textControllers.last);
-    bodyComponents
-        .add(BodyComponent(type: "textfield", textFormField: textField));
+        ArticleTextField(controller: textEditingController);
+
+    bodyComponents.add(BodyComponent(
+        type: "text",
+        key: DateTime.now().toString(),
+        textEditingController: textEditingController,
+        textFormField: textField));
     notifyListeners();
   }
 
-  addImageField(XFile file) {
+  // adds a new image provider to body component list
+  void addImageField(XFile file) {
     bodyComponents.add(BodyComponent(
-        type: "image", img: Image(image: FileImage(File(file.path)))));
+        type: "image",
+        key: DateTime.now().toString(),
+        imageProvider: Image(image: FileImage(File(file.path))),
+        fileImage: file));
     addTextField();
-    // notifyListeners();
+  }
+
+  // removes the selected image and its successive body component
+  void removeImage(List<BodyComponent> sublist) {
+
+    int indexOfBodyComponentToBeUpdated = bodyComponents
+        .indexWhere((element) => element.key == sublist.first.key);
+    TextEditingController ctr = TextEditingController(
+        text: "${sublist.first.textEditingController!.text} ${sublist.last.textEditingController!.text}");
+    bodyComponents.removeWhere((element) => element.key == sublist[0].key);
+    bodyComponents.removeWhere((element) => element.key == sublist[1].key);
+    bodyComponents.removeWhere((element) => element.key == sublist[2].key);
+    ArticleTextField textField =
+    ArticleTextField(controller: ctr);
+
+    bodyComponents.insert(indexOfBodyComponentToBeUpdated, BodyComponent(
+        type: "text",
+        key: DateTime.now().toString(),
+        textEditingController: ctr,
+        textFormField: textField));
+    notifyListeners();
   }
 
   publishArticle() async {
-    // try {
-    //   Article article = Article(
-    //       body: [
-    //         ArticleBody(type: "text", image: null, text: 'new text'),
-    //         ArticleBody(type: 'image', image: 'new image', text: null)
-    //       ],
-    //       articleCreated: DateTime.now(),
-    //       articleId: 'some fake id',
-    //       authorId: 'some id',
-    //       comments: [
-    //         Comment(
-    //             comment: 'comment1',
-    //             commentId: DateTime.now().toString() + 'some random',
-    //             articleId: 'some fake id',
-    //             userId: 'my uid')
-    //       ],
-    //       likes: []);
-    //   final Response? response = await _apiServices.post(
-    //       endUrl: 'articles.json', data: article.toJson());
-    //   if (response != null) {
-    //     _logger.info(response.data.toString());
-    //   }
     try {
-      await _apiServices
-          .put(endUrl: 'articles/-NBQsMLGgkjI3GluznY4.json', data: {
-        'comments': [
-          Comment(
-              comment: 'comment1',
-              commentId: DateTime.now().toString() + 'some random',
-              articleId: 'some fake',
-              userId: 'my uid')
-        ]
-      });
+      List<String> stringList = [];
+      int index=-1;
+      for(BodyComponent bc in bodyComponents){
+        index++;
+        if(bc.type=='text'){
+          stringList.add(bc.textEditingController!.text);
+        }
+        else{
+          String? url = await getImageUrl(File(bc.fileImage!.path),index);
+          if(url!=null){
+            stringList.add(url);
+          }
+        }
+      }
+      _logger.info(stringList);
     } catch (error) {
       _logger.shout(error.toString());
     }
   }
-
   addArticleBody() {}
 }
