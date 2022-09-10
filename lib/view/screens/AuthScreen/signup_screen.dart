@@ -103,16 +103,13 @@ class SignUpScreen extends StatelessWidget {
                     color: Colors.white60,
                   ),
                   validator: (val) {
-                    if (val!.isEmpty)
-                    {
+                    if (val!.isEmpty) {
                       return "Textfield cannot be empty";
-                    } 
-                    else if(passwordController.value != confirmPasswordController.value)
-                    {
-                      return "password didn't match" ;
-                    } 
-                    else 
-                    return null;
+                    } else if (passwordController.value !=
+                        confirmPasswordController.value) {
+                      return "password didn't match";
+                    } else
+                      return null;
                   },
                 ),
                 space,
@@ -121,20 +118,23 @@ class SignUpScreen extends StatelessWidget {
                     Consumer<AuthScreenController>(
                       builder: (context, controller, child) {
                         return IconButton(
-                          onPressed: () {
-                            if(controller.termsCondition ){
-                              controller.declineTermsCondition();
-                            }
-                            else
-                            {
-                              controller.acceptTermsCcondition();
-                            }
-
-                          },
-                           icon:Icon(controller.termsCondition? Icons.check_box : Icons.check_box_outline_blank_outlined) );
+                            onPressed: () {
+                              if (controller.termsCondition) {
+                                controller.declineTermsCondition();
+                              } else {
+                                controller.acceptTermsCondition();
+                              }
+                            },
+                            icon: Icon(controller.termsCondition
+                                ? Icons.check_box
+                                : Icons.check_box_outline_blank_outlined));
                       },
                     ),
-                Text('I accept all the Terms And Conditions ',style: TextStyle(color: Colors.white60, fontWeight: FontWeight.bold),)
+                    Text(
+                      'I accept all the Terms And Conditions ',
+                      style: TextStyle(
+                          color: Colors.white60, fontWeight: FontWeight.bold),
+                    )
                   ],
                 ),
                 SizedBox(
