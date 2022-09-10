@@ -38,37 +38,37 @@ class NewArticleScreenController with ChangeNotifier {
 
   // removes the selected image and its successive body component
   void removeImage(List<BodyComponent> sublist) {
-
     int indexOfBodyComponentToBeUpdated = bodyComponents
         .indexWhere((element) => element.key == sublist.first.key);
     TextEditingController ctr = TextEditingController(
-        text: "${sublist.first.textEditingController!.text} ${sublist.last.textEditingController!.text}");
+        text:
+            "${sublist.first.textEditingController!.text} ${sublist.last.textEditingController!.text}");
     bodyComponents.removeWhere((element) => element.key == sublist[0].key);
     bodyComponents.removeWhere((element) => element.key == sublist[1].key);
     bodyComponents.removeWhere((element) => element.key == sublist[2].key);
-    ArticleTextField textField =
-    ArticleTextField(controller: ctr);
+    ArticleTextField textField = ArticleTextField(controller: ctr);
 
-    bodyComponents.insert(indexOfBodyComponentToBeUpdated, BodyComponent(
-        type: "text",
-        key: DateTime.now().toString(),
-        textEditingController: ctr,
-        textFormField: textField));
+    bodyComponents.insert(
+        indexOfBodyComponentToBeUpdated,
+        BodyComponent(
+            type: "text",
+            key: DateTime.now().toString(),
+            textEditingController: ctr,
+            textFormField: textField));
     notifyListeners();
   }
 
   publishArticle() async {
     try {
       List<String> stringList = [];
-      int index=-1;
-      for(BodyComponent bc in bodyComponents){
+      int index = -1;
+      for (BodyComponent bc in bodyComponents) {
         index++;
-        if(bc.type=='text'){
+        if (bc.type == 'text') {
           stringList.add(bc.textEditingController!.text);
-        }
-        else{
-          String? url = await getImageUrl(File(bc.fileImage!.path),index);
-          if(url!=null){
+        } else {
+          String? url = await getImageUrl(File(bc.fileImage!.path), index);
+          if (url != null) {
             stringList.add(url);
           }
         }
@@ -78,5 +78,6 @@ class NewArticleScreenController with ChangeNotifier {
       _logger.shout(error.toString());
     }
   }
+
   addArticleBody() {}
 }

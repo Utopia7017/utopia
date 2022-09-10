@@ -39,7 +39,7 @@ class CustomDrawer extends StatelessWidget {
             if (controller.profileStatus == ProfileStatus.nil) {
               controller.setUser(FirebaseAuth.instance.currentUser!.uid);
             }
-            
+
             switch (controller.profileStatus) {
               case ProfileStatus.nil:
                 return Center(
@@ -163,6 +163,13 @@ class CustomDrawer extends StatelessWidget {
                         'Search articles',
                         const Icon(
                           Icons.search_rounded,
+                          color: Colors.white70,
+                        ),
+                        () => _logger.info("Search")),
+                    drawerTile(
+                        'Saved articles',
+                        const Icon(
+                          Icons.bookmark_add_outlined,
                           color: Colors.white70,
                         ),
                         () => _logger.info("Search")),
