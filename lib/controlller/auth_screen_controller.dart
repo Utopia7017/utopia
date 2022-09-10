@@ -25,7 +25,7 @@ class AuthScreenController with ChangeNotifier {
     notifyListeners();
   }
 
-  void acceptTermsCcondition() {
+  void acceptTermsCondition() {
     termsCondition=true;
     notifyListeners();
   }
