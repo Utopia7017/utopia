@@ -5,7 +5,7 @@ class ProfileOptions extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 18.0),
       child: ListTile(
-        visualDensity: VisualDensity(),
+        visualDensity: const VisualDensity(vertical: -2.5),
         title: Text(
           label,
           style: const TextStyle(
@@ -23,9 +23,15 @@ class ProfileOptions extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        tile("Edit Profile", Icon(Icons.edit), () => null),
-        tile("My Articles", Icon(Icons.book), () => null),
-        tile("Blocked Authors", Icon(Icons.block_outlined), () => null),
+        tile("Edit Profile", const Icon(Icons.edit), () => null),
+        const Divider(),
+        tile("My Articles", const Icon(Icons.book), () => null),
+        const Divider(),
+        tile("Saved Articles", const Icon(Icons.save), () => null),
+        const Divider(),
+        tile("Draft Articles", const Icon(Icons.save), () => null),
+        const Divider(),
+        tile("Blocked Authors", const Icon(Icons.block_outlined), () => null),
         // Divider(),
       ],
     );
