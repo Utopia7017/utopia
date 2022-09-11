@@ -21,104 +21,130 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        floatingActionButton: Consumer<NewArticleScreenController>(
-          builder: (context, controller, child) {
-            return FloatingActionButton(
-              onPressed: () async {
-                XFile? imageFile = await pickImage(context);
-                if (imageFile != null) {
-                  controller.addImageField(imageFile);
-                }
-              },
-              backgroundColor: authBackground,
-              child: const Icon(
-                Icons.add_a_photo_outlined,
-                color: Colors.white,
-              ),
-            );
-          },
-        ),
-        backgroundColor: primaryBackgroundColor,
-        appBar: AppBar(
-          elevation: 0,
-          iconTheme: const IconThemeData(color: Colors.black54),
-          backgroundColor: primaryBackgroundColor,
-          actions: [
-            Consumer<NewArticleScreenController>(
-              builder: (context, controller, child) {
-                return TextButton(
-                    onPressed: () {
-                      // _logger.info("Publish Article");
-                      // controller.publishArticle();
-                      showDialog(context: context, builder: (context) {
-                        return ArticleDetailDialog();
-                      },);
-                    },
-                    child: const Text(
-                      'Publish',
-                      style: TextStyle(
-                          color: Color(0xfb40B5AD),
-                          fontSize: 15,
-                          letterSpacing: 0.5),
-                    ));
-              },
-            ),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16, top: 12),
-          child: Consumer<NewArticleScreenController>(
+    return WillPopScope(
+      // This widget helps us catching the back button press event.
+      onWillPop: () async {
+        //TODO: Show dialog box asking user to save draft before navigating back.
+        return true;
+      },
+      child: Scaffold(
+          floatingActionButton: Consumer<NewArticleScreenController>(
             builder: (context, controller, child) {
-              if (controller.bodyComponents.isEmpty) {
-                Future.delayed(const Duration(microseconds: 1))
-                    .then((value) => controller.addTextField());
-              }
-              List<BodyComponent> bodyComponents = controller.bodyComponents;
-              return ListView.builder(
-                itemCount: bodyComponents.length,
-                itemBuilder: (context, index) {
-                  switch (bodyComponents[index].type) {
-                    case "text":
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: bodyComponents[index].textFormField!,
-                      );
-                    case "image":
-                      return Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Stack(
-                            alignment: Alignment.topRight,
-                            children: [
-                              bodyComponents[index].imageProvider!,
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(
-                                  radius: 18,
-                                  backgroundColor: authBackground,
-                                  child: IconButton(
-                                      iconSize: 18,
-                                      color: authMaterialButtonColor,
-                                      onPressed: () {
-                                        controller.removeImage(controller
-                                            .bodyComponents
-                                            .sublist(index - 1, index + 2));
-                                      },
-                                      icon: const Icon(
-                                        Icons.close,
-                                      )),
-                                ),
-                              )
-                            ],
-                          ));
-
-                    default:
-                      return Text("data");
+              return FloatingActionButton(
+                onPressed: () async {
+                  XFile? imageFile = await pickImage(context);
+                  if (imageFile != null) {
+                    controller.addImageField(imageFile);
                   }
                 },
+                backgroundColor: authBackground,
+                child: const Icon(
+                  Icons.add_a_photo_outlined,
+                  color: Colors.white,
+                ),
               );
             },
           ),
-        ));
+          backgroundColor: primaryBackgroundColor,
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.arrow_back),
+            ),
+            elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.black54),
+            backgroundColor: primaryBackgroundColor,
+            actions: [
+              Consumer<NewArticleScreenController>(
+                builder: (context, controller, child) {
+                  return TextButton(
+                      onPressed: () {
+                        if (controller.validateArticleBody()) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return ArticleDetailDialog();
+                            },
+                            useSafeArea: true,
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text(
+                              'Article cannot be empty',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: authBackground,
+                          ));
+                        }
+                      },
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(
+                            color: Color(0xfb40B5AD),
+                            fontSize: 15,
+                            letterSpacing: 0.5),
+                      ));
+                },
+              ),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 12),
+            child: Consumer<NewArticleScreenController>(
+              builder: (context, controller, child) {
+                if (controller.bodyComponents.isEmpty) {
+                  Future.delayed(const Duration(microseconds: 1))
+                      .then((value) => controller.addTextField());
+                }
+                List<BodyComponent> bodyComponents = controller.bodyComponents;
+                return ListView.builder(
+                  itemCount: bodyComponents.length,
+                  itemBuilder: (context, index) {
+                    switch (bodyComponents[index].type) {
+                      case "text":
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: bodyComponents[index].textFormField!,
+                        );
+                      case "image":
+                        return Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                bodyComponents[index].imageProvider!,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: authBackground,
+                                    child: IconButton(
+                                        iconSize: 18,
+                                        color: authMaterialButtonColor,
+                                        onPressed: () {
+                                          controller.removeImage(controller
+                                              .bodyComponents
+                                              .sublist(index - 1, index + 2));
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                        )),
+                                  ),
+                                )
+                              ],
+                            ));
+
+                      default:
+                        return Text("data");
+                    }
+                  },
+                );
+              },
+            ),
+          )),
+    );
   }
 }

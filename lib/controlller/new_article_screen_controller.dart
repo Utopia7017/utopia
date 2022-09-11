@@ -9,6 +9,7 @@ import '../utils/article_textfield.dart';
 
 class NewArticleScreenController with ChangeNotifier {
   List<BodyComponent> bodyComponents = [];
+  String? category;
   final Logger _logger = Logger("NewArticleScreenController");
   final ApiServices _apiServices = ApiServices();
 
@@ -24,6 +25,22 @@ class NewArticleScreenController with ChangeNotifier {
         textEditingController: textEditingController,
         textFormField: textField));
     notifyListeners();
+  }
+
+  // selects article category
+  void changeCategory(String newCategory){
+    category=newCategory;
+    notifyListeners();
+  }
+
+  // validates the article body, returns false if all the text editing controllers contains empty string
+  bool validateArticleBody(){
+    for(BodyComponent bc in bodyComponents){
+      if(bc.textEditingController!.text.isNotEmpty){
+        return true;
+      }
+    }
+    return false;
   }
 
   // adds a new image provider to body component list
