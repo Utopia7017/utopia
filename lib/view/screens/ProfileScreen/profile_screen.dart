@@ -20,7 +20,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         backgroundColor: primaryBackgroundColor,
         body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Consumer<UserController>(
             builder: (context, controller, child) {
               switch (controller.profileStatus) {

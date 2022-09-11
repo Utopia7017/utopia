@@ -6,6 +6,7 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/view/screens/ProfileScreen/demo_profile_screen.dart';
 import '../../../services/firebase/auth_services.dart';
 // import 'package:utopia/models/user_model.dart' as user;
 
@@ -63,7 +64,12 @@ class CustomDrawer extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, '/profile');
+                        // Navigator.pushNamed(context, '/profile');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DemoProfileScreen(),
+                            ));
                       },
                       child: CircleAvatar(
                         radius: displayWidth(context) * 0.13,
