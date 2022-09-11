@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/new_article_screen_controller.dart';
 import 'package:utopia/utils/image_picker.dart';
+import 'package:utopia/view/screens/NewArticleScreen/components/article_detail_dialog.dart';
 
 import '../../../utils/article_body_component.dart';
 
@@ -48,8 +49,11 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
               builder: (context, controller, child) {
                 return TextButton(
                     onPressed: () {
-                      _logger.info("Publish Article");
-                      controller.publishArticle();
+                      // _logger.info("Publish Article");
+                      // controller.publishArticle();
+                      showDialog(context: context, builder: (context) {
+                        return ArticleDetailDialog();
+                      },);
                     },
                     child: const Text(
                       'Publish',
