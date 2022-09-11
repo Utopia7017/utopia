@@ -6,6 +6,7 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import '../../../services/firebase/auth_services.dart';
 // import 'package:utopia/models/user_model.dart' as user;
 
@@ -39,7 +40,7 @@ class CustomDrawer extends StatelessWidget {
             if (controller.profileStatus == ProfileStatus.nil) {
               controller.setUser(FirebaseAuth.instance.currentUser!.uid);
             }
-            
+
             switch (controller.profileStatus) {
               case ProfileStatus.nil:
                 return Center(
@@ -163,6 +164,13 @@ class CustomDrawer extends StatelessWidget {
                         'Search articles',
                         const Icon(
                           Icons.search_rounded,
+                          color: Colors.white70,
+                        ),
+                        () => _logger.info("Search")),
+                    drawerTile(
+                        'Saved articles',
+                        const Icon(
+                          Icons.bookmark_add_outlined,
                           color: Colors.white70,
                         ),
                         () => _logger.info("Search")),
