@@ -48,6 +48,26 @@ class ApiServices {
     return null;
   }
 
+  Future<Response?> update(
+      {required String endUrl, required Map<String, dynamic> data}) async {
+    try {
+      final Response response =
+      await _dio.patch(dotenv.env['baseUrl']! + endUrl, data: data);
+      switch (response.statusCode) {
+        case 200:
+          return response;
+        default:
+          return null;
+      }
+    } on TimeoutException catch (error) {
+      print(error.message);
+    } on DioError catch (error) {
+      print(error.message);
+    }
+    return null;
+  }
+
+
   Future<Response?> put(
       {required String endUrl, required Map<String, dynamic> data}) async {
     try {
