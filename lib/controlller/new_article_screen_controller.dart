@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:utopia/models/article_body_model.dart';
+import 'package:utopia/models/article_model.dart';
 import 'package:utopia/services/api/api_services.dart';
 import 'package:utopia/services/firebase/storage_service.dart';
+import 'package:utopia/utils/helper_widgets.dart';
 import '../utils/article_body_component.dart';
 import '../utils/article_textfield.dart';
 
@@ -28,15 +33,15 @@ class NewArticleScreenController with ChangeNotifier {
   }
 
   // selects article category
-  void changeCategory(String newCategory){
-    category=newCategory;
+  void changeCategory(String newCategory) {
+    category = newCategory;
     notifyListeners();
   }
 
   // validates the article body, returns false if all the text editing controllers contains empty string
-  bool validateArticleBody(){
-    for(BodyComponent bc in bodyComponents){
-      if(bc.textEditingController!.text.isNotEmpty){
+  bool validateArticleBody() {
+    for (BodyComponent bc in bodyComponents) {
+      if (bc.textEditingController!.text.isNotEmpty) {
         return true;
       }
     }
@@ -75,22 +80,42 @@ class NewArticleScreenController with ChangeNotifier {
     notifyListeners();
   }
 
-  publishArticle() async {
+  publishArticle({
+    required String userId,
+    required String title,
+    required List<String> tags,
+  }) async {
     try {
-      List<String> stringList = [];
-      int index = -1;
+      List<ArticleBody> articleBody = [];
+      int imageIndex = 0;
       for (BodyComponent bc in bodyComponents) {
-        index++;
-        if (bc.type == 'text') {
-          stringList.add(bc.textEditingController!.text);
+        if (bc.type == "text" && bc.textEditingController!.text.isNotEmpty) {
+          articleBody.add(
+              ArticleBody(type: "text", text: bc.textEditingController!.text));
         } else {
-          String? url = await getImageUrl(File(bc.fileImage!.path), index);
-          if (url != null) {
-            stringList.add(url);
-          }
+          String? url = await getImageUrl(File(bc.fileImage!.path),
+              'articles/$userId/$title/${imageIndex++}');
+          articleBody.add(ArticleBody(type: "image", image: url));
         }
       }
-      _logger.info(stringList);
+      Article article = Article(
+          body: articleBody,
+          tags: tags,
+          reports: [],
+          articleCreated: DateTime.now(),
+          articleId: '',
+          authorId: userId);
+      final Response? response = await _apiServices.post(
+          endUrl: 'articles/$userId.json', data: article.toJson());
+      if (response != null) {
+        final String articleId = response.data['name']; // we do not need to decode as dio already does it for us.
+
+        _logger.info('article id $articleId');
+        await _apiServices.update(
+            endUrl: 'articles/$userId/$articleId.json',
+            data: {'articleId': articleId});
+        _logger.info("Article Posted Successfully");
+      }
     } catch (error) {
       _logger.shout(error.toString());
     }

@@ -21,7 +21,6 @@ class ProfileScreen extends StatelessWidget {
           height: displayHeight(context),
           width: displayWidth(context),
           child: Stack(
-            // fit: StackFit.expand,
             alignment: Alignment.topCenter,
             children: [
               const ProfileCoverPhoto(),

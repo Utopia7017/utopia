@@ -1,8 +1,8 @@
 class ArticleBody {
   ArticleBody({
     required this.type,
-    required this.image,
-    required this.text,
+    this.image,
+    this.text,
   });
   final String type;
   final String? image;
