@@ -89,13 +89,13 @@ class LoginScreen extends StatelessWidget {
                         return MaterialButton(
                           height: displayHeight(context) * 0.055,
                           onPressed: () async {
-                            final userController = Provider.of<UserController>(
+                            if (_formKey.currentState!.validate() ) {
+                              final navigator = Navigator.of(context);
+                              final sms = ScaffoldMessenger.of(context);
+                              final userController = Provider.of<UserController>(
                                 context,
                                 listen: false);
                             controller.startLogin();
-                            if (_formKey.currentState!.validate()) {
-                              final navigator = Navigator.of(context);
-                              final sms = ScaffoldMessenger.of(context);
                               final dynamic loginResponse = await _auth.signIn(
                                   email: emailController.text,
                                   password: passwordController.text);
