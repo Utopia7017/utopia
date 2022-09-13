@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/article_category_constants.dart';
@@ -103,7 +104,7 @@ class ArticleDetailDialog extends StatelessWidget {
           ),
         ),
       ),
-      actionsPadding: EdgeInsets.only(right: 20,top: 0,bottom: 8),
+      actionsPadding: EdgeInsets.only(right: 20, top: 0, bottom: 8),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 10.0),
@@ -111,12 +112,35 @@ class ArticleDetailDialog extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text("Cancel",style: TextStyle(color: Color(0xfb40B5AD),fontSize: 16,letterSpacing: 0.5)),
+            child: const Text("Cancel",
+                style: TextStyle(
+                    color: Color(0xfb40B5AD),
+                    fontSize: 16,
+                    letterSpacing: 0.5)),
           ),
         ),
-        TextButton(
-          onPressed: () {},
-          child: const Text("Publish Article",style: TextStyle(color: Color(0xfb40B5AD),fontSize: 16,letterSpacing: 0.2)),
+        Consumer<NewArticleScreenController>(
+          builder: (context, controller, child) {
+            List<String> tags = [
+              tag1Controller.text,
+              tag2Controller.text,
+              tag3Controller.text
+            ];
+            return TextButton(
+              onPressed: () {
+                controller.publishArticle(
+                    userId: FirebaseAuth.instance.currentUser!.uid,
+                    title: titleController.text,
+                    tags: tags);
+                Navigator.pop(context);
+              },
+              child: const Text("Publish Article",
+                  style: TextStyle(
+                      color: Color(0xfb40B5AD),
+                      fontSize: 16,
+                      letterSpacing: 0.2)),
+            );
+          },
         ),
       ],
     );
