@@ -8,6 +8,8 @@ class Article {
   final DateTime articleCreated;
   final List<Report> reports;
   final List<String> tags;
+  final String title;
+  final String category;
 
   Article({
     required this.body,
@@ -16,12 +18,16 @@ class Article {
     required this.articleCreated,
     required this.articleId,
     required this.authorId,
+    required this.title,
+    required this.category,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
+      category: json['category'],
+      title: json['title'],
       body: json['body'],
-      tags: json['tags']??[],
+      tags: json['tags'] ?? [],
       reports: json['reports'] ?? [],
       articleCreated: json['articleCreated'],
       articleId: json['articleId'],
@@ -36,7 +42,9 @@ class Article {
       'articleId': articleId,
       'authorId': authorId,
       'reports': [],
-      'tags':tags,
+      'tags': tags,
+      'title':title,
+      'category':category,
     };
   }
 }
