@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/new_article_screen_controller.dart';
+import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/screens/NewArticleScreen/components/article_detail_dialog.dart';
 
@@ -51,7 +52,7 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
             ),
             elevation: 0,
             iconTheme: const IconThemeData(color: Colors.black54),
@@ -59,34 +60,39 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
             actions: [
               Consumer<NewArticleScreenController>(
                 builder: (context, controller, child) {
-                  return TextButton(
-                      onPressed: () {
-                        if (controller.validateArticleBody()) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return ArticleDetailDialog();
-                            },
-                            useSafeArea: true,
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text(
-                              'Article cannot be empty',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: authBackground,
+                  switch (controller.uploadingStatus) {
+                    case ArticleUploadingStatus.uploading:
+                      return const SizedBox();
+                    case ArticleUploadingStatus.notUploading:
+                      return TextButton(
+                          onPressed: () {
+                            if (controller.validateArticleBody()) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return ArticleDetailDialog();
+                                },
+                                useSafeArea: true,
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text(
+                                  'Article cannot be empty',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: authBackground,
+                              ));
+                            }
+                          },
+                          child: const Text(
+                            'Continue',
+                            style: TextStyle(
+                                color: Color(0xfb40B5AD),
+                                fontSize: 15,
+                                letterSpacing: 0.5),
                           ));
-                        }
-                      },
-                      child: const Text(
-                        'Continue',
-                        style: TextStyle(
-                            color: Color(0xfb40B5AD),
-                            fontSize: 15,
-                            letterSpacing: 0.5),
-                      ));
+                  }
                 },
               ),
             ],
@@ -100,48 +106,57 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
                       .then((value) => controller.addTextField());
                 }
                 List<BodyComponent> bodyComponents = controller.bodyComponents;
-                return ListView.builder(
-                  itemCount: bodyComponents.length,
-                  itemBuilder: (context, index) {
-                    switch (bodyComponents[index].type) {
-                      case "text":
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: bodyComponents[index].textFormField!,
-                        );
-                      case "image":
-                        return Padding(
-                            padding: const EdgeInsets.only(bottom: 10.0),
-                            child: Stack(
-                              alignment: Alignment.topRight,
-                              children: [
-                                bodyComponents[index].imageProvider!,
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CircleAvatar(
-                                    radius: 18,
-                                    backgroundColor: authBackground,
-                                    child: IconButton(
-                                        iconSize: 18,
-                                        color: authMaterialButtonColor,
-                                        onPressed: () {
-                                          controller.removeImage(controller
-                                              .bodyComponents
-                                              .sublist(index - 1, index + 2));
-                                        },
-                                        icon: const Icon(
-                                          Icons.close,
-                                        )),
-                                  ),
-                                )
-                              ],
-                            ));
+                switch (controller.uploadingStatus) {
+                  case ArticleUploadingStatus.uploading:
+                    return const Center(
+                        child: CircularProgressIndicator(
+                      color: authMaterialButtonColor,
+                    ));
+                  case ArticleUploadingStatus.notUploading:
+                    return ListView.builder(
+                      itemCount: bodyComponents.length,
+                      itemBuilder: (context, index) {
+                        switch (bodyComponents[index].type) {
+                          case "text":
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: bodyComponents[index].textFormField!,
+                            );
+                          case "image":
+                            return Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Stack(
+                                  alignment: Alignment.topRight,
+                                  children: [
+                                    bodyComponents[index].imageProvider!,
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: CircleAvatar(
+                                        radius: 18,
+                                        backgroundColor: authBackground,
+                                        child: IconButton(
+                                            iconSize: 18,
+                                            color: authMaterialButtonColor,
+                                            onPressed: () {
+                                              controller.removeImage(controller
+                                                  .bodyComponents
+                                                  .sublist(
+                                                      index - 1, index + 2));
+                                            },
+                                            icon: const Icon(
+                                              Icons.close,
+                                            )),
+                                      ),
+                                    )
+                                  ],
+                                ));
 
-                      default:
-                        return Text("data");
-                    }
-                  },
-                );
+                          default:
+                            return Text("data");
+                        }
+                      },
+                    );
+                }
               },
             ),
           )),

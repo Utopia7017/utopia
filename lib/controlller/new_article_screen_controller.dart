@@ -1,18 +1,18 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_body_model.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/services/api/api_services.dart';
 import 'package:utopia/services/firebase/storage_service.dart';
-import 'package:utopia/utils/helper_widgets.dart';
 import '../utils/article_body_component.dart';
 import '../utils/article_textfield.dart';
 
 class NewArticleScreenController with ChangeNotifier {
+  ArticleUploadingStatus uploadingStatus = ArticleUploadingStatus.notUploading;
   List<BodyComponent> bodyComponents = [];
   String? category;
   final Logger _logger = Logger("NewArticleScreenController");
@@ -20,7 +20,8 @@ class NewArticleScreenController with ChangeNotifier {
 
   // adds a new text field to body component list
   void addTextField() {
-    TextEditingController textEditingController = TextEditingController();
+    TextEditingController textEditingController =
+        TextEditingController(text: "");
     ArticleTextField textField =
         ArticleTextField(controller: textEditingController);
 
@@ -41,10 +42,14 @@ class NewArticleScreenController with ChangeNotifier {
   // validates the article body, returns false if all the text editing controllers contains empty string
   bool validateArticleBody() {
     for (BodyComponent bc in bodyComponents) {
-      if (bc.textEditingController!.text.isNotEmpty) {
-        return true;
+      if (bc.type == 'text') {
+        if (bc.textEditingController != null &&
+            bc.textEditingController!.text.isNotEmpty) {
+          return true;
+        }
       }
     }
+
     return false;
   }
 
@@ -80,16 +85,29 @@ class NewArticleScreenController with ChangeNotifier {
     notifyListeners();
   }
 
+  // clears the new article form
+  clearForm() {
+    bodyComponents.clear();
+    addTextField();
+  }
+
+  // publishes the article
   publishArticle({
     required String userId,
     required String title,
     required List<String> tags,
   }) async {
+    uploadingStatus = ArticleUploadingStatus.uploading;
+    notifyListeners();
     try {
       List<ArticleBody> articleBody = [];
       int imageIndex = 0;
       for (BodyComponent bc in bodyComponents) {
-        if (bc.type == "text" && bc.textEditingController!.text.isNotEmpty) {
+        if (bc.type == "text") {
+          if (bc.textEditingController != null) {
+            print("enter ${bc.textEditingController!.text}");
+          }
+
           articleBody.add(
               ArticleBody(type: "text", text: bc.textEditingController!.text));
         } else {
@@ -99,27 +117,33 @@ class NewArticleScreenController with ChangeNotifier {
         }
       }
       Article article = Article(
+          category: category!,
+          title: title,
           body: articleBody,
           tags: tags,
           reports: [],
           articleCreated: DateTime.now(),
           articleId: '',
           authorId: userId);
+
       final Response? response = await _apiServices.post(
           endUrl: 'articles/$userId.json', data: article.toJson());
-      if (response != null) {
-        final String articleId = response.data['name']; // we do not need to decode as dio already does it for us.
 
-        _logger.info('article id $articleId');
+      if (response != null) {
+        final String articleId = response.data[
+            'name']; // we do not need to decode as dio already does it for us.
+
         await _apiServices.update(
             endUrl: 'articles/$userId/$articleId.json',
-            data: {'articleId': articleId});
-        _logger.info("Article Posted Successfully");
+            data: {'articleId': articleId},
+            message: "Article published successfully",
+            showMessage: true);
+        clearForm();
       }
     } catch (error) {
-      _logger.shout(error.toString());
+      Logger("Publish Article Method").shout(error.toString());
     }
+    uploadingStatus = ArticleUploadingStatus.notUploading;
+    notifyListeners();
   }
-
-  addArticleBody() {}
 }
