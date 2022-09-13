@@ -16,6 +16,7 @@ import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import 'services/firebase/auth_services.dart';
 import 'services/firebase/firebase_user_service.dart';
+import 'utils/global_context.dart';
 
 /*
   Project Name : Utoppia - 
@@ -66,6 +67,7 @@ class Utopia extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => NewArticleScreenController(),),
       ],
       child: MaterialApp(
+        navigatorKey: GlobalContext.contextKey, // global context
         debugShowCheckedModeBanner: false,
         routes: {
           '/auth': (context) => AuthScreen(),
