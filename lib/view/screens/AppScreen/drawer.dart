@@ -20,11 +20,13 @@ class CustomDrawer extends StatelessWidget {
       onTap: callbackAction,
       contentPadding: EdgeInsets.zero,
       leading: icon,
+      visualDensity: VisualDensity(vertical: -0.5),
       minLeadingWidth: 1,
       title: Text(
         title,
         style: const TextStyle(
-            color: Colors.white70, fontFamily: "Fira", letterSpacing: 0.6),
+          fontSize: 15.2,
+            color: Colors.white, fontFamily: "Fira", letterSpacing: 0.6),
       ),
     );
   }
@@ -149,6 +151,7 @@ class CustomDrawer extends StatelessWidget {
                     drawerTile(
                         'Write new article',
                         const Icon(
+                          size: 22,
                           Icons.edit,
                           color: Colors.white70,
                         ),
@@ -156,13 +159,15 @@ class CustomDrawer extends StatelessWidget {
                     drawerTile(
                         'Your articles',
                         const Icon(
+                          size: 22,
                           Icons.book_sharp,
                           color: Colors.white70,
                         ),
-                        () => _logger.info("Your articles")),
+                        () => Navigator.pushNamed(context, '/yourArticle')),
                     drawerTile(
                         'Search articles',
                         const Icon(
+                          size: 22,
                           Icons.search_rounded,
                           color: Colors.white70,
                         ),
@@ -170,6 +175,7 @@ class CustomDrawer extends StatelessWidget {
                     drawerTile(
                         'Saved articles',
                         const Icon(
+                          size: 22,
                           Icons.bookmark_add_outlined,
                           color: Colors.white70,
                         ),
@@ -177,6 +183,7 @@ class CustomDrawer extends StatelessWidget {
                     drawerTile(
                         'Notifications',
                         const Icon(
+                          size: 22,
                           Icons.notifications_none_rounded,
                           color: Colors.white70,
                         ),
@@ -185,6 +192,7 @@ class CustomDrawer extends StatelessWidget {
                         'Logout',
                         const Icon(
                           Icons.logout,
+                          size: 22,
                           color: Colors.white70,
                         ), () async {
                       final navigator = Navigator.of(context);

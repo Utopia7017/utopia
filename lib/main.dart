@@ -8,6 +8,7 @@ import 'package:utopia/controlller/articles_controller.dart';
 import 'package:utopia/controlller/auth_screen_controller.dart';
 import 'package:utopia/controlller/new_article_screen_controller.dart';
 import 'package:utopia/controlller/user_controller.dart';
+import 'package:utopia/view/YourArticlesScreen/your_article_screen.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
@@ -70,12 +71,13 @@ class Utopia extends StatelessWidget {
         navigatorKey: GlobalContext.contextKey, // global context
         debugShowCheckedModeBanner: false,
         routes: {
-          '/auth': (context) => AuthScreen(),
+          '/auth': (context) => const AuthScreen(),
           '/login': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
           '/app': (context) => AppScreen(),
-          '/profile':(context) => ProfileScreen(),
+          '/profile':(context) => const ProfileScreen(),
           '/newArticle':(context) => NewArticleScreen(),
+          '/yourArticle':(context) => const YourArticleScreen(),
         },
         home: Consumer<AuthNotifier>(
           builder: (context, notifier, child) {
