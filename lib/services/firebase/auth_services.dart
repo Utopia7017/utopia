@@ -20,7 +20,9 @@ class Authservice {
   Future<dynamic> signIn(
       {required String email, required String password}) async {
     try {
+      print("reaching here");
       UserCredential? userCredential =  await _auth.signInWithEmailAndPassword(email: email, password: password);
+      print(userCredential.toString());
       return userCredential;
     } on FirebaseAuthException catch (e) {
       return e.message;
