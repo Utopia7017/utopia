@@ -60,22 +60,30 @@ class LoginScreen extends StatelessWidget {
                       return "Cannot be empty";
                     }
                     return null;
-                  },
+                  }, 
                 ),
                 space,
-                AuthTextField(
-                  controller: passwordController,
-                  label: "Password",
-                  visible: false,
-                  prefixIcon: const Icon(
-                    Icons.email,
-                    color: Colors.white60,
-                  ),
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "Cannot be empty";
-                    }
-                    return null;
+                Consumer<AuthScreenController>(
+                  builder: (context, controller, child) {
+                    return AuthTextField(
+                    controller: passwordController,
+                    label: "Password",
+                    visible: controller.showLoginPassword,
+                    suffixIcon: IconButton(onPressed: () {
+                      controller.showLoginPassword?controller.loginOffVisibility():controller.loginOnVisibility(); 
+                    }, 
+                    icon: controller.showLoginPassword? Icon(Icons.visibility_off,color: Colors.white60,) : Icon(Icons.visibility,color: Colors.white60),),
+                    prefixIcon: const Icon(
+                      Icons.email,
+                      color: Colors.white60,
+                    ),
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Cannot be empty";
+                      }
+                      return null;
+                    },
+                  );
                   },
                 ),
                 const SizedBox(
