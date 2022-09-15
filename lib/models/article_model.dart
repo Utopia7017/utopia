@@ -4,10 +4,10 @@ import 'package:utopia/models/article_report_model.dart';
 class Article {
   final String articleId;
   final String authorId;
-  final List<ArticleBody> body;
+  final List<dynamic> body;
   final DateTime articleCreated;
   final List<Report> reports;
-  final List<String> tags;
+  final List<dynamic> tags;
   final String title;
   final String category;
 
@@ -29,7 +29,7 @@ class Article {
       body: json['body'],
       tags: json['tags'] ?? [],
       reports: json['reports'] ?? [],
-      articleCreated: json['articleCreated'],
+      articleCreated: DateTime.parse(json['articleCreated']),
       articleId: json['articleId'],
       authorId: json['authorId'],
     );
@@ -43,8 +43,8 @@ class Article {
       'authorId': authorId,
       'reports': [],
       'tags': tags,
-      'title':title,
-      'category':category,
+      'title': title,
+      'category': category,
     };
   }
 }
