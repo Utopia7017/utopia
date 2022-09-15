@@ -68,3 +68,6 @@ flutter:
     - family: Fira
       fonts:
         - asset: fonts/Fira.ttf
+    - family: Open
+      fonts:
+        - asset: fonts/Open.ttf
