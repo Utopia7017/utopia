@@ -13,7 +13,6 @@ class UserController with ChangeNotifier {
 
   setUser(String userId) async {
     profileStatus = ProfileStatus.loading;
-    // notifyListeners();
     final endUrl = 'users/$userId.json';
     try {
       final Response? response = await _apiServices.get(endUrl: endUrl);
@@ -39,5 +38,17 @@ class UserController with ChangeNotifier {
     }
     profileStatus = ProfileStatus.fetched;
     notifyListeners();
+  }
+
+  Future<User?> getUser(String uid) async {
+    Logger logger = Logger("GetUser");
+    try {
+      final response = await _apiServices.get(endUrl: 'users/$uid.json');
+      if (response != null) {
+        return User.fromJson(response.data);
+      }
+    } catch (error) {
+      return null;
+    }
   }
 }
