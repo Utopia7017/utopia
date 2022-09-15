@@ -1,8 +1,8 @@
-import 'dart:ui';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/calender_constant.dart';
+import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
@@ -131,8 +131,22 @@ class ArticleBox extends StatelessWidget {
                           ),
                         ),
                         (imagePreview != null)
-                            ? Image.network(
-                                imagePreview,
+                            ? CachedNetworkImage(
+                                imageUrl: imagePreview,
+                                errorWidget: (context, url, error) {
+                                  return const Text(
+                                    "Could not load image",
+                                    style: TextStyle(
+                                        color: Colors.black87, fontSize: 10),
+                                  );
+                                },
+                                placeholder: (context, url) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: authMaterialButtonColor,
+                                    ),
+                                  );
+                                },
                                 width: displayWidth(context) * 0.3,
                                 height: displayHeight(context) * 0.12,
                                 fit: BoxFit.contain,
