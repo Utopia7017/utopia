@@ -4,8 +4,9 @@ import 'package:utopia/constants/color_constants.dart';
 class AuthTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
-  final bool visible;
+  final  bool visible;
   final Icon prefixIcon;
+  final  suffixIcon;
   String? Function(String?)? validator;
 
   AuthTextField(
@@ -13,6 +14,7 @@ class AuthTextField extends StatelessWidget {
       required this.label,
       required this.visible,
       required this.prefixIcon,
+      this.suffixIcon,
       required this.validator});
 
   @override
@@ -27,6 +29,7 @@ class AuthTextField extends StatelessWidget {
         filled: true,
         fillColor: authTextBoxColor,
         prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
         labelText: label,
         labelStyle: const TextStyle(color: Colors.white60),
         focusedBorder: OutlineInputBorder(
