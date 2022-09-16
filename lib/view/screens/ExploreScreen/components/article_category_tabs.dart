@@ -24,12 +24,12 @@ class ArticleCategoryTab extends StatelessWidget {
                     child: Text(
                       controller.articles.keys.toList()[index],
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           color: controller.selectedCategory == index
                               ? Colors.black87
                               : Colors.black54,
                           fontWeight: controller.selectedCategory == index
-                              ? FontWeight.bold
+                              ? FontWeight.w400
                               : FontWeight.normal,
                           fontFamily: "Fira"),
                     ),

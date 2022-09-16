@@ -13,10 +13,12 @@ class ApiServices {
   }
 
   Future<Response?> get({required String endUrl}) async {
+    Logger logger = Logger("ApiServices-Get");
     try {
       final Response response = await _dio.get(dotenv.env['baseUrl']! + endUrl);
       switch (response.statusCode) {
         case 200:
+          logger.info(response.data.toString());
           return response;
         default:
           return null;
