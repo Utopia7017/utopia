@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:utopia/constants/article_category_constants.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
-import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
-import 'package:utopia/utils/device_size.dart';
+import 'components/floating_button_for_article_options.dart';
 
 class DisplayArticleScreen extends StatefulWidget {
   final Article article;
@@ -51,55 +50,8 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
-      floatingActionButton: Card(
-        elevation: 6,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 750),
-          height: _isVisible! ? displayHeight(context) * 0.2 : 0.0,
-          width: displayWidth(context) * 0.1,
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(15)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // Like Article
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    likeNotPressedIcon,
-                    height: 18,
-                  ),
-                ),
-              ),
-
-              // Comment article
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CommentScreen(),
-                          ));
-                    },
-                    child: Image.asset(commentArticleIcon, height: 18),
-                  ),
-                ),
-              ),
-
-              // Save article
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(saveArticleIcon, height: 18),
-              )),
-            ],
-          ),
-        ),
+      floatingActionButton: FloatingButtonForArticleOptions(
+        isVisible: _isVisible!, article: widget.article,
       ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       body: SafeArea(
@@ -171,7 +123,7 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                           bottom: 12.0, left: 20, right: 20),
                       child: Text(
                         widget.article.body[index]['text']!,
-                        style: TextStyle(fontFamily: "Open", fontSize: 15.5),
+                        style: const TextStyle(fontFamily: "Open", fontSize: 15.5),
                       ),
                     );
                   case 'image':
