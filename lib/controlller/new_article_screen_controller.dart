@@ -9,7 +9,7 @@ import 'package:utopia/models/article_model.dart';
 import 'package:utopia/services/api/api_services.dart';
 import 'package:utopia/services/firebase/storage_service.dart';
 import '../utils/article_body_component.dart';
-import '../utils/article_textfield.dart';
+import '../view/common_ui/article_textfield.dart';
 
 class NewArticleScreenController with ChangeNotifier {
   ArticleUploadingStatus uploadingStatus = ArticleUploadingStatus.notUploading;
