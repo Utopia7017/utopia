@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'article_textfield.dart';
+import '../view/common_ui/article_textfield.dart';
 
 class BodyComponent {
   final String key;
