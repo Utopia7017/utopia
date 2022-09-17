@@ -24,26 +24,25 @@ class ArticleDetailDialog extends StatelessWidget {
         "Add Article Details",
         style: TextStyle(fontFamily: "Fira"),
       ),
-      content: SingleChildScrollView(
-        child: SizedBox(
-          width: displayWidth(context) * 0.8,
-          child: Form(
-            key: _formKey,
+      content: SizedBox(
+        width: displayWidth(context) * 0.8,
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ArticleDetailTextField(
-                     controller: titleController,
-                      label: "Tittle of article",
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Title cannot be empty";
-                        }
-                        else{
-                          return null;
-                        }
-                      },
-                     ),
+                  controller: titleController,
+                  label: "Tittle of article",
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Title cannot be empty";
+                    } else {
+                      return null;
+                    }
+                  },
+                ),
                 const SizedBox(height: 20),
                 Consumer<NewArticleScreenController>(
                   builder: (context, controller, child) {
@@ -51,11 +50,11 @@ class ArticleDetailDialog extends StatelessWidget {
                       height: displayHeight(context) * 0.07,
                       child: DropdownButtonFormField(
                         validator: (value) {
-                          if(value == null){
-                          return "Please select any category";
+                          if (value == null) {
+                            return "Please select any category";
                           }
-                          if (value!.toString().isEmpty) {
-                            
+                          if (value.toString().isEmpty) {
+                            return "Please select any category";
                           }
                           return null;
                         },
@@ -138,16 +137,12 @@ class ArticleDetailDialog extends StatelessWidget {
             ];
             return TextButton(
               onPressed: () {
-                if(_formKey.currentState!.validate()) {
+                if (_formKey.currentState!.validate()) {
                   controller.publishArticle(
-                    userId: FirebaseAuth.instance.currentUser!.uid,
-                    title: titleController.text,
-                    tags: tags);
-                Navigator.pop(context);
-                }
-                else
-                {
-                  ScaffoldMessenger(child: SnackBar(content: Text('fill details')),);
+                      userId: FirebaseAuth.instance.currentUser!.uid,
+                      title: titleController.text,
+                      tags: tags);
+                  Navigator.pop(context);
                 }
               },
               child: const Text("Publish Article",
@@ -162,4 +157,3 @@ class ArticleDetailDialog extends StatelessWidget {
     );
   }
 }
-

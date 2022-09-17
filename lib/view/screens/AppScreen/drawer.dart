@@ -6,9 +6,7 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import '../../../services/firebase/auth_services.dart';
-// import 'package:utopia/models/user_model.dart' as user;
 
 class CustomDrawer extends StatelessWidget {
   final Logger _logger = Logger('CustomDrawer');

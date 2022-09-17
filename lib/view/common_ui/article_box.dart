@@ -33,7 +33,6 @@ class ArticleBox extends StatelessWidget {
         return FutureBuilder<User?>(
           future: controller.getUser(article!.authorId),
           builder: (context, snapshot) {
-            
             if (snapshot.connectionState == ConnectionState.done) {
               User? user = snapshot.data!;
               return Column(
@@ -50,7 +49,7 @@ class ArticleBox extends StatelessWidget {
                       width: displayWidth(context),
                       color: Colors.white,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                          horizontal: 25, vertical: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -177,8 +176,8 @@ class ArticleBox extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  width: displayWidth(context) * 0.3,
-                                  height: displayHeight(context) * 0.12,
+                                  width: displayWidth(context) * 0.25,
+                                  height: displayHeight(context) * 0.14,
                                   fit: BoxFit.contain,
                                 )
                               : Image.asset(
@@ -193,7 +192,7 @@ class ArticleBox extends StatelessWidget {
                   ),
                   const Divider(
                     height: 2,
-                    thickness: 4,
+                    thickness: 1.5,
                   ),
                 ],
               );
