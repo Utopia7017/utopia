@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 
 class ProfileOverView extends StatelessWidget {
   final space = const SizedBox(height: 10);
@@ -86,9 +87,18 @@ class ProfileOverView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15))),
                   backgroundColor: MaterialStateProperty.all(authBackground),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return EditProfileDialogbox(
+                          currentName: controller.user!.name,
+                          currentBio: controller.user!.bio);
+                    },
+                  );
+                },
                 child: Text(
-                  "Follow",
+                  "Edit Profile",
                   style: TextStyle(
                       fontFamily: "",
                       letterSpacing: 0.4,

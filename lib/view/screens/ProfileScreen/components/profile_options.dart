@@ -23,8 +23,7 @@ class ProfileOptions extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        tile("Edit Profile", const Icon(Icons.edit), () => null),
-        const Divider(),
+
         tile("My Articles", const Icon(Icons.book), () => null),
         const Divider(),
         tile("Saved Articles", const Icon(Icons.save), () => null),
