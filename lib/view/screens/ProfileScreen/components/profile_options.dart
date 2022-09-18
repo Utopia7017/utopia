@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utopia/view/screens/MyArticlesScreen/My_articles_screen.dart';
 
 class ProfileOptions extends StatelessWidget {
   Widget tile(String label, Icon icon, Function() callback) {
@@ -24,7 +25,7 @@ class ProfileOptions extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
 
-        tile("My Articles", const Icon(Icons.book), () => null),
+        tile("My Articles", const Icon(Icons.book), () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyArticleScreen(),))),
         const Divider(),
         tile("Saved Articles", const Icon(Icons.save), () => null),
         const Divider(),
