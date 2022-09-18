@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/calender_constant.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controlller/user_controller.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
