@@ -7,3 +7,5 @@ enum ProfileStatus {nil , loading , fetched}
 enum ArticleUploadingStatus {uploading,notUploading}
 
 enum ArticlesStatus {nil,fetched,fetching}
+
+enum UserUploadingImage {loading,notLoading}

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controlller/user_controller.dart';
@@ -8,6 +9,8 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/cover_photo.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/profile_options.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/profile_overview.dart';
+
+import '../../../utils/image_picker.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -84,10 +87,19 @@ class ProfileScreen extends StatelessWidget {
                       icon: const Icon(Icons.arrow_back))),
               Positioned(
                 top: displayHeight(context) * 0.13,
-                child: CircleAvatar(
-                  radius: displayWidth(context) * 0.13,
-                  backgroundImage: const NetworkImage(
-                      'https://i.pinimg.com/564x/17/b0/8f/17b08fc3ad0e62df60e15ef557ec3fe1.jpg'),
+                child: InkWell(
+                  onTap: () async {
+                    XFile? imageFile = await pickImage(context);
+                    if (imageFile != null) {
+
+                    }
+
+                  },
+                  child: CircleAvatar(
+                    radius: displayWidth(context) * 0.13,
+                    backgroundImage: const NetworkImage(
+                        'https://i.pinimg.com/564x/17/b0/8f/17b08fc3ad0e62df60e15ef557ec3fe1.jpg'),
+                  ),
                 ),
               )
             ],
