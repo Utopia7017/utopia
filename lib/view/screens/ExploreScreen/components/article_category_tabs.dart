@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia/controlller/articles_controller.dart';
+import 'package:utopia/controller/articles_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 
 class ArticleCategoryTab extends StatelessWidget {
