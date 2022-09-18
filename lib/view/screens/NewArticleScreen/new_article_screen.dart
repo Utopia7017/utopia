@@ -3,7 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/controlller/new_article_screen_controller.dart';
+import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/screens/NewArticleScreen/components/article_detail_dialog.dart';
@@ -29,7 +29,7 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
         return true;
       },
       child: Scaffold(
-          floatingActionButton: Consumer<NewArticleScreenController>(
+          floatingActionButton: Consumer<MyArticlesController>(
             builder: (context, controller, child) {
               return FloatingActionButton(
                 onPressed: () async {
@@ -58,7 +58,7 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
             iconTheme: const IconThemeData(color: Colors.black54),
             backgroundColor: primaryBackgroundColor,
             actions: [
-              Consumer<NewArticleScreenController>(
+              Consumer<MyArticlesController>(
                 builder: (context, controller, child) {
                   switch (controller.uploadingStatus) {
                     case ArticleUploadingStatus.uploading:
@@ -99,7 +99,7 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16, top: 12),
-            child: Consumer<NewArticleScreenController>(
+            child: Consumer<MyArticlesController>(
               builder: (context, controller, child) {
                 if (controller.bodyComponents.isEmpty) {
                   Future.delayed(const Duration(microseconds: 1))

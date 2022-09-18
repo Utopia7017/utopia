@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/article_category_constants.dart';
-import 'package:utopia/controlller/new_article_screen_controller.dart';
+import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_detail_textfield.dart';
 
@@ -44,7 +44,7 @@ class ArticleDetailDialog extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 20),
-                Consumer<NewArticleScreenController>(
+                Consumer<MyArticlesController>(
                   builder: (context, controller, child) {
                     return DropdownButtonFormField(
                       validator: (value) {
@@ -125,7 +125,7 @@ class ArticleDetailDialog extends StatelessWidget {
                     letterSpacing: 0.5)),
           ),
         ),
-        Consumer<NewArticleScreenController>(
+        Consumer<MyArticlesController>(
           builder: (context, controller, child) {
             List<String> tags = [
               tag1Controller.text,
