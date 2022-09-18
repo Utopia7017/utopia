@@ -46,40 +46,37 @@ class ArticleDetailDialog extends StatelessWidget {
                 const SizedBox(height: 20),
                 Consumer<NewArticleScreenController>(
                   builder: (context, controller, child) {
-                    return SizedBox(
-                      height: displayHeight(context) * 0.07,
-                      child: DropdownButtonFormField(
-                        validator: (value) {
-                          if (value == null) {
-                            return "Please select any category";
-                          }
-                          if (value.toString().isEmpty) {
-                            return "Please select any category";
-                          }
-                          return null;
-                        },
-                        onChanged: (String? selected) {
-                          controller.changeCategory(selected!);
-                        },
-                        isExpanded: true,
-                        value: dropdownValue,
-                        decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.only(left: 12, right: 10),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white54),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                    return DropdownButtonFormField(
+                      validator: (value) {
+                        if (value == null) {
+                          return "Please select any category";
+                        }
+                        if (value.toString().isEmpty) {
+                          return "Please select any category";
+                        }
+                        return null;
+                      },
+                      onChanged: (String? selected) {
+                        controller.changeCategory(selected!);
+                      },
+                      isExpanded: true,
+                      value: dropdownValue,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            const EdgeInsets.only(left: 12, right: 10),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white54),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        hint: const Text("Select Category"),
-                        items: articleCategories
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
                       ),
+                      hint: const Text("Select Category"),
+                      items: articleCategories
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                     );
                   },
                 ),
