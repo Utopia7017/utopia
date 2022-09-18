@@ -216,7 +216,9 @@ class _ArticleBoxState extends State<ArticleBox> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    CommentScreen(),
+                                                    CommentScreen(
+                                                      articleId: widget.article!.articleId,
+                                                    ),
                                               ));
                                         },
                                         child: Image.asset(commentArticleIcon,

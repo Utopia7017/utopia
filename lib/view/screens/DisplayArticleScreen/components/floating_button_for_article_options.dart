@@ -112,7 +112,9 @@ class _FloatingButtonForArticleOptionsState
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CommentScreen(),
+                          builder: (context) => CommentScreen(
+                            articleId: widget.article.articleId,
+                          ),
                         ));
                   },
                   child: Image.asset(commentArticleIcon, height: 18),
