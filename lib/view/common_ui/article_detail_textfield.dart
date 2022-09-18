@@ -15,20 +15,21 @@ class ArticleDetailTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: displayHeight(context)*0.07,
-      child: TextFormField(
-        validator: validator,
-        controller: controller,
-        decoration: InputDecoration(
-          prefixIcon: prefixIcon,
-          labelText: label,
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white54),
-            borderRadius: BorderRadius.circular(10),
-          ),
+    return TextFormField(
+      validator: validator,
+      controller: controller,
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon,
+        labelText: label,
+        border: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.white54),
+          borderRadius: BorderRadius.circular(10),
         ),
+        errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.circular(10),
       ),
+    ),
     );
   }
 }

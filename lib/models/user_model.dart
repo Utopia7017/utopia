@@ -22,20 +22,24 @@ class User {
         bio: data['bio'],
         dp: data['dp'],
         email: data['email'],
-        followers: data['followers']??[],
+        followers: data['followers'] ?? [],
         userId: data['userId'],
-        following: data['following']??[]);
+        following: data['following'] ?? []);
   }
 
-  Map<String,dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'name': name,
       'email': email,
       'dp': dp,
-      'bio':bio,
-      'userId':userId, 
+      'bio': bio,
+      'userId': userId,
       'followers': followers,
       'following': following,
     };
+  }
+
+  void changedp(String newDpurl) {
+    dp = newDpurl;
   }
 }
