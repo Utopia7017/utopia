@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/controlller/user_controller.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 
 class CommentScreen extends StatelessWidget {

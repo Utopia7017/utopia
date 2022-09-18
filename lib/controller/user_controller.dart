@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -58,23 +57,42 @@ class UserController with ChangeNotifier {
       return null;
     }
   }
-   void changedp(XFile imageFile) async {
-     Logger logger = Logger("ChangeDP");
-     try {
-       userUploadingImage = UserUploadingImage.loading;
-       await Future.delayed(const Duration(milliseconds: 1));
-       notifyListeners();
-       String? url = await getImageUrl(File(imageFile.path), 'images/1');
-       logger.info(url);
-       // print('image url for dp = $url');
-       //
-       // final response = await _apiServices.update(endUrl: 'users/${user!.userId}.json', data: {'dp':newDpurl});
 
+  void changeCoverPhoto(XFile imageFile) async {
+    Logger logger = Logger("ChangeCP");
+    try {
+      userUploadingImage = UserUploadingImage.loading;
+      await Future.delayed(const Duration(milliseconds: 1));
+      notifyListeners();
+      String? url = await getImageUrl(
+          File(imageFile.path), 'users/${user!.userId}/coverphoto/cp');
+      await _apiServices
+          .update(endUrl: 'users/${user!.userId}.json', data: {'cp': url!});
+      user!.changeCoverPhoto(url);
+      logger.info(url);
+    } catch (error) {
+      return null;
+    }
+    userUploadingImage = UserUploadingImage.notLoading;
+    notifyListeners();
+  }
 
-     } catch (error) {
-       return null;
-     }
-     userUploadingImage = UserUploadingImage.notLoading;
-     notifyListeners();
-   }
+  void changeDisplayPhoto(XFile imageFile) async {
+    Logger logger = Logger("ChangeDP");
+    try {
+      userUploadingImage = UserUploadingImage.loading;
+      await Future.delayed(const Duration(milliseconds: 1));
+      notifyListeners();
+      String? url = await getImageUrl(
+          File(imageFile.path), 'users/${user!.userId}/displayphoto/dp');
+      await _apiServices
+          .update(endUrl: 'users/${user!.userId}.json', data: {'dp': url!});
+      user!.changeDisplayPicture(url);
+      logger.info(url);
+    } catch (error) {
+      return null;
+    }
+    userUploadingImage = UserUploadingImage.notLoading;
+    notifyListeners();
+  }
 }

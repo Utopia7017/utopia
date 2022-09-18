@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia/controlller/auth_screen_controller.dart';
-import 'package:utopia/controlller/user_controller.dart';
+import 'package:utopia/controller/auth_screen_controller.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/user_model.dart' as user;
 import 'package:utopia/services/firebase/auth_services.dart' as firebase;
@@ -205,6 +205,7 @@ class SignUpScreen extends StatelessWidget {
                                     UserCredential) {
                                   // successfully created new account
                                   await userController.createUser(user.User(
+                                    cp: '',
                                       name: nameController.text,
                                       dp: '',
                                       email: emailController.text,

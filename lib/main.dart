@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia/controlller/articles_controller.dart';
-import 'package:utopia/controlller/auth_screen_controller.dart';
-import 'package:utopia/controlller/new_article_screen_controller.dart';
-import 'package:utopia/controlller/user_controller.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
+import 'controller/articles_controller.dart';
+import 'controller/auth_screen_controller.dart';
+import 'controller/my_articles_controller.dart';
+import 'controller/user_controller.dart';
 import 'services/firebase/auth_services.dart';
 import 'services/firebase/firebase_user_service.dart';
 import 'utils/global_context.dart';
@@ -67,7 +67,7 @@ class Utopia extends StatelessWidget {
           create: (context) => ArticlesController(),
         ),
         ChangeNotifierProvider(
-          create: (context) => NewArticleScreenController(),
+          create: (context) => MyArticlesController(),
         ),
       ],
       child: MaterialApp(

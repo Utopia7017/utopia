@@ -11,11 +11,14 @@ import 'package:utopia/services/firebase/storage_service.dart';
 import '../utils/article_body_component.dart';
 import '../view/common_ui/article_textfield.dart';
 
-class NewArticleScreenController with ChangeNotifier {
+class MyArticlesController with ChangeNotifier {
   ArticleUploadingStatus uploadingStatus = ArticleUploadingStatus.notUploading;
   List<BodyComponent> bodyComponents = [];
+  List<Article> publishedArticles = [];
+  List<Article> draftArticles = [];
+  FetchingMyArticle fetchingMyArticleStatus = FetchingMyArticle.nil;
   String? category;
-  final Logger _logger = Logger("NewArticleScreenController");
+  final Logger _logger = Logger("MyArticlesController");
   final ApiServices _apiServices = ApiServices();
 
   // adds a new text field to body component list
@@ -146,4 +149,31 @@ class NewArticleScreenController with ChangeNotifier {
     uploadingStatus = ArticleUploadingStatus.notUploading;
     notifyListeners();
   }
+
+  // Fetch my articles
+  fetchMyArticles(String myUid) async {
+    Logger logger = Logger("FetchMyArticles");
+    fetchingMyArticleStatus = FetchingMyArticle.fetching;
+    await Future.delayed(const Duration(milliseconds: 1));
+    notifyListeners();
+    try{
+      List<Article> tempPublished = [];
+      List<Article> tempDrafts = [];
+      final Response? response = await _apiServices.get(endUrl: 'articles/$myUid.json');
+      if(response!=null){
+        final Map<String,dynamic> responseData = response.data;
+        for( var article in responseData.values){
+          Article art = Article.fromJson(article);
+          tempPublished.add(art);
+        }
+        publishedArticles = tempPublished;
+      }
+    }
+    catch(error){
+      _logger.shout(error.toString());
+    }
+    fetchingMyArticleStatus = FetchingMyArticle.fetched;
+    notifyListeners();
+  }
+
 }
