@@ -15,3 +15,5 @@ const likeNotPressedIcon = 'assets/icons/like_unpressed.png';
 const commentArticleIcon = 'assets/icons/comment_article.png';
 
 const saveArticleIcon = 'assets/icons/save_article.png';
+
+const splashGif = 'assets/images/splash_gif.gif'; 

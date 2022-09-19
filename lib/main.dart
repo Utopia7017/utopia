@@ -10,6 +10,8 @@ import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
+import 'package:utopia/view/screens/SplashScreen/splash_screen.dart';
+import 'package:utopia/view/screens/UtopiaRoot/utopia_root.dart';
 import 'controller/articles_controller.dart';
 import 'controller/auth_screen_controller.dart';
 import 'controller/my_articles_controller.dart';
@@ -74,6 +76,7 @@ class Utopia extends StatelessWidget {
         navigatorKey: GlobalContext.contextKey, // global context
         debugShowCheckedModeBanner: false,
         routes: {
+          '/utopiaRoot':(context) => UtopiaRoot(),
           '/auth': (context) => const AuthScreen(),
           '/login': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
@@ -81,27 +84,13 @@ class Utopia extends StatelessWidget {
           '/profile': (context) => const ProfileScreen(),
           '/newArticle': (context) => NewArticleScreen(),
         },
-        home: Consumer<AuthNotifier>(
-          builder: (context, notifier, child) {
-            return notifier.user != null ? AppScreen() : const Wrapper();
-          },
-        ),
+        // home: Consumer<AuthNotifier>(
+        //   builder: (context, notifier, child) {
+        //     return notifier.user != null ? AppScreen() : const Wrapper();
+        //   },
+        // ),
+        home: SplashScreen(),
       ),
     );
-  }
-}
-
-class Wrapper extends StatelessWidget {
-  const Wrapper({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User?>();
-
-    if (firebaseUser != null) {
-      return AppScreen();
-    } else {
-      return const AuthScreen();
-    }
   }
 }
