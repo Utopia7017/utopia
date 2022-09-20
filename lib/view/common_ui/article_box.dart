@@ -12,6 +12,7 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
+import 'package:utopia/view/shimmers/article_shimmer.dart';
 
 class ArticleBox extends StatefulWidget {
   final Article? article;
@@ -37,8 +38,7 @@ class _ArticleBoxState extends State<ArticleBox> {
         }
         dynamic articlePreview = widget.article!.body
             .firstWhere((element) => element['type'] == "text");
-        print('first text : ${articlePreview['text']}');
-        Future<User?> user = controller.getUser(widget.article!.authorId);
+
         return FutureBuilder<User?>(
           future: controller.getUser(widget.article!.authorId),
           builder: (context, snapshot) {
@@ -172,8 +172,7 @@ class _ArticleBoxState extends State<ArticleBox> {
                                                         loadingForLikeProcess =
                                                             true;
                                                       });
-                                                      print(
-                                                          "Called from already Liked else part");
+
                                                       await dislikeArticle(
                                                           widget.article!
                                                               .articleId,
@@ -217,8 +216,9 @@ class _ArticleBoxState extends State<ArticleBox> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     CommentScreen(
-                                                      articleId: widget.article!.articleId,
-                                                    ),
+                                                  articleId:
+                                                      widget.article!.articleId,
+                                                ),
                                               ));
                                         },
                                         child: Image.asset(commentArticleIcon,
@@ -277,14 +277,15 @@ class _ArticleBoxState extends State<ArticleBox> {
                       ),
                     ),
                   ),
-                  const Divider(
+                  Divider(
                     height: 2,
-                    thickness: 1.5,
+                    thickness: 1.2,
+                    color: Colors.black.withOpacity(0.04),
                   ),
                 ],
               );
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return const ShimmerForArticles();
             }
           },
         );
