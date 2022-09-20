@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/utils/helper_widgets.dart';
+import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart';
 
 class CommentScreen extends StatelessWidget {
   final String articleId;
@@ -24,50 +25,51 @@ class CommentScreen extends StatelessWidget {
         iconTheme: IconThemeData(color: primaryBackgroundColor),
       ),
       backgroundColor: primaryBackgroundColor,
-      body: Container(
-        child: Consumer<UserController>(
-          builder: (context, controller, child) {
-            return CommentBox(
-              sendButtonMethod: () async {
-                await addComment(
-                    articleId: articleId,
-                    comment: commentController.text,
-                    createdAt: DateTime.now().toString(),
-                    userId: myUserId);
-                commentController.clear();
+      body: Consumer<UserController>(
+        builder: (context, controller, child) {
+          return CommentBox(
+            sendButtonMethod: () async {
+              await addComment(
+                  articleId: articleId,
+                  comment: commentController.text,
+                  createdAt: DateTime.now().toString(),
+                  userId: myUserId);
+              commentController.clear();
+            },
+            withBorder: true,
+            errorText: 'Comment cannot be blank',
+            commentController: commentController,
+            labelText: "Write your comment",
+            sendWidget:
+                const Icon(Icons.send_sharp, size: 30, color: authBackground),
+            backgroundColor: Colors.white,
+            formKey: formKey,
+            textColor: Colors.black87,
+            userImage: controller.user != null &&
+                    controller.user!.dp.isNotEmpty
+                ? controller.user!.dp
+                : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('articles')
+                  .doc(articleId)
+                  .collection('comments')
+                  .snapshots(),
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  dynamic commentData = snapshot.data.docs;
+                  return ListComments(commentData: commentData,);
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      
+                    ),
+                  );
+                }
               },
-              withBorder: true,
-              errorText: 'Comment cannot be blank',
-              commentController: commentController,
-              labelText: "Write your comment",
-              sendWidget:
-                  const Icon(Icons.send_sharp, size: 30, color: authBackground),
-              backgroundColor: Colors.white,
-              formKey: formKey,
-              textColor: Colors.black87,
-              userImage: controller.user != null &&
-                      controller.user!.dp.isNotEmpty
-                  ? controller.user!.dp
-                  : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('articles')
-                    .doc(articleId)
-                    .collection('comments')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text("Connection established");
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
