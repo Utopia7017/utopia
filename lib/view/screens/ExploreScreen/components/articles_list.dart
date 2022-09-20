@@ -6,6 +6,8 @@ import 'package:utopia/controller/articles_controller.dart';
 
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
+import 'package:utopia/view/screens/Skeletons/article_box_skeleton.dart';
+import 'package:utopia/view/shimmers/article_shimmer.dart';
 
 class ArticleList extends StatelessWidget {
   const ArticleList({super.key});
@@ -29,15 +31,19 @@ class ArticleList extends StatelessWidget {
                   .articles[articleCategories[controller.selectedCategory]]!
                   .length,
               itemBuilder: (context, index) {
-                return ArticleBox(article: controller
-                  .articles[articleCategories[controller.selectedCategory]]![index]);
+                // return ArticleSkeleton();
+                return ArticleBox(
+                    article: controller.articles[articleCategories[
+                        controller.selectedCategory]]![index]);
               },
             );
           case ArticlesStatus.fetching:
-            return const Center(
-              child: CircularProgressIndicator(
-                color: authMaterialButtonColor,
-              ),
+            return ListView.builder(
+              itemCount: 8,
+              itemBuilder: (context, index) {
+                return const ShimmerForArticles();
+                
+              },
             );
         }
       },
