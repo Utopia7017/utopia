@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -6,28 +7,13 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/utils/helper_widgets.dart';
 import '../../../services/firebase/auth_services.dart';
 
 class CustomDrawer extends StatelessWidget {
   final Logger _logger = Logger('CustomDrawer');
 
   final Authservice _auth = Authservice(FirebaseAuth.instance);
-
-  drawerTile(String title, Icon icon, Function() callbackAction) {
-    return ListTile(
-      onTap: callbackAction,
-      contentPadding: EdgeInsets.zero,
-      leading: icon,
-      visualDensity: VisualDensity(vertical: -0.5),
-      minLeadingWidth: 1,
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 15.2,
-            color: Colors.white, fontFamily: "Fira", letterSpacing: 0.6),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +45,15 @@ class CustomDrawer extends StatelessWidget {
                       CircularProgressIndicator(color: authMaterialButtonColor),
                 );
               case ProfileStatus.fetched:
+                List<String> initials = controller.user!.name.split(" ");
+                String firstLetter = "", lastLetter = "";
+
+                if (initials.length == 1) {
+                  firstLetter = initials[0].characters.first;
+                } else {
+                  firstLetter = initials[0].characters.first;
+                  lastLetter = initials[1].characters.first;
+                }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -67,9 +62,36 @@ class CustomDrawer extends StatelessWidget {
                         Navigator.pushNamed(context, '/profile');
                       },
                       child: CircleAvatar(
-                        radius: displayWidth(context) * 0.13,
-                        backgroundImage: const NetworkImage(
-                            'https://i.pinimg.com/564x/17/b0/8f/17b08fc3ad0e62df60e15ef557ec3fe1.jpg'),
+                        radius: displayWidth(context) * 0.135,
+                        backgroundColor: Colors.white,
+                        child: (controller.user!.dp.isEmpty)
+                            ? CircleAvatar(
+                                backgroundColor: authMaterialButtonColor,
+                                radius: displayWidth(context) * 0.13,
+                                child: Center(
+                                  child: initials.length > 1
+                                      ? Text(
+                                          "$firstLetter.$lastLetter"
+                                              .toUpperCase(),
+                                          style: const TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white),
+                                        )
+                                      : Text(
+                                          firstLetter.toUpperCase(),
+                                          style: const TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white),
+                                        ),
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: displayWidth(context) * 0.13,
+                                backgroundImage: CachedNetworkImageProvider(
+                                    controller.user!.dp),
+                              ),
                       ),
                     ),
                     const SizedBox(
