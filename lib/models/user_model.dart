@@ -2,8 +2,8 @@ class User {
   String name;
   String userId;
   String email;
-  List<String> followers;
-  List<String> following;
+  List<dynamic> followers;
+  List<dynamic> following;
   String dp;
   String bio;
   String cp;
