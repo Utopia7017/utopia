@@ -27,14 +27,15 @@ class ProfileCoverPhoto extends StatelessWidget {
               }
             },
             child: (controller.user!.cp.isNotEmpty)
-                ? Image.network(
-                    controller.user!.cp,
+                ? CachedNetworkImage(
+                    imageUrl: controller.user!.cp,
                     height: displayHeight(context) * 0.2,
                     width: displayWidth(context),
                     fit: BoxFit.cover,
                   )
                 : CachedNetworkImage(
-                    imageUrl: 'https://i.pinimg.com/564x/21/65/0a/21650a0e6039a967ae95c2e03dfc3361.jpg',
+                    imageUrl:
+                        'https://i.pinimg.com/564x/21/65/0a/21650a0e6039a967ae95c2e03dfc3361.jpg',
                     height: displayHeight(context) * 0.2,
                     width: displayWidth(context),
                     fit: BoxFit.cover,
