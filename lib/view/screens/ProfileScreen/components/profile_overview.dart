@@ -3,9 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/view/common_ui/profile_detail_box.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 
 class ProfileOverView extends StatelessWidget {
+
+  
+
   final space = const SizedBox(height: 10);
   final verticalSpace = VerticalDivider(
     indent: 12,
@@ -14,33 +18,6 @@ class ProfileOverView extends StatelessWidget {
     color: Colors.grey.shade400,
     width: 15,
   );
-
-  Widget detail(int length, String label, Function() callback) {
-    return InkWell(
-      onTap: callback,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            length.toString(),
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.black87,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade500),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,13 +94,18 @@ class ProfileOverView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  detail(controller.user!.following.length, "Following",
-                      () => null),
+                  ProfileDetailBox(
+                      value: controller.user!.following.length,
+                      label: "Following",
+                      callback: () => null),
                   verticalSpace,
-                  detail(controller.user!.followers.length, "Followers",
-                      () => null),
+                  ProfileDetailBox(
+                      value: controller.user!.followers.length,
+                      label: "Followers",
+                      callback: () => null),
                   verticalSpace,
-                  detail(0, "Articles", () => null),
+                  ProfileDetailBox(
+                      value: 0, label: "Articles", callback: () => null),
                 ],
               ),
             )

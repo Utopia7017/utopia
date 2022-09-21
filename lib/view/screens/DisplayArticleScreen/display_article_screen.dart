@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:utopia/constants/article_category_constants.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
+import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'components/floating_button_for_article_options.dart';
 
 class DisplayArticleScreen extends StatefulWidget {
@@ -51,7 +51,8 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
       floatingActionButton: FloatingButtonForArticleOptions(
-        isVisible: _isVisible!, article: widget.article,
+        isVisible: _isVisible!,
+        article: widget.article,
       ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       body: SafeArea(
@@ -61,7 +62,13 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
           SliverAppBar(
             title: InkWell(
               onTap: () {
-                // TODO : navigate to user profile screen
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserProfileScreen(
+                        userId: widget.author.userId,
+                      ),
+                    ));
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -123,7 +130,8 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                           bottom: 12.0, left: 20, right: 20),
                       child: Text(
                         widget.article.body[index]['text']!,
-                        style: const TextStyle(fontFamily: "Open", fontSize: 15.5),
+                        style:
+                            const TextStyle(fontFamily: "Open", fontSize: 15.5),
                       ),
                     );
                   case 'image':
