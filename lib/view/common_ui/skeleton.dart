@@ -13,7 +13,7 @@ class Skeleton extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.black.withOpacity(0.04),
+        color: Colors.black.withOpacity(0.06),
       ),
     );
   }

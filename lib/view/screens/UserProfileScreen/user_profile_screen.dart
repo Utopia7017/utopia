@@ -4,7 +4,6 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/view/screens/ProfileScreen/components/profile_overview.dart';
 import 'package:utopia/view/screens/UserProfileScreen/components/user_profile_cover_photo.dart';
 import 'package:utopia/view/screens/UserProfileScreen/components/user_profile_display_picture.dart';
 import 'package:utopia/view/screens/UserProfileScreen/components/user_profile_overview.dart';
@@ -25,6 +24,7 @@ class UserProfileScreen extends StatelessWidget {
             future: Provider.of<UserController>(context, listen: false)
                 .getUser(userId),
             builder: (context, AsyncSnapshot<User?> snapshot) {
+              // If user is fetched
               if (snapshot.hasData) {
                 return Stack(
                   alignment: Alignment.topCenter,
@@ -58,7 +58,9 @@ class UserProfileScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 // Displays the user name , follow button and followers / followings detail
-                                UserProfileOverView(user: snapshot.data!),
+                                UserProfileOverView(
+                                  userId: snapshot.data!.userId,
+                                ),
                                 Divider(
                                   color: Colors.grey.shade100,
                                   height: displayHeight(context) * 0.06,
@@ -75,7 +77,9 @@ class UserProfileScreen extends StatelessWidget {
                     UserProfileDisplayPicture(user: snapshot.data!),
                   ],
                 );
-              } else {
+              }
+              // if user is not fetched
+              else {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
