@@ -4,6 +4,8 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
+import 'package:utopia/view/screens/FollowersScreen/followers_screen.dart';
+import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 
 class ProfileOverView extends StatelessWidget {
@@ -97,12 +99,12 @@ class ProfileOverView extends StatelessWidget {
                   ProfileDetailBox(
                       value: controller.user!.following.length,
                       label: "Following",
-                      callback: () => null),
+                      callback: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => FollowingScreen(user: controller.user!),))),
                   verticalSpace,
                   ProfileDetailBox(
                       value: controller.user!.followers.length,
                       label: "Followers",
-                      callback: () => null),
+                      callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowersScreen(user: controller.user!),))),
                   verticalSpace,
                   ProfileDetailBox(
                       value: 0, label: "Articles", callback: () => null),

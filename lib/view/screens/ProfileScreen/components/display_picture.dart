@@ -13,7 +13,7 @@ class ProfileDisplayPicture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: displayHeight(context) * 0.13,
+      top: displayHeight(context) * 0.22,
       child: Consumer<UserController>(
         builder: (context, controller, child) {
           List<String> initials = controller.user!.name.split(" ");
