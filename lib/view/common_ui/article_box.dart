@@ -10,6 +10,7 @@ import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
+import 'package:utopia/view/common_ui/skeleton.dart';
 import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
 import 'package:utopia/view/shimmers/article_shimmer.dart';
@@ -43,7 +44,16 @@ class _ArticleBoxState extends State<ArticleBox> {
           future: controller.getUser(widget.article!.authorId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              User? user = snapshot.data!;
+              User? author = snapshot.data!;
+              List<String> initials = author.name.split(" ");
+              String firstLetter = "", lastLetter = "";
+
+              if (initials.length == 1) {
+                firstLetter = initials[0].characters.first;
+              } else {
+                firstLetter = initials[0].characters.first;
+                lastLetter = initials[1].characters.first;
+              }
               return Column(
                 children: [
                   InkWell(
@@ -51,7 +61,7 @@ class _ArticleBoxState extends State<ArticleBox> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => DisplayArticleScreen(
-                              article: widget.article!, author: user),
+                              article: widget.article!, author: author),
                         )),
                     child: Container(
                       // height: displayHeight(context) * 0.16,
@@ -72,16 +82,44 @@ class _ArticleBoxState extends State<ArticleBox> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    const CircleAvatar(
-                                      radius: 12,
-                                      backgroundImage: AssetImage(
-                                          "assets/icons/profile.png"),
-                                    ),
+                                    // Display picture of author
+                                    (author.dp.isEmpty)
+                                        ? CircleAvatar(
+                                            backgroundColor:
+                                                authMaterialButtonColor,
+                                            radius: 12,
+                                            child: Center(
+                                              child: initials.length > 1
+                                                  ? Text(
+                                                      "$firstLetter.$lastLetter"
+                                                          .toUpperCase(),
+                                                      style: const TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colors.white),
+                                                    )
+                                                  : Text(
+                                                      firstLetter.toUpperCase(),
+                                                      style: const TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colors.white),
+                                                    ),
+                                            ),
+                                          )
+                                        : CircleAvatar(
+                                            radius: 12,
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                    author.dp),
+                                          ),
                                     const SizedBox(
                                       width: 8,
                                     ),
                                     Text(
-                                      user.name,
+                                      author.name,
                                       style: const TextStyle(
                                           fontFamily: "Open",
                                           fontSize: 12.5,
@@ -146,13 +184,12 @@ class _ArticleBoxState extends State<ArticleBox> {
                                                     element['userId'] ==
                                                     controller.user!.userId,
                                               );
+
                                               return InkWell(
                                                 onTap: () async {
                                                   if (!loadingForLikeProcess) {
                                                     if (alreadyLiked == -1) {
                                                       // Not liked yet
-                                                      print(
-                                                          "Called from not Liked yet if part");
                                                       setState(() {
                                                         loadingForLikeProcess =
                                                             true;

@@ -76,7 +76,6 @@ class _FloatingButtonForArticleOptionsState
                                 setState(() {
                                   loadingForLikeProcess = true;
                                 });
-                                print("Called from already Liked else part");
                                 await dislikeArticle(
                                     widget.article.articleId, myUserId);
                                 setState(() {
