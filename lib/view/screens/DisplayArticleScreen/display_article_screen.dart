@@ -1,15 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/models/article_model.dart';
-import 'package:utopia/models/user_model.dart';
+import 'package:utopia/models/user_model.dart' as usermodel;
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'components/floating_button_for_article_options.dart';
 
 class DisplayArticleScreen extends StatefulWidget {
   final Article article;
-  final User author;
+  final usermodel.User author;
   DisplayArticleScreen({required this.article, required this.author});
 
   @override
@@ -19,6 +20,7 @@ class DisplayArticleScreen extends StatefulWidget {
 class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
   ScrollController? _hideBottomNavController;
   bool? _isVisible;
+  final String myUserId= FirebaseAuth.instance.currentUser!.uid;
   @override
   initState() {
     super.initState();
@@ -62,13 +64,15 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
           SliverAppBar(
             title: InkWell(
               onTap: () {
-                Navigator.push(
+               if(widget.author.userId != myUserId) {
+                 Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => UserProfileScreen(
                         userId: widget.author.userId,
                       ),
                     ));
+               }
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -96,12 +100,13 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
             iconTheme: const IconThemeData(color: Colors.black),
             actions: [
               // Options
-              IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () {
-                  // @kaizer111 Open dialog box for options
-                },
-              ),
+               PopupMenuButton(
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem(child: Text('Report Article')),
+                    PopupMenuItem(child: Text('Block Author')),
+                    
+
+                  ],),
             ],
             pinned: false,
             snap: false,
