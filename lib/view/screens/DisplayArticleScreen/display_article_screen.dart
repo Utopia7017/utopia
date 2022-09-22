@@ -100,12 +100,13 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
             iconTheme: const IconThemeData(color: Colors.black),
             actions: [
               // Options
-              IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () {
-                  // @kaizer111 Open dialog box for options
-                },
-              ),
+               PopupMenuButton(
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem(child: Text('Report Article')),
+                    PopupMenuItem(child: Text('Block Author')),
+                    
+
+                  ],),
             ],
             pinned: false,
             snap: false,
