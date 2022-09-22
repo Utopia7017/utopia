@@ -19,6 +19,7 @@ import 'controller/user_controller.dart';
 import 'services/firebase/auth_services.dart';
 import 'services/firebase/firebase_user_service.dart';
 import 'utils/global_context.dart';
+import 'package:flutter/services.dart';
 
 /*
   Project Name : Utoppia - 
@@ -46,6 +47,10 @@ class Utopia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
     return MultiProvider(
       providers: [
         // Auth Controllers
