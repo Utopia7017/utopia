@@ -70,7 +70,7 @@ class ArticleDetailDialog extends StatelessWidget {
                         ),
                       ),
                       hint: const Text("Select Category"),
-                      items: articleCategories
+                      items: articleCategoriesForPublishing
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
