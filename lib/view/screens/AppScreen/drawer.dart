@@ -62,12 +62,12 @@ class CustomDrawer extends StatelessWidget {
                         Navigator.pushNamed(context, '/profile');
                       },
                       child: CircleAvatar(
-                        radius: displayWidth(context) * 0.135,
+                        radius: displayWidth(context) * 0.125,
                         backgroundColor: Colors.white,
                         child: (controller.user!.dp.isEmpty)
                             ? CircleAvatar(
                                 backgroundColor: authMaterialButtonColor,
-                                radius: displayWidth(context) * 0.13,
+                                radius: displayWidth(context) * 0.12,
                                 child: Center(
                                   child: initials.length > 1
                                       ? Text(
@@ -88,7 +88,7 @@ class CustomDrawer extends StatelessWidget {
                                 ),
                               )
                             : CircleAvatar(
-                                radius: displayWidth(context) * 0.13,
+                                radius: displayWidth(context) * 0.12,
                                 backgroundImage: CachedNetworkImageProvider(
                                     controller.user!.dp),
                               ),

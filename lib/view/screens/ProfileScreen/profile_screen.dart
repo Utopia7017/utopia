@@ -38,7 +38,10 @@ class ProfileScreen extends StatelessWidget {
                         color: authMaterialButtonColor),
                   );
                 case ProfileStatus.fetched:
+                  // Profile is fetched
                   switch (controller.userUploadingImage) {
+
+                    // user is uploading image
                     case UserUploadingImage.loading:
                       return Center(
                         child: Column(
@@ -53,6 +56,7 @@ class ProfileScreen extends StatelessWidget {
                           ],
                         ),
                       );
+                      // user is not not uploading image
                     case UserUploadingImage.notLoading:
                       return Stack(
                         alignment: Alignment.topCenter,
@@ -61,7 +65,7 @@ class ProfileScreen extends StatelessWidget {
                           Positioned(
                             bottom: 0,
                             child: Container(
-                              height: displayHeight(context) * 0.8,
+                              height: displayHeight(context) * 0.7,
                               width: displayWidth(context),
                               color: primaryBackgroundColor,
                               child: Padding(

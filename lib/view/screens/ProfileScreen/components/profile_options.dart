@@ -26,12 +26,10 @@ class ProfileOptions extends StatelessWidget {
       children: [
 
         tile("My Articles", const Icon(Icons.book), () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyArticleScreen(),))),
-        const Divider(),
-        tile("Saved Articles", const Icon(Icons.save), () => null),
-        const Divider(),
-        tile("Draft Articles", const Icon(Icons.save), () => null),
-        const Divider(),
+
         tile("Blocked Authors", const Icon(Icons.block_outlined), () => null),
+      //  const Divider(),
+        tile("Sign out", const Icon(Icons.logout), () => null),
         // Divider(),
       ],
     );

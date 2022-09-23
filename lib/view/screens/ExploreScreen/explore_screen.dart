@@ -25,12 +25,15 @@ class ExploreScreen extends StatelessWidget {
       body: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           SearchBox(),
           SizedBox(height: 14),
           ArticleCategoryTab(),
           SizedBox(height: 10),
-          Expanded(child: ArticleList())
+          Expanded(
+              child: ArticleList(
+
+          ))
         ],
       ),
     );

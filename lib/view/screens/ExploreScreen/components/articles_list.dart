@@ -5,6 +5,7 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
 
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/models/user_model.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/screens/Skeletons/article_box_skeleton.dart';
 import 'package:utopia/view/shimmers/article_shimmer.dart';
@@ -28,12 +29,12 @@ class ArticleList extends StatelessWidget {
           case ArticlesStatus.fetched:
             return ListView.builder(
               itemCount: controller
-                  .articles[articleCategories[controller.selectedCategory]]!
+                  .articles[articleCategoriesForDisplaying[controller.selectedCategory]]!
                   .length,
               itemBuilder: (context, index) {
                 // return ArticleSkeleton();
                 return ArticleBox(
-                    article: controller.articles[articleCategories[
+                    article: controller.articles[articleCategoriesForDisplaying[
                         controller.selectedCategory]]![index]);
               },
             );
