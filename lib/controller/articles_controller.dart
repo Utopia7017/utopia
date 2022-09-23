@@ -13,7 +13,7 @@ class ArticlesController with ChangeNotifier {
   ArticlesStatus articlesStatus = ArticlesStatus.nil;
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
   Map<String, List<Article>> articles = {
-    'For you':[],
+    'For you': [],
     'Autobiography': [],
     'Biography': [],
     'Business': [],
@@ -32,9 +32,8 @@ class ArticlesController with ChangeNotifier {
 
   void fetchArticles() async {
     Logger logger = Logger("FetchArticles");
-    List<Article> temp = [];
     Map<String, List<Article>> fetchedArticles = {
-      'For you':[],
+      'For you': [],
       'Autobiography': [],
       'Biography': [],
       'Business': [],
@@ -57,32 +56,31 @@ class ArticlesController with ChangeNotifier {
       List<dynamic> following = [];
       notifyListeners();
       // Firstly fetch the current user details ( specifically followings)
-      final currentUserResponse = await _apiServices.get(endUrl: 'users/$myUid.json');
-      if(currentUserResponse!=null){
+      final currentUserResponse =
+          await _apiServices.get(endUrl: 'users/$myUid.json');
+      if (currentUserResponse != null) {
         following = userModel.User.fromJson(currentUserResponse.data).following;
       }
-      
-      for(dynamic followingUid in following){
+
+      for (dynamic followingUid in following) {
         // for every following user id we will check if they have posted any article.
         // If posted then we will traverse all his articles and save it in our local 'for you' category
-        
-        final articlesResponse = await _apiServices.get(endUrl: 'articles/$followingUid.json');
-        if(articlesResponse!=null){
+
+        final articlesResponse =
+            await _apiServices.get(endUrl: 'articles/$followingUid.json');
+        if (articlesResponse != null) {
           Map<String, dynamic> articles = articlesResponse.data;
-          for(var data in articles.values){
+          for (var data in articles.values) {
             fetchedArticles['For you']!.add(Article.fromJson(data));
           }
         }
       }
-      
-      // Sort them according to published time
-      
-      if(fetchedArticles['For you']!.isNotEmpty){
-        fetchedArticles['For you']!.sort((first,second) => first.articleCreated.compareTo(second.articleCreated));
-      }
-      
-      
-      
+
+      // if (fetchedArticles['For you']!.isNotEmpty) {
+      //   fetchedArticles['For you']!.sort((first, second) =>
+      //       second.articleCreated.compareTo(first.articleCreated));
+      // }
+
       final Response? response =
           await _apiServices.get(endUrl: 'articles.json');
       // fetching articles for categories
@@ -100,9 +98,12 @@ class ArticlesController with ChangeNotifier {
         }
       }
 
-      // fetching articles for 'For you' -> select articles which are published by user's following
+      // Sort all categories's articles according to published time
 
-
+      for (var category in fetchedArticles.keys) {
+        fetchedArticles[category]!.sort((first, second) =>
+            second.articleCreated.compareTo(first.articleCreated));
+      }
     } catch (error) {
       logger.shout(error.toString());
     }
