@@ -18,8 +18,26 @@ class FollowersScreen extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: SearchBox(),
+            padding: const EdgeInsets.all(10.0),
+            child: SizedBox(
+              height: 50,
+              width: 350,
+              child: TextFormField(
+                 keyboardType: TextInputType.name,
+                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  hintText: 'search',
+                  border: OutlineInputBorder(
+                  borderSide: const BorderSide(),
+                    borderRadius: BorderRadius.circular(30),
+                    ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1),
+                     borderRadius: BorderRadius.circular(30)
+                  )
+                 ),
+              ),
+            ),
           ),
           Expanded(
             child: ListView.builder(
@@ -29,33 +47,24 @@ class FollowersScreen extends StatelessWidget {
                   shrinkWrap: true,
                   itemBuilder: (BuildContext, context) 
                   {
-                  return Container(
-                    height: 70,
-                    width: 100,
-                    color: Colors.white60,
-                    margin:  EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children:   [
-                       Padding(
-                          padding: EdgeInsets.only(left: 6),
-                          child: CircleAvatar(
-                            radius: 28,
-                            backgroundColor: Colors.amber,
-                          ),
-                        ),
-                        Text('Kakashi Hatake', style: TextStyle(fontWeight: FontWeight.w700,fontSize: 17.5),),
-                        MaterialButton(onPressed: () {
+                  return ListTile(
+                    leading: CircleAvatar(
+                      child: Icon(Icons.account_box_rounded),
+                    ),
+                    title: Text('Kakashi hatake'),
+                    dense: true,
+
+                    trailing:  MaterialButton(
+                      onPressed: () {
                           
                         },
+                        height: 30,
                         color: authMaterialButtonColor,
                         shape:  RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(6),
                                ),
                           child: Text('Remove',style: TextStyle(fontSize: 15.5),),
                         ),
-                      ],
-                    ),
                   );
                 },),
           ),
