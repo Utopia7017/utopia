@@ -18,7 +18,7 @@ class ApiServices {
       final Response response = await _dio.get(dotenv.env['baseUrl']! + endUrl);
       switch (response.statusCode) {
         case 200:
-          logger.info(response.data.toString());
+          // logger.info(response.data.toString());
           return response;
         default:
           return null;
