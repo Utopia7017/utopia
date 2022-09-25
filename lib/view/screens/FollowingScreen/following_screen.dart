@@ -1,7 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart';
-import 'package:utopia/view/screens/ExploreScreen/components/search_box.dart';
+import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class FollowingScreen extends StatelessWidget {
   final User user;
@@ -12,62 +16,131 @@ class FollowingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: authBackground,
-        title: const Text('Following',style: TextStyle(fontFamily: "Fira",fontSize: 15),),
+        title: const Text(
+          'Following',
+          style: TextStyle(fontFamily: "Fira", fontSize: 15),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-           Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SizedBox(
-              height: 50,
-              width: 350,
-              child: TextFormField(
-                 keyboardType: TextInputType.name,
-                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'search',
-                  border: OutlineInputBorder(
-                  borderSide: const BorderSide(),
-                    borderRadius: BorderRadius.circular(30),
+          const SizedBox(height: 10),
+          Center(
+            child: Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: Container(
+                  alignment: Alignment.center,
+                  height: displayHeight(context) * 0.068,
+                  width: displayWidth(context) * 0.95,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    color: Colors.white,
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: "Search...",
+                      hintStyle: TextStyle(fontSize: 13.5),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.black54,
+                        size: 18,
+                      ),
+                      border: InputBorder.none,
                     ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 1),
-                     borderRadius: BorderRadius.circular(30)
-                  )
-                 ),
-              ),
-            ),
+                    cursorColor: Colors.black45,
+                  ),
+                )),
           ),
-          Expanded(
-            child: ListView.builder(
-                  padding: EdgeInsets.all(8),
-                  itemCount: 15,
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext, context) 
-                  {
-                  return ListTile(
-                    leading: CircleAvatar(
-                      child: Icon(Icons.account_box_rounded),
-                    ),
-                    title: Text('Kakashi hatake'),
-                    dense: true,
+          const SizedBox(height: 10),
+          Expanded(child: Consumer<UserController>(
+            builder: (context, controller, child) {
+              return ListView.builder(
+                itemBuilder: (context, index) {
+                  return FutureBuilder(
+                    builder: (context, AsyncSnapshot<User?> snapshot) {
+                      if (snapshot.hasData) {
+                        User followingUser = snapshot.data!;
+                        List<String> initials = followingUser.name.split(" ");
+                        String firstLetter = "", lastLetter = "";
 
-                    trailing:  MaterialButton(
-                      onPressed: () {
-                          
-                        },
-                        height: 30,
-                        color: authMaterialButtonColor,
-                        shape:  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
-                               ),
-                          child: Text('Following',style: TextStyle(fontSize: 15.5),),
-                        ),
+                        if (initials.length == 1) {
+                          firstLetter = initials[0].characters.first;
+                        } else {
+                          firstLetter = initials[0].characters.first;
+                          lastLetter = initials[1].characters.first;
+                        }
+                        return ListTile(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UserProfileScreen(
+                                      userId: followingUser.userId),
+                                ));
+                          },
+                          leading: (followingUser.dp.isEmpty)
+                              ? CircleAvatar(
+                                  backgroundColor: authMaterialButtonColor,
+                                  child: Center(
+                                    child: initials.length > 1
+                                        ? Text(
+                                            "$firstLetter.$lastLetter"
+                                                .toUpperCase(),
+                                            style: const TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white),
+                                          )
+                                        : Text(
+                                            firstLetter.toUpperCase(),
+                                            style: const TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white),
+                                          ),
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: CachedNetworkImageProvider(
+                                      followingUser.dp),
+                                ),
+                          title: Text(followingUser.name),
+                          dense: true,
+                          trailing: MaterialButton(
+                            onPressed: () {},
+                            height: 30,
+                            color: authMaterialButtonColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Text(
+                              'Remove',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text(snapshot.error.toString()),
+                        );
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    },
+                    future: controller.getUser(user.following[index]),
                   );
-                },),
-          ),
+                },
+                itemCount: user.following.length,
+              );
+            },
+          ))
         ],
       ),
     );
