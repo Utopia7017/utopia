@@ -24,11 +24,17 @@ class ProfileOptions extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-
-        tile("My Articles", const Icon(Icons.book), () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyArticleScreen(),))),
+        tile(
+            "My Articles",
+            const Icon(Icons.book),
+            () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyArticleScreen(),
+                ))),
 
         tile("Blocked Authors", const Icon(Icons.block_outlined), () => null),
-      //  const Divider(),
+        //  const Divider(),
         tile("Sign out", const Icon(Icons.logout), () => null),
         // Divider(),
       ],
