@@ -175,15 +175,15 @@ class CustomDrawer extends StatelessWidget {
                           Icons.edit,
                           color: Colors.white70,
                         ),
-                        () => _logger.info("Add new article")),
+                        () => Navigator.pushNamed(context, '/newArticle')),
                     drawerTile(
-                        'Your articles',
+                        'My articles',
                         const Icon(
                           size: 22,
                           Icons.book_sharp,
                           color: Colors.white70,
                         ),
-                        () => Navigator.pushNamed(context, '/yourArticle')),
+                        () => Navigator.pushNamed(context, '/myArticles')),
                     drawerTile(
                         'Search articles',
                         const Icon(
