@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../MyArticlesScreen/my_articles_screen.dart';
+import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 
 class ProfileOptions extends StatelessWidget {
   Widget tile(String label, Icon icon, Function() callback) {
