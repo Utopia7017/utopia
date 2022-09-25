@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
@@ -110,6 +111,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    
                     // Follower detail box
                     Container(
                       height: displayHeight(context) * 0.08,
@@ -125,7 +127,7 @@ class CustomDrawer extends StatelessWidget {
                               Text(
                                 controller.user!.followers.length.toString(),
                                 style: const TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 15,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400),
                               ),
@@ -135,7 +137,7 @@ class CustomDrawer extends StatelessWidget {
                               const Text(
                                 'Followers',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   color: Colors.white,
                                 ),
                               ),
@@ -148,7 +150,7 @@ class CustomDrawer extends StatelessWidget {
                               Text(
                                 controller.user!.following.length.toString(),
                                 style: const TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 15,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400),
                               ),
@@ -158,7 +160,7 @@ class CustomDrawer extends StatelessWidget {
                               const Text(
                                 'Following',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   color: Colors.white,
                                 ),
                               ),
@@ -167,58 +169,52 @@ class CustomDrawer extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    drawerTile(
-                        'Write new article',
-                        const Icon(
-                          size: 22,
-                          Icons.edit,
-                          color: Colors.white70,
-                        ),
+                    const SizedBox(height: 10),
+                    drawerTile('Write new article', newArticleIcon,
                         () => Navigator.pushNamed(context, '/newArticle')),
-                    drawerTile(
-                        'My articles',
-                        const Icon(
-                          size: 22,
-                          Icons.book_sharp,
-                          color: Colors.white70,
-                        ),
+                    drawerTile('My articles', myArticlesIcon,
                         () => Navigator.pushNamed(context, '/myArticles')),
-                    drawerTile(
-                        'Search articles',
-                        const Icon(
-                          size: 22,
-                          Icons.search_rounded,
-                          color: Colors.white70,
-                        ),
+                    drawerTile('Search articles', searchIcon,
                         () => _logger.info("Search")),
-                    drawerTile(
-                        'Saved articles',
-                        const Icon(
-                          size: 22,
-                          Icons.bookmark_add_outlined,
-                          color: Colors.white70,
-                        ),
+                    drawerTile('Saved articles', saveArticleIcon,
                         () => _logger.info("Search")),
-                    drawerTile(
-                        'Notifications',
-                        const Icon(
-                          size: 22,
-                          Icons.notifications_none_rounded,
-                          color: Colors.white70,
-                        ),
+                    drawerTile('Notifications', notificationIcon,
                         () => _logger.info("Notifications")),
-                    drawerTile(
-                        'Logout',
-                        const Icon(
-                          Icons.logout,
-                          size: 22,
-                          color: Colors.white70,
-                        ), () async {
+                    drawerTile('About us', aboutUsIcon,
+                        () => _logger.info("Notifications")),
+                    drawerTile('Logout', logoutIcon, () async {
                       final navigator = Navigator.of(context);
                       await _auth.signOut();
                       navigator.pushReplacementNamed('/auth');
                     }),
+                    SizedBox(height: displayHeight(context) * 0.075),
+
+                    // Made with love in India message
+                    Row(
+                      children: [
+                        const Text(
+                          "Made with ",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Fira",
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Icon(
+                          Icons.favorite,
+                          size: 13,
+                          color: Colors.pink.shade400,
+                        ),
+                        const Text(
+                          " in India",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Fira",
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ],
                 );
             }
