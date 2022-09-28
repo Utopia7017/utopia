@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/controller/user_controller.dart';
 
 class EditProfileDialogbox extends StatefulWidget {
   String currentName;
@@ -16,7 +19,6 @@ class _EditProfileDialogboxState extends State<EditProfileDialogbox> {
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     nameController = TextEditingController(text: widget.currentName);
     bioController = TextEditingController(text: widget.currentBio);
@@ -24,34 +26,42 @@ class _EditProfileDialogboxState extends State<EditProfileDialogbox> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Center(
-        child: SingleChildScrollView(
-          child: AlertDialog(
-            title: Text("Edit Profile"),
-            actions: [
+    return AlertDialog(
+      title: const Text("Edit Profile"),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
               Padding(
                 padding: const EdgeInsets.only(right: 5, left: 5),
                 child: TextFormField(
                   validator: (value) {
-                  if(value!.isEmpty) {
-                    return "Name cannot be empty";
-                  }
-                  return null;
-
+                    if (value!.isEmpty) {
+                      return "Name cannot be empty";
+                    }
+                    return null;
                   },
                   decoration: InputDecoration(
                     labelText: "Name",
                     border: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white54),
-                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(color: Colors.grey[400]!),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[400]!),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[400]!),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                   controller: nameController,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               Padding(
@@ -61,41 +71,57 @@ class _EditProfileDialogboxState extends State<EditProfileDialogbox> {
                   decoration: InputDecoration(
                     labelText: "Bio",
                     border: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white54),
-                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(color: Colors.grey[400]!),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[400]!),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[400]!),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                   expands: false,
-                  maxLines: null,
+                  maxLines: 2,
                   minLines: null,
-                  maxLength: 150,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 130),
-                child: Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("No"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        if(_formKey.currentState!.validate()){
-
-                        }
-                      },
-                      child: Text("Save Changes"),
-                    ),
-                  ],
+                  maxLength: 250,
                 ),
               ),
             ],
           ),
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text("Cancel",
+              style: TextStyle(fontSize: 13, color: authBackground)),
+        ),
+        Consumer<UserController>(
+          builder: (context, controller, child) {
+            return TextButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  // TODO: call edit profile method from user controller to update user detail
+                  controller.updateProfile(
+                      name: nameController.text, bio: bioController.text);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Updating profile...')));
+                }
+              },
+              child: const Text(
+                "Save",
+                style: TextStyle(fontSize: 13, color: authBackground),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

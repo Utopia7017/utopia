@@ -68,4 +68,9 @@ class User {
   updateSavedArticleList(List<dynamic> list) {
     savedArticles = list;
   }
+
+  updateProfile(String updatedName, String updatedBio) {
+    name = updatedName;
+    bio = updatedBio;
+  }
 }

@@ -19,6 +19,7 @@ class UserController with ChangeNotifier {
   FollowingUserStatus followingUserStatus = FollowingUserStatus.no;
   User? user;
 
+  // set current user
   setUser(String userId) async {
     profileStatus = ProfileStatus.loading;
     final endUrl = 'users/$userId.json';
@@ -34,6 +35,7 @@ class UserController with ChangeNotifier {
     notifyListeners();
   }
 
+  // call this method and provide an user object to create a new user
   createUser(User newUser) async {
     try {
       final Response? response = await _apiServices.put(
@@ -48,7 +50,7 @@ class UserController with ChangeNotifier {
     notifyListeners();
   }
 
-  // This method returns an User object , generally called inside future builder widget as its future.
+  // This method returns an User object.
   Future<User?> getUser(String uid) async {
     Logger logger = Logger("GetUser");
     try {
@@ -165,10 +167,28 @@ class UserController with ChangeNotifier {
     notifyListeners();
   }
 
+  // Update profile -> username and bio
+  updateProfile({required String name, required String bio}) async {
+    Logger logger = Logger("UserController-updateProfile");
+    try {
+      final Response? profileUpdateResponse = await _apiServices
+          .update(endUrl: 'users/${user!.userId}.json', data: {
+        'name': name,
+        'bio': bio,
+      });
+      if (profileUpdateResponse != null) {
+        user!.updateProfile(name, bio);
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    notifyListeners();
+  }
+
   // Saves article id and article author id to the list
   saveArticle({required String authorId, required String articleId}) async {
     Logger logger = Logger("saveArticle");
-    dynamic savedArticle = {'authorId':authorId,'articleId':articleId};
+    dynamic savedArticle = {'authorId': authorId, 'articleId': articleId};
     List<dynamic> savedArticleList = user!.savedArticles;
     savedArticleList.add(savedArticle);
     try {
