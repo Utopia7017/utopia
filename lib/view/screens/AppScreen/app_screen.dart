@@ -59,6 +59,17 @@ class _AppScreenState extends State<AppScreen> {
               },
             ),
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 12.0),
+              child: Image.asset(
+                notificationIcon,
+                width: 20,
+                fit: BoxFit.contain,
+                color: Colors.black,
+              ),
+            )
+          ],
         ),
         backgroundColor: primaryBackgroundColor,
         body: SafeArea(child: ExploreScreen()),
