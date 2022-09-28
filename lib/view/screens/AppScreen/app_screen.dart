@@ -64,7 +64,7 @@ class _AppScreenState extends State<AppScreen> {
               padding: const EdgeInsets.only(right: 12.0),
               child: Image.asset(
                 notificationIcon,
-                width: 20,
+                width: 21,
                 fit: BoxFit.contain,
                 color: Colors.black,
               ),

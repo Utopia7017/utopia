@@ -16,7 +16,7 @@ class ExploreScreen extends StatelessWidget {
   final Logger _logger = Logger("ExploreScreen");
   PageController articlePageController = PageController();
   ItemScrollController articleCategoryController = ItemScrollController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,11 +35,11 @@ class ExploreScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SearchBox(),
-          const SizedBox(height: 14),
+          // const SizedBox(height: 10),
 
           // ArticleCategoryTab(),
           SizedBox(
-              //color: Colors.red.shade100,
+              // color: Colors.red.shade100,
               height: displayHeight(context) * 0.06,
               width: displayWidth(context),
               child: Consumer<ArticlesController>(
@@ -83,8 +83,7 @@ class ExploreScreen extends StatelessWidget {
                 },
               )),
 
-          const SizedBox(height: 10),
-
+          const SizedBox(height: 4),
 
           // List Body to display articles.
           Expanded(

@@ -167,7 +167,8 @@ class _ArticleBoxState extends State<ArticleBox> {
                                           style: const TextStyle(
                                               fontFamily: "Open",
                                               fontWeight: FontWeight.w600,
-                                              fontSize: 15.4,
+                                              letterSpacing: 0.6,
+                                              fontSize: 14.5,
                                               color: Colors.black),
                                         ),
                                         const SizedBox(height: 6),
@@ -177,10 +178,10 @@ class _ArticleBoxState extends State<ArticleBox> {
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               fontFamily: "Fira",
-                                              fontSize: 13.5,
+                                              fontSize: 12.5,
                                               color: Colors.black54),
                                         ),
-                                        const SizedBox(height: 14),
+                                        const SizedBox(height: 12),
                                         Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
