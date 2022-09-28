@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/models/saved_article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/api/api_services.dart';
 
@@ -161,6 +162,47 @@ class UserController with ChangeNotifier {
       logger.shout(error.toString());
     }
     followingUserStatus = FollowingUserStatus.no;
+    notifyListeners();
+  }
+
+  // Saves article id and article author id to the list
+  saveArticle({required String authorId, required String articleId}) async {
+    Logger logger = Logger("saveArticle");
+    dynamic savedArticle = {'authorId':authorId,'articleId':articleId};
+    List<dynamic> savedArticleList = user!.savedArticles;
+    savedArticleList.add(savedArticle);
+    try {
+      final Response? response = await _apiServices.update(
+          endUrl: 'users/${user!.userId}.json',
+          data: {'savedArticles': savedArticleList});
+      if (response != null) {
+        user!.updateSavedArticleList(savedArticleList);
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    notifyListeners();
+  }
+
+  // Unsave the article
+  unSaveArticle({required String authorId, required String articleId}) async {
+    Logger logger = Logger("unSaveArticle");
+
+    List<dynamic> savedArticleList = user!.savedArticles;
+    int indexTobeRemoved = savedArticleList.indexWhere((element) =>
+        (element['articleId'] == articleId && element['authorId'] == authorId));
+
+    savedArticleList.removeAt(indexTobeRemoved);
+    try {
+      final Response? response = await _apiServices.update(
+          endUrl: 'users/${user!.userId}.json',
+          data: {'savedArticles': savedArticleList});
+      if (response != null) {
+        user!.updateSavedArticleList(savedArticleList);
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
     notifyListeners();
   }
 }

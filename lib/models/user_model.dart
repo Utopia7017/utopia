@@ -1,3 +1,5 @@
+import 'saved_article_model.dart';
+
 class User {
   String name;
   String userId;
@@ -7,6 +9,9 @@ class User {
   String dp;
   String bio;
   String cp;
+  List<dynamic> savedArticles;
+  List<dynamic> draftArticles;
+  bool emailVerified;
 
   User(
       {required this.name,
@@ -16,6 +21,9 @@ class User {
       required this.userId,
       required this.bio,
       required this.cp,
+      required this.draftArticles,
+      required this.savedArticles,
+      required this.emailVerified,
       required this.following});
 
   factory User.fromJson(Map<String, dynamic> data) {
@@ -24,9 +32,12 @@ class User {
         cp: data['cp'] ?? '',
         bio: data['bio'] ?? '',
         dp: data['dp'],
+        draftArticles: data['draftArticles'] ?? [],
+        savedArticles: data['savedArticles'] ?? [],
         email: data['email'],
         followers: data['followers'] ?? [],
         userId: data['userId'],
+        emailVerified: data['emailVerified'],
         following: data['following'] ?? []);
   }
 
@@ -40,6 +51,9 @@ class User {
       'userId': userId,
       'followers': followers,
       'following': following,
+      'draftArticles': [],
+      'savedArticles': [],
+      'emailVerified': true,
     };
   }
 
@@ -49,5 +63,9 @@ class User {
 
   changeDisplayPicture(String displayPicture) {
     dp = displayPicture;
+  }
+
+  updateSavedArticleList(List<dynamic> list) {
+    savedArticles = list;
   }
 }

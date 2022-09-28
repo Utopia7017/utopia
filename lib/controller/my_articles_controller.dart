@@ -6,6 +6,8 @@ import 'package:logging/logging.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_body_model.dart';
 import 'package:utopia/models/article_model.dart';
+import 'package:utopia/models/saved_article_model.dart';
+import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/api/api_services.dart';
 import 'package:utopia/services/firebase/storage_service.dart';
 import '../utils/article_body_component.dart';
@@ -16,10 +18,13 @@ class MyArticlesController with ChangeNotifier {
   List<BodyComponent> bodyComponents = [];
   List<Article> publishedArticles = [];
   List<Article> draftArticles = [];
+  List<SavedArticle> savedArticles = [];
+  List<Article> savedArticlesDetails = [];
   FetchingMyArticle fetchingMyArticleStatus = FetchingMyArticle.nil;
   String? category;
   final Logger _logger = Logger("MyArticlesController");
   final ApiServices _apiServices = ApiServices();
+  FetchingSavedArticles fetchingSavedArticlesStatus = FetchingSavedArticles.nil;
 
   // adds a new text field to body component list
   void addTextField() {
@@ -156,24 +161,76 @@ class MyArticlesController with ChangeNotifier {
     fetchingMyArticleStatus = FetchingMyArticle.fetching;
     await Future.delayed(const Duration(milliseconds: 1));
     notifyListeners();
-    try{
+    try {
       List<Article> tempPublished = [];
       List<Article> tempDrafts = [];
-      final Response? response = await _apiServices.get(endUrl: 'articles/$myUid.json');
-      if(response!=null){
-        final Map<String,dynamic> responseData = response.data;
-        for( var article in responseData.values){
+      final Response? response =
+          await _apiServices.get(endUrl: 'articles/$myUid.json');
+      if (response != null) {
+        final Map<String, dynamic> responseData = response.data;
+        for (var article in responseData.values) {
           Article art = Article.fromJson(article);
           tempPublished.add(art);
         }
         publishedArticles = tempPublished;
       }
-    }
-    catch(error){
+    } catch (error) {
       _logger.shout(error.toString());
     }
     fetchingMyArticleStatus = FetchingMyArticle.fetched;
     notifyListeners();
   }
 
+  // Save article -> Article is required
+  saveArticle({required article}) {
+    savedArticlesDetails.add(article);
+    notifyListeners();
+  }
+
+  // Unsave article -> article id and author id are required
+  unsaveArticle({required String authorId, required String articleId}) {
+    int indexOfArticleToRemove = savedArticlesDetails.indexWhere((element) =>
+        (element.articleId == articleId && element.authorId == authorId));
+    savedArticlesDetails.removeAt(indexOfArticleToRemove);
+    notifyListeners();
+  }
+
+  // Fetch details of saved articles (authorId and articleId)
+  fetchSavedArticles(User currentUser) async {
+    fetchingSavedArticlesStatus = FetchingSavedArticles.fetching;
+    await Future.delayed(const Duration(microseconds: 1));
+    notifyListeners();
+    Logger logger = Logger("GetArticleDetail");
+    List<Article> temp = [];
+    try {
+      List<dynamic> savedArticles = currentUser.savedArticles;
+      for (var detail in savedArticles) {
+        Article article = await getArticleDetail(
+            authorId: detail['authorId'], articleId: detail['articleId']);
+        temp.add(article);
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    savedArticlesDetails = temp;
+    fetchingSavedArticlesStatus = FetchingSavedArticles.fetched;
+    notifyListeners();
+  }
+
+  // Returns detail of article, if provided authorId and articleId
+  Future<Article> getArticleDetail(
+      {required String authorId, required String articleId}) async {
+    late Article article;
+    Logger logger = Logger("GetArticleDetail");
+    try {
+      final Response? articleResponse =
+          await _apiServices.get(endUrl: 'articles/$authorId/$articleId.json');
+      if (articleResponse != null) {
+        article = Article.fromJson(articleResponse.data);
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    return article;
+  }
 }
