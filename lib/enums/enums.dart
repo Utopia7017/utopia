@@ -13,3 +13,5 @@ enum UserUploadingImage {loading,notLoading}
 enum FetchingMyArticle {nil,fetching,fetched}
 
 enum FollowingUserStatus {yes,no}
+
+enum FetchingSavedArticles {nil,fetching,fetched}

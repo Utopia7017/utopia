@@ -205,6 +205,9 @@ class SignUpScreen extends StatelessWidget {
                                     UserCredential) {
                                   // successfully created new account
                                   await userController.createUser(user.User(
+                                    draftArticles: [],
+                                    emailVerified: false,
+                                    savedArticles: [],
                                     cp: '',
                                       name: nameController.text,
                                       dp: '',

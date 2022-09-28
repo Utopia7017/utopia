@@ -10,22 +10,18 @@ import 'package:utopia/view/screens/NewArticleScreen/components/article_detail_d
 
 import '../../../utils/article_body_component.dart';
 
-class NewArticleScreen extends StatefulWidget {
+class NewArticleScreen extends StatelessWidget {
   NewArticleScreen({Key? key}) : super(key: key);
 
-  @override
-  State<NewArticleScreen> createState() => _NewArticleScreenState();
-}
-
-class _NewArticleScreenState extends State<NewArticleScreen> {
   final Logger _logger = Logger("NewArticleScreen");
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      // This widget helps us catching the back button press event.
+      // This widget helps us catching the back button press event from the device's navigator.
       onWillPop: () async {
         //TODO: Show dialog box asking user to save draft before navigating back.
+        _logger.info("Going back");
         return true;
       },
       child: Scaffold(
@@ -50,6 +46,7 @@ class _NewArticleScreenState extends State<NewArticleScreen> {
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
+                _logger.info("Going back");
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back),

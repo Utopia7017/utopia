@@ -111,7 +111,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Follower detail box
                     Container(
                       height: displayHeight(context) * 0.08,
@@ -177,7 +177,7 @@ class CustomDrawer extends StatelessWidget {
                     drawerTile('Search articles', searchIcon,
                         () => _logger.info("Search")),
                     drawerTile('Saved articles', saveArticleIcon,
-                        () => _logger.info("Search")),
+                        () => Navigator.pushNamed(context, '/savedArticles')),
                     drawerTile('Notifications', notificationIcon,
                         () => _logger.info("Notifications")),
                     drawerTile('About us', aboutUsIcon,

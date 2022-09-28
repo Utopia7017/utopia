@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/controller/my_articles_controller.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
@@ -125,7 +128,44 @@ class _FloatingButtonForArticleOptionsState
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Image.asset(saveArticleIcon, height: 18),
+              child: Consumer<UserController>(
+                builder: (context, userController, child) {
+                  return Consumer<MyArticlesController>(
+                    builder: (context, myArticleController, child) {
+                      int index = myArticleController.savedArticlesDetails
+                          .indexWhere((element) =>
+                              element.articleId == widget.article.articleId &&
+                              element.authorId == widget.article.authorId);
+
+                      return InkWell(
+                          onTap: () {
+                            if (index != -1) {
+                              // user has already saved this article
+                              // call method to unsave this article
+                              myArticleController.unsaveArticle(
+                                articleId: widget.article.articleId,
+                                authorId: widget.article.authorId,
+                              );
+                              userController.unSaveArticle(
+                                  authorId: widget.article.authorId,
+                                  articleId: widget.article.articleId);
+                            } else {
+                              // user has not saved this article
+                              // call method to save this article
+                              myArticleController.saveArticle(
+                                  article: widget.article);
+                              userController.saveArticle(
+                                  authorId: widget.article.authorId,
+                                  articleId: widget.article.articleId);
+                            }
+                          },
+                          child: Image.asset(
+                              index != -1 ? saveArticleIcon : unsaveArticleIcon,
+                              height: 18));
+                    },
+                  );
+                },
+              ),
             )),
           ],
         ),

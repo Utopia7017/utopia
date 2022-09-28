@@ -76,11 +76,6 @@ class ArticlesController with ChangeNotifier {
         }
       }
 
-      // if (fetchedArticles['For you']!.isNotEmpty) {
-      //   fetchedArticles['For you']!.sort((first, second) =>
-      //       second.articleCreated.compareTo(first.articleCreated));
-      // }
-
       final Response? response =
           await _apiServices.get(endUrl: 'articles.json');
       // fetching articles for categories
