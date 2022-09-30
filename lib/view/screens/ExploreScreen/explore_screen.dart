@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class ExploreScreen extends StatelessWidget {
   final Logger _logger = Logger("ExploreScreen");
   PageController articlePageController = PageController();
   ItemScrollController articleCategoryController = ItemScrollController();
+  
 
   @override
   Widget build(BuildContext context) {
