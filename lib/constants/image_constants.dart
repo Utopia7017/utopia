@@ -29,3 +29,5 @@ const saveArticleIcon = 'assets/icons/save_article_icon.png';
 const unsaveArticleIcon = 'assets/icons/unsave_article_icon.png';
 
 const splashGif = 'assets/images/splash_gif.gif';
+
+const noArticleFoundIcon = 'assets/icons/no_article_found.png';
