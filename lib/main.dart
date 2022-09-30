@@ -12,6 +12,7 @@ import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import 'package:utopia/view/screens/SavedArticlesScreen/saved_article_screen.dart';
+import 'package:utopia/view/screens/SearchScreen/search_screen.dart';
 import 'package:utopia/view/screens/SplashScreen/splash_screen.dart';
 import 'package:utopia/view/screens/UtopiaRoot/utopia_root.dart';
 import 'controller/articles_controller.dart';
@@ -92,6 +93,8 @@ class Utopia extends StatelessWidget {
           '/newArticle': (context) => NewArticleScreen(),
           '/myArticles':(context) => MyArticleScreen(),
           '/savedArticles':(context) => SavedArticlesScreen(),
+          '/search':(context) => SearchScreen(),
+
         },
         // home: Consumer<AuthNotifier>(
         //   builder: (context, notifier, child) {

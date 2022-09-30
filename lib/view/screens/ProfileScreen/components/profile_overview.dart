@@ -9,9 +9,6 @@ import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 
 class ProfileOverView extends StatelessWidget {
-
-  
-
   final space = const SizedBox(height: 10);
   final verticalSpace = VerticalDivider(
     indent: 12,
@@ -43,17 +40,23 @@ class ProfileOverView extends StatelessWidget {
               controller.user!.email,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  fontSize: 14.5,
+                  fontSize: 12.5,
+
                   // fontWeight: FontWeight.bold,
                   color: Colors.blueGrey),
             ),
             space,
             controller.user!.bio.isNotEmpty
-                ? Text(
-                    controller.user!.bio,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                    child: Text(
+                      controller.user!.bio,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black54),
+                    ),
                   )
                 : const SizedBox(),
             controller.user!.bio.isNotEmpty ? space : const SizedBox(),
@@ -99,12 +102,22 @@ class ProfileOverView extends StatelessWidget {
                   ProfileDetailBox(
                       value: controller.user!.following.length,
                       label: "Following",
-                      callback: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => FollowingScreen(user: controller.user!),))),
+                      callback: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FollowingScreen(user: controller.user!),
+                          ))),
                   verticalSpace,
                   ProfileDetailBox(
                       value: controller.user!.followers.length,
                       label: "Followers",
-                      callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowersScreen(user: controller.user!),))),
+                      callback: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FollowersScreen(user: controller.user!),
+                          ))),
                   verticalSpace,
                   ProfileDetailBox(
                       value: 0, label: "Articles", callback: () => null),

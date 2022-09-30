@@ -12,6 +12,10 @@ class ArticlesController with ChangeNotifier {
   final ApiServices _apiServices = ApiServices();
   ArticlesStatus articlesStatus = ArticlesStatus.nil;
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
+  List<Article> searchedArticles = [];
+  List<userModel.User> searchedAuthors = [];
+  bool isSearching = false;
+
   Map<String, List<Article>> articles = {
     'For you': [],
     'Autobiography': [],
@@ -109,6 +113,59 @@ class ArticlesController with ChangeNotifier {
 
   selectCategory(int index) {
     selectedCategory = index;
+    notifyListeners();
+  }
+
+  // search any article, user or articles related to some tags
+  void search(String query) async {
+    List<Article> tempSearchedArticles = [];
+    List<userModel.User> tempSearchUsers = [];
+    Logger logger = Logger("ArticeController - Search");
+    if (query.isEmpty) {
+      searchedArticles = [];
+      searchedAuthors = [];
+      notifyListeners();
+      return;
+    } else {
+      articles.forEach((key, value) {
+        // traverse each category
+
+        if (key != 'For you') {
+          // obviously all the articles in 'For you' category are derived from other categories
+          for (Article art in value) {
+            // traverse each article
+            if (art.category.startsWith(query) || art.title.startsWith(query)) {
+              logger.info("Category = $key , article id = ${art.articleId}");
+              tempSearchedArticles.add(art);
+            } else {
+              // traverse every tag
+              for (dynamic tag in art.tags) {
+                if (tag.toString().startsWith(query)) {
+                  tempSearchedArticles.add(art);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      });
+      try {
+        final Response? userResponse =
+            await _apiServices.get(endUrl: 'users.json');
+        if (userResponse != null) {
+          Map<String, dynamic> userDataMap = userResponse.data;
+          for (var userData in userDataMap.values) {
+            if (userModel.User.fromJson(userData).name.startsWith(query)) {
+              tempSearchUsers.add(userModel.User.fromJson(userData));
+            }
+          }
+        }
+      } catch (error) {
+        logger.shout(error);
+      }
+    }
+    searchedArticles = tempSearchedArticles;
+    searchedAuthors = tempSearchUsers;
     notifyListeners();
   }
 }

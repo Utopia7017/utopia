@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   navigateToHome() async {
     if (mounted) {
       final navigator = Navigator.of(context);
-      await Future.delayed(const Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 2));
       navigator.pushReplacementNamed('/utopiaRoot');
     }
   }

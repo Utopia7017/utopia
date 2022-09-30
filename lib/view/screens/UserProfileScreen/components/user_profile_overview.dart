@@ -45,11 +45,17 @@ class UserProfileOverView extends StatelessWidget {
                   ),
                   space,
                   user.bio.isNotEmpty
-                      ? Text(
-                          user.bio,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                      ? Padding(
+                          padding:
+                              const EdgeInsets.only(left: 25.0, right: 25.0),
+                          child: Text(
+                            user.bio,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black54),
+                          ),
                         )
                       : const SizedBox(),
                   user.bio.isNotEmpty ? space : const SizedBox(),

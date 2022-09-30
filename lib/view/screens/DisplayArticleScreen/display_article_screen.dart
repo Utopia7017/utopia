@@ -19,11 +19,22 @@ class DisplayArticleScreen extends StatefulWidget {
 
 class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
   ScrollController? _hideBottomNavController;
+  String firstLetter = "", lastLetter = "";
   bool? _isVisible;
-  final String myUserId= FirebaseAuth.instance.currentUser!.uid;
+  final String myUserId = FirebaseAuth.instance.currentUser!.uid;
+  List<String> initials = [];
+
   @override
   initState() {
     super.initState();
+    initials = widget.author.name.split(" ");
+    if (initials.length == 1) {
+      firstLetter = initials[0].characters.first;
+    } else {
+      firstLetter = initials[0].characters.first;
+      lastLetter = initials[1].characters.first;
+    }
+
     _isVisible = true;
     _hideBottomNavController = ScrollController();
     _hideBottomNavController!.addListener(
@@ -64,31 +75,52 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
           SliverAppBar(
             title: InkWell(
               onTap: () {
-               if(widget.author.userId != myUserId) {
-                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserProfileScreen(
-                        userId: widget.author.userId,
-                      ),
-                    ));
-               }
+                if (widget.author.userId != myUserId) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserProfileScreen(
+                          userId: widget.author.userId,
+                        ),
+                      ));
+                }
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo'),
-                  ),
+                  (widget.author.dp.isEmpty)
+                      ? CircleAvatar(
+                          backgroundColor: authMaterialButtonColor,
+                          child: Center(
+                            child: initials.length > 1
+                                ? Text(
+                                    "$firstLetter.$lastLetter".toUpperCase(),
+                                    style: const TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  )
+                                : Text(
+                                    firstLetter.toUpperCase(),
+                                    style: const TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  ),
+                          ),
+                        )
+                      : CircleAvatar(
+                          backgroundImage:
+                              CachedNetworkImageProvider(widget.author.dp),
+                        ),
                   const SizedBox(
-                    width: 6,
+                    width: 8,
                   ),
                   Text(
                     widget.author.name,
                     style: const TextStyle(
                         color: Colors.black,
-                        fontSize: 16,
+                        fontSize: 14.5,
                         fontFamily: "Fira",
                         fontWeight: FontWeight.normal),
                   ),
@@ -100,13 +132,12 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
             iconTheme: const IconThemeData(color: Colors.black),
             actions: [
               // Options
-               PopupMenuButton(
-                  itemBuilder: (BuildContext context) => [
-                    PopupMenuItem(child: Text('Report Article')),
-                    PopupMenuItem(child: Text('Block Author')),
-                    
-
-                  ],),
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(child: Text('Report Article')),
+                  PopupMenuItem(child: Text('Block Author')),
+                ],
+              ),
             ],
             pinned: false,
             snap: false,
