@@ -133,14 +133,19 @@ class ArticlesController with ChangeNotifier {
         if (key != 'For you') {
           // obviously all the articles in 'For you' category are derived from other categories
           for (Article art in value) {
+          
             // traverse each article
-            if (art.category.startsWith(query) || art.title.startsWith(query)) {
+            if (art.category.toLowerCase().startsWith(query.toLowerCase())
+             ||  ( query.length>=4  && art.title.toLowerCase().contains(query.toLowerCase())  )
+             
+             
+             ) {
               logger.info("Category = $key , article id = ${art.articleId}");
               tempSearchedArticles.add(art);
             } else {
               // traverse every tag
               for (dynamic tag in art.tags) {
-                if (tag.toString().startsWith(query)) {
+                if (tag.toString().length>=4 && tag.toString().toLowerCase().startsWith(query.toLowerCase())) {
                   tempSearchedArticles.add(art);
                   break;
                 }
@@ -155,7 +160,7 @@ class ArticlesController with ChangeNotifier {
         if (userResponse != null) {
           Map<String, dynamic> userDataMap = userResponse.data;
           for (var userData in userDataMap.values) {
-            if (userModel.User.fromJson(userData).name.startsWith(query)) {
+            if (userModel.User.fromJson(userData).name.toLowerCase().startsWith(query.toLowerCase())) {
               tempSearchUsers.add(userModel.User.fromJson(userData));
             }
           }
