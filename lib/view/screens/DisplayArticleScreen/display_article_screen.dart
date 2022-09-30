@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart' as usermodel;
+import 'package:utopia/view/common_ui/display_full_image.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'components/floating_button_for_article_options.dart';
 
@@ -174,22 +175,27 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                     return Padding(
                       padding: const EdgeInsets.only(
                           bottom: 12.0, left: 20, right: 20),
-                      child: CachedNetworkImage(
-                        imageUrl: widget.article.body[index]['image']!,
-                        placeholder: (context, url) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: authMaterialButtonColor,
-                            ),
-                          );
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder:  (context) => DisplayFullImage(imageurl: widget.article.body[index]['image']!),));
                         },
-                        errorWidget: (context, url, error) {
-                          return const Text(
-                            "Could not load image",
-                            style:
-                                TextStyle(color: Colors.black87, fontSize: 10),
-                          );
-                        },
+                        child: CachedNetworkImage(
+                          imageUrl: widget.article.body[index]['image']!,
+                          placeholder: (context, url) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: authMaterialButtonColor,
+                              ),
+                            );
+                          },
+                          errorWidget: (context, url, error) {
+                            return const Text(
+                              "Could not load image",
+                              style:
+                                  TextStyle(color: Colors.black87, fontSize: 10),
+                            );
+                          },
+                        ),
                       ),
                     );
                   default:
