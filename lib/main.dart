@@ -10,6 +10,7 @@ import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
+import 'package:utopia/view/screens/NotificationScreen/notification_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import 'package:utopia/view/screens/SavedArticlesScreen/saved_article_screen.dart';
 import 'package:utopia/view/screens/SearchScreen/search_screen.dart';
@@ -51,9 +52,9 @@ class Utopia extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MultiProvider(
       providers: [
         // Auth Controllers
@@ -84,24 +85,20 @@ class Utopia extends StatelessWidget {
         navigatorKey: GlobalContext.contextKey, // global context
         debugShowCheckedModeBanner: false,
         routes: {
-          '/utopiaRoot':(context) => UtopiaRoot(),
+          '/utopiaRoot': (context) => UtopiaRoot(),
           '/auth': (context) => const AuthScreen(),
           '/login': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
           '/app': (context) => AppScreen(),
           '/profile': (context) => const ProfileScreen(),
           '/newArticle': (context) => NewArticleScreen(),
-          '/myArticles':(context) => MyArticleScreen(),
-          '/savedArticles':(context) => SavedArticlesScreen(),
-          '/search':(context) => SearchScreen(),
-
+          '/myArticles': (context) => MyArticleScreen(),
+          '/savedArticles': (context) => SavedArticlesScreen(),
+          '/search': (context) => SearchScreen(),
+          '/notifications': (context) => NotificationScreen()
         },
-        // home: Consumer<AuthNotifier>(
-        //   builder: (context, notifier, child) {
-        //     return notifier.user != null ? AppScreen() : const Wrapper();
-        //   },
-        // ),
-        home: SplashScreen(),
+
+        home: const SplashScreen(),
       ),
     );
   }

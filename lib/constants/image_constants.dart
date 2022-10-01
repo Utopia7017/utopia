@@ -31,3 +31,5 @@ const unsaveArticleIcon = 'assets/icons/unsave_article_icon.png';
 const splashGif = 'assets/images/splash_gif.gif';
 
 const noArticleFoundIcon = 'assets/icons/no_article_found.png';
+
+const noUserFoundIcon = 'assets/icons/no_user_found.png';

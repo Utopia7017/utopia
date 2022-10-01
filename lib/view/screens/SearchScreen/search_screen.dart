@@ -63,7 +63,10 @@ class _SearchScreenState extends State<SearchScreen>
                           });
                         },
                         cursorColor: Colors.black87,
+                        style: const TextStyle(fontSize: 14),
                         decoration: InputDecoration(
+                            hintText: "Search articles, users and tags",
+                            hintStyle: const TextStyle(fontSize: 13.5),
                             contentPadding: EdgeInsets.zero,
                             prefixIcon: const Icon(
                               Icons.search,
@@ -119,8 +122,10 @@ class _SearchScreenState extends State<SearchScreen>
                             ),
                             const SizedBox(height: 20),
                             const Text(
-                              "Sorry ! No article found",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              "No article found",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Open"),
                             ),
                           ],
                         ),
@@ -136,80 +141,101 @@ class _SearchScreenState extends State<SearchScreen>
                       ),
 
                 // Display searched authors
-                ListView.builder(
-                  padding: EdgeInsets.only(top: displayHeight(context) * 0.07),
-                  itemCount: controller.searchedAuthors.length,
-                  itemBuilder: (context, index) {
-                    List<String> initials =
-                        controller.searchedAuthors[index].name.split(" ");
-                    String firstLetter = "", lastLetter = "";
-
-                    if (initials.length == 1) {
-                      firstLetter = initials[0].characters.first;
-                    } else {
-                      firstLetter = initials[0].characters.first;
-                      lastLetter = initials[1].characters.first;
-                    }
-                    return ListTile(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UserProfileScreen(
-                                  userId:
-                                      controller.searchedAuthors[index].userId),
-                            ));
-                      },
-                      leading: (controller.searchedAuthors[index].dp.isEmpty)
-                          ? CircleAvatar(
-                              backgroundColor: authMaterialButtonColor,
-                              child: Center(
-                                child: initials.length > 1
-                                    ? Text(
-                                        "$firstLetter.$lastLetter"
-                                            .toUpperCase(),
-                                        style: const TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white),
-                                      )
-                                    : Text(
-                                        firstLetter.toUpperCase(),
-                                        style: const TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white),
-                                      ),
-                              ),
-                            )
-                          : CircleAvatar(
-                              backgroundImage: CachedNetworkImageProvider(
-                                  controller.searchedAuthors[index].dp),
+                (controller.searchedAuthors.isEmpty)
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              noUserFoundIcon,
+                              height: displayHeight(context) * 0.1,
                             ),
-                      title: Text(controller.searchedAuthors[index].name),
-                      dense: true,
-                      trailing: MaterialButton(
-                        onPressed: () {},
-                        height: 30,
-                        color: authBackground,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "No users found",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Open"),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          (controller.searchedAuthors[index].followers
-                                  .contains(currentUserId))
-                              ? 'Following'
-                              : 'Follow',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                )
+                      )
+                    : ListView.builder(
+                        padding:
+                            EdgeInsets.only(top: displayHeight(context) * 0.07),
+                        itemCount: controller.searchedAuthors.length,
+                        itemBuilder: (context, index) {
+                          List<String> initials =
+                              controller.searchedAuthors[index].name.split(" ");
+                          String firstLetter = "", lastLetter = "";
+
+                          if (initials.length == 1) {
+                            firstLetter = initials[0].characters.first;
+                          } else {
+                            firstLetter = initials[0].characters.first;
+                            lastLetter = initials[1].characters.first;
+                          }
+                          return ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UserProfileScreen(
+                                        userId: controller
+                                            .searchedAuthors[index].userId),
+                                  ));
+                            },
+                            leading: (controller
+                                    .searchedAuthors[index].dp.isEmpty)
+                                ? CircleAvatar(
+                                    backgroundColor: authMaterialButtonColor,
+                                    child: Center(
+                                      child: initials.length > 1
+                                          ? Text(
+                                              "$firstLetter.$lastLetter"
+                                                  .toUpperCase(),
+                                              style: const TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            )
+                                          : Text(
+                                              firstLetter.toUpperCase(),
+                                              style: const TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            ),
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        controller.searchedAuthors[index].dp),
+                                  ),
+                            title: Text(controller.searchedAuthors[index].name),
+                            dense: true,
+                            trailing: MaterialButton(
+                              onPressed: () {},
+                              height: 30,
+                              color: authBackground,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                (controller.searchedAuthors[index].followers
+                                        .contains(currentUserId))
+                                    ? 'Following'
+                                    : 'Follow',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )
               ],
             );
           },
