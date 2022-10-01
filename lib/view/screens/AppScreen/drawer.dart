@@ -175,11 +175,11 @@ class CustomDrawer extends StatelessWidget {
                     drawerTile('My articles', myArticlesIcon,
                         () => Navigator.pushNamed(context, '/myArticles')),
                     drawerTile('Search articles', searchIcon,
-                        () => _logger.info("Search")),
+                        () => Navigator.pushNamed(context, '/search')),
                     drawerTile('Saved articles', saveArticleIcon,
                         () => Navigator.pushNamed(context, '/savedArticles')),
                     drawerTile('Notifications', notificationIcon,
-                        () => _logger.info("Notifications")),
+                        () => Navigator.pushNamed(context, '/notifications')),
                     drawerTile('About us', aboutUsIcon,
                         () => _logger.info("Notifications")),
                     drawerTile('Logout', logoutIcon, () async {
