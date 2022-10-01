@@ -147,4 +147,22 @@ Please go through the contribution guide before raising any pull request.
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 
+## Running the project with Firebase
+
+- Create a new project with the Firebase console.
+- Add Android app in the Firebase project settings.
+- On Android, use `com.utopia.prod` as the package name.
+- then, [download and copy](https://firebase.google.com/docs/flutter/setup#configure_an_android_app) `google-services.json` into `android/app`.
+
+
+See this document for full instructions:
+- [https://firebase.google.com/docs/flutter/setup](https://firebase.google.com/docs/flutter/setup) 
+
+## Setting up Firebase for backend services (Authentication , database and storage )
+
+- Go to Firebase authentication section and enable Email/Password method for authentication
+- Go to Firebase Realtime database and create a new database in test mode . Copy the API url and paste it into `lib/utils/constants.dart` . 
+- Go to Firebase Firestore database and create a new database in test mode.
+- Go to Firebase Firestore Storage and create a new database in test mode.
+
 ### Dont forget to :star: the repo
