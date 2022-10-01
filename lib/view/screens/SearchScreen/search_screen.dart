@@ -12,7 +12,9 @@ import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  //final usermodel.User searchedAuthors;
+  const SearchScreen({super.key, });
+ 
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -23,6 +25,7 @@ class _SearchScreenState extends State<SearchScreen>
   late TabController _tabController;
 
   final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  final String myUserId = FirebaseAuth.instance.currentUser!.uid;
 
   Timer? _debounce;
 
@@ -177,13 +180,15 @@ class _SearchScreenState extends State<SearchScreen>
                           }
                           return ListTile(
                             onTap: () {
-                              Navigator.push(
+                              if(controller.searchedAuthors[index].userId != myUserId) {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => UserProfileScreen(
                                         userId: controller
                                             .searchedAuthors[index].userId),
                                   ));
+                              }
                             },
                             leading: (controller
                                     .searchedAuthors[index].dp.isEmpty)
