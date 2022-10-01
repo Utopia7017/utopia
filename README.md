@@ -1,6 +1,10 @@
 # Utopia
 ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white) ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
 
+## About the app
+
+A blogging application where users can publish their blogs and articles and can connect with other authors, developed using Flutter and Firebase.
+
 ## Snaphots                                              
 <img src = "snaps/1.png" height = "400em" /> | <img src = "snaps/2.png" height = "400em" /> | <img src = "snaps/3.png" height = "400em" /> | <img src = "snaps/4.png" height = "400em" /> | <img src = "snaps/5.png" height = "400em"/> | <img src = "snaps/6.png" height = "400em"/> | <img src = "snaps/7.png" height = "400em"/> 
 
@@ -35,6 +39,9 @@ Use of this software under any "non-free" license is NOT permitted.
 * Fork the the project
 * Clone the repository to your local machine 
 * Create and checkout a new branch (name of the branch should be meaningful)
+* Create a new file named '.env' without quotes inside the root directory.
+* Inside the .env file , add this single line:
+* `baseUrl = https://some-api-url-provided-by-firebase-realtime-db` 
 
 ## Running the project with Firebase
 
@@ -50,9 +57,15 @@ See this document for full instructions:
 ## Setting up Firebase for backend services (Authentication , database and storage )
 
 - Go to Firebase authentication section and enable Email/Password method for authentication
-- Go to Firebase Realtime database and create a new database in test mode . Copy the API url and paste it into `lib/utils/constants.dart` . 
+- Go to Firebase Realtime database and create a new database in test mode . Copy the API url and paste it into `.env` file you just created . 
 - Go to Firebase Firestore database and create a new database in test mode.
 - Go to Firebase Firestore Storage and create a new database in test mode.
+
+## Issues
+Please file specific issues, bugs, or feature requests in our issues section.
+
+## Contribution
+Please go through the contribution guide before raising any pull request.
 
 ## Project Admin
 <table>
