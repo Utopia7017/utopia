@@ -1,16 +1,39 @@
-# utopia
+# Utopia
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white) ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
 
-A new Flutter project.
+## Snaphots                                              
+<img src = "snaps/1.png" height = "400em" /> | <img src = "snaps/2.png" height = "400em" /> | <img src = "snaps/3.png" height = "400em" /> | <img src = "snaps/4.png" height = "400em" /> | <img src = "snaps/5.png" height = "400em"/> | <img src = "snaps/6.png" height = "400em"/> | <img src = "snaps/7.png" height = "400em"/> 
 
-## Getting Started
+## License
+```
+Copyright © 2022 Utopia
 
-This project is a starting point for a Flutter application.
+Being Open Source doesn't mean you can just make a copy of the app and upload it on playstore or sell
+a closed source copy of the same.
+Read the following carefully:
+1. Any copy of a software under GPL must be under same license. So you can't upload the app on a closed source
+  app repository like PlayStore/AppStore without distributing the source code.
+2. You can't sell any copied/modified version of the app under any "non-free" license.
+   You must provide the copy with the original software or with instructions on how to obtain original software,
+   should clearly state all changes, should clearly disclose full source code, should include same license
+   and all copyrights should be retained.
 
-A few resources to get you started if this is your first Flutter project:
+In simple words, You can ONLY use the source code of this app for `Open Source` Project under `GPL v3.0` or later
+with all your source code CLEARLY DISCLOSED on any code hosting platform like GitHub, with clear INSTRUCTIONS on
+how to obtain the original software, should clearly STATE ALL CHANGES made and should RETAIN all copyrights.
+Use of this software under any "non-free" license is NOT permitted.
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Requirements
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* Dart sdk: ">=2.18.0
+* [Flutter ">=3.3.1"](https://flutter.dev/docs/get-started/install)
+* Android: minSdkVersion 23 and add support for androidx (see AndroidX Migration to migrate an existing app)
+
+## Get Started
+
+* Fork the the project
+* Clone the repository to your local machine 
+* Create and checkout a new branch (name of the branch should be meaningful)
+
+### Dont forget to :star: the repo
