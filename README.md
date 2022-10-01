@@ -113,4 +113,32 @@ See this document for full instructions:
 - Go to Firebase Firestore database and create a new database in test mode.
 - Go to Firebase Firestore Storage and create a new database in test mode.
 
+## Project Admin
+<table>
+ <tr>
+    <td align="center"><a href="https://github.com/Alpha17-2"><img src="https://avatars.githubusercontent.com/u/57010722?s=400&u=f074055ac1b88828c9baf37cd97b8f0e2a4e8c6c&v=4" width="100px;" alt=""/><br /><sub><b>Subhojeet Sahoo</b></sub></a><br /><a href="https://github.com/Alpha17-2" title="Code">💻</a></td>
+     
+  </tr>
+</table>
+
+## Project Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Alpha17-2"><img src="https://avatars.githubusercontent.com/u/57010722?s=400&u=f074055ac1b88828c9baf37cd97b8f0e2a4e8c6c&v=4" width="100px;" alt=""/><br /><sub><b>Subhojeet Sahoo</b></sub></a><br /><a href="https://github.com/Alpha17-2" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Abhi-kr21"><img src="https://avatars.githubusercontent.com/u/108072849?v=4" width="100px;" alt=""/><br /><sub><b>Abhishek Kumar</b></sub></a><br /><a href="https://github.com/Abhi-kr21" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/kaizer111"><img src="https://avatars.githubusercontent.com/u/83655499?v=4" width="100px;" alt=""/><br /><sub><b>Vishal Kumar</b></sub></a><br /><a href="https://github.com/kaizer111" title="Code">💻</a></td>
+    
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+
 ### Dont forget to :star: the repo
