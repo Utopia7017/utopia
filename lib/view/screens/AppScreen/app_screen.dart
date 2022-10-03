@@ -62,11 +62,14 @@ class _AppScreenState extends State<AppScreen> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
-              child: Image.asset(
-                notificationIcon,
-                width: 21,
-                fit: BoxFit.contain,
-                color: Colors.black,
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(context, '/notifications'),
+                child: Image.asset(
+                  notificationIcon,
+                  width: 21,
+                  fit: BoxFit.contain,
+                  color: Colors.black,
+                ),
               ),
             )
           ],

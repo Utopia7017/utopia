@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
+import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart';
 

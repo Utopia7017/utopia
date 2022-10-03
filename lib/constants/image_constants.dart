@@ -33,3 +33,7 @@ const splashGif = 'assets/images/splash_gif.gif';
 const noArticleFoundIcon = 'assets/icons/no_article_found.png';
 
 const noUserFoundIcon = 'assets/icons/no_user_found.png';
+
+const notificationLargeIcon = 'assets/icons/notification_large_icon.png';
+
+const notificationLikeIcon = 'assets/icons/notification_like.png';
