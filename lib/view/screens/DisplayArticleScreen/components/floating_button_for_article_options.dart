@@ -6,6 +6,7 @@ import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
+import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
@@ -71,6 +72,10 @@ class _FloatingButtonForArticleOptionsState
                                 });
                                 await likeArticle(
                                     widget.article.articleId, myUserId);
+                                notifyUserWhenLikedArticle(
+                                    myUserId,
+                                    widget.article.authorId,
+                                    widget.article.articleId);
                                 setState(() {
                                   loadingForLikeProcess = false;
                                 });
