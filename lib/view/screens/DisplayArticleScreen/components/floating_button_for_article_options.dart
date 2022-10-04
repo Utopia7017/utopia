@@ -121,6 +121,7 @@ class _FloatingButtonForArticleOptionsState
                         MaterialPageRoute(
                           builder: (context) => CommentScreen(
                             articleId: widget.article.articleId,
+                            authorId: widget.article.authorId,
                           ),
                         ));
                   },

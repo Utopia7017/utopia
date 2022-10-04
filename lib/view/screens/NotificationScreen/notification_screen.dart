@@ -1,54 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 
 import 'package:utopia/models/user_model.dart' as user;
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/view/screens/NotificationScreen/components/box_for_comment_notif.dart';
+import 'package:utopia/view/screens/NotificationScreen/components/box_for_like_notif.dart';
 
 class NotificationScreen extends StatelessWidget {
   // Notification box
-  Widget boxForLikeNotification(String type, String notifierDp,
-      String notifierName, String notifierId, Timestamp time) {
-    String createdOn = timeago.format(time.toDate());
-
-    RichText title = RichText(
-        text: TextSpan(children: [
-      TextSpan(
-          text: notifierName,
-          style: TextStyle(
-              color: Colors.blue.shade700,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.3)),
-      const TextSpan(
-          text: " liked your article",
-          style: TextStyle(
-              fontSize: 13.2, color: Colors.black54, letterSpacing: 0.35)),
-    ]));
-    return ListTile(
-      leading: CachedNetworkImage(
-        imageUrl: notifierDp,
-        fit: BoxFit.fitWidth,
-        height: 45,
-        width: 40,
-      ),
-      title: Padding(padding: const EdgeInsets.only(bottom: 4.0), child: title),
-      subtitle: Text(
-        createdOn,
-        style: const TextStyle(
-            fontSize: 11.5,
-            color: Colors.grey,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Open"),
-      ),
-      trailing:
-          Image.asset(notificationLikeIcon, height: 25, fit: BoxFit.cover),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,21 +49,30 @@ class NotificationScreen extends StatelessWidget {
                               case 'like':
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: boxForLikeNotification(
-                                    notificationSnapshot.data.docs[index]
-                                        ['type'],
-                                    notifierUserSnapshot
+                                  child: BoxForLikeNotification(
+                                   
+                                    notifierDp: notifierUserSnapshot
                                         .data!.dp, // dp of the user
-                                    notifierUserSnapshot
+                                    notifierName: notifierUserSnapshot
                                         .data!.name, // name of the user
-                                    notifierUserSnapshot.data!
+                                    notifierId: notifierUserSnapshot.data!
                                         .userId, // user id of the user who has done something
-                                    notificationSnapshot.data.docs[index][
+                                    time: notificationSnapshot.data.docs[index][
                                         'createdOn'], // date when this notification was created
                                   ),
                                 );
                               case 'comment':
-                                return Text('Comment box');
+                                return BoxForCommentNotification(
+                                     notifierDp: notifierUserSnapshot
+                                        .data!.dp, // dp of the user
+                                    notifierName: notifierUserSnapshot
+                                        .data!.name, // name of the user
+                                    notifierId: notifierUserSnapshot.data!
+                                        .userId, // user id of the user who has done something
+                                    time: notificationSnapshot.data.docs[index][
+                                        'createdOn'], 
+                                    
+                                   );
                               case 'follow':
                                 return Text('Follow');
                               default:

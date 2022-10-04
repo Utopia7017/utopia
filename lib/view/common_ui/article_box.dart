@@ -301,6 +301,9 @@ class _ArticleBoxState extends State<ArticleBox> {
                                                           articleId: widget
                                                               .article!
                                                               .articleId,
+                                                          authorId: widget
+                                                              .article!
+                                                              .authorId,
                                                         ),
                                                       ));
                                                 },

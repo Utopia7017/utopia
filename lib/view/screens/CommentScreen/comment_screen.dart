@@ -11,7 +11,8 @@ import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart'
 
 class CommentScreen extends StatelessWidget {
   final String articleId;
-  CommentScreen({required this.articleId});
+  final String authorId;
+  CommentScreen({required this.articleId, required this.authorId});
   final formKey = GlobalKey<FormState>();
   String myUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController commentController = TextEditingController();
@@ -30,11 +31,16 @@ class CommentScreen extends StatelessWidget {
         builder: (context, controller, child) {
           return CommentBox(
             sendButtonMethod: () async {
+              // add the comment to firestore db
               await addComment(
                   articleId: articleId,
                   comment: commentController.text,
                   createdAt: DateTime.now().toString(),
                   userId: myUserId);
+
+              // notify the user
+              notifyUserWhenCommentOnArticle(
+                  myUserId, authorId, articleId, commentController.text);
               commentController.clear();
             },
             withBorder: true,
@@ -46,8 +52,7 @@ class CommentScreen extends StatelessWidget {
             backgroundColor: Colors.white,
             formKey: formKey,
             textColor: Colors.black87,
-            userImage: controller.user != null &&
-                    controller.user!.dp.isNotEmpty
+            userImage: controller.user != null && controller.user!.dp.isNotEmpty
                 ? controller.user!.dp
                 : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
             child: StreamBuilder(
@@ -59,12 +64,12 @@ class CommentScreen extends StatelessWidget {
               builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   dynamic commentData = snapshot.data.docs;
-                  return ListComments(commentData: commentData,);
+                  return ListComments(
+                    commentData: commentData,
+                  );
                 } else {
                   return const Center(
-                    child: CircularProgressIndicator(
-                      
-                    ),
+                    child: CircularProgressIndicator(),
                   );
                 }
               },
