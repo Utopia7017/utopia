@@ -37,3 +37,5 @@ const noUserFoundIcon = 'assets/icons/no_user_found.png';
 const notificationLargeIcon = 'assets/icons/notification_large_icon.png';
 
 const notificationLikeIcon = 'assets/icons/notification_like.png';
+
+const notificationCommentIcon = 'assets/icons/notification_comment.png';

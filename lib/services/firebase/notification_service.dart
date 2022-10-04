@@ -46,7 +46,6 @@ addComment(
       .update({'commentId': docId.id});
 }
 
-
 notifyUserWhenLikedArticle(
     String currentUserId, String userId, String articleId) async {
   var notificationDB = FirebaseFirestore.instance
@@ -57,8 +56,30 @@ notifyUserWhenLikedArticle(
   Notification notification = Notification(
       notificationId: '',
       notifierId: currentUserId,
-      read: false,articleId: articleId,
+      read: false,
+      articleId: articleId,
       type: 'like',
+      createdOn: DateTime.now());
+
+  var response = await notificationDB.add(notification.toJson());
+
+  await notificationDB.doc(response.id).update({'notificationId': response.id});
+}
+
+notifyUserWhenCommentOnArticle(
+    String currentUserId, String userId, String articleId,String? comment) async {
+  var notificationDB = FirebaseFirestore.instance
+      .collection('notifications')
+      .doc(userId)
+      .collection('notification');
+
+  Notification notification = Notification(
+      notificationId: '',
+      comment: comment,
+      notifierId: currentUserId,
+      read: false,
+      articleId: articleId,
+      type: 'comment',
       createdOn: DateTime.now());
 
   var response = await notificationDB.add(notification.toJson());
