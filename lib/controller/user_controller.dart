@@ -8,6 +8,7 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/saved_article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/api/api_services.dart';
+import 'package:utopia/services/firebase/notification_service.dart';
 
 import '../services/firebase/storage_service.dart';
 
@@ -127,6 +128,7 @@ class UserController with ChangeNotifier {
             endUrl: 'users/${user!.userId}.json',
             data: {'following': myFollowings});
         user!.following = myFollowings;
+        notifyUserWhenFollowedUser(user!.userId, userId);
       }
     } catch (error) {
       logger.shout(error.toString());

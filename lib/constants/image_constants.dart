@@ -39,3 +39,5 @@ const notificationLargeIcon = 'assets/icons/notification_large_icon.png';
 const notificationLikeIcon = 'assets/icons/notification_like.png';
 
 const notificationCommentIcon = 'assets/icons/notification_comment.png';
+
+const notificationFollowIcon = 'assets/icons/notification_follow.png';
