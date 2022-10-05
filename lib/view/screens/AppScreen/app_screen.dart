@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/view/screens/AppScreen/drawer.dart';
+import 'package:utopia/view/screens/AppScreen/components/notification_bell.dart';
+import 'package:utopia/view/screens/Drawer/drawer.dart';
 import 'package:utopia/view/screens/ExploreScreen/explore_screen.dart';
 import '../../../constants/color_constants.dart';
 
@@ -63,14 +64,8 @@ class _AppScreenState extends State<AppScreen> {
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
               child: InkWell(
-                onTap: () => Navigator.pushNamed(context, '/notifications'),
-                child: Image.asset(
-                  notificationIcon,
-                  width: 21,
-                  fit: BoxFit.contain,
-                  color: Colors.black,
-                ),
-              ),
+                  onTap: () => Navigator.pushNamed(context, '/notifications'),
+                  child: NotificationBell()),
             )
           ],
         ),
