@@ -78,6 +78,8 @@ class NotificationScreen extends StatelessWidget {
                                   return Column(
                                     children: [
                                       BoxForLikeNotification(
+                                        articleId: notificationSnapshot
+                                            .data.docs[index]['articleId'],
                                         notifierDp: notifierUserSnapshot
                                             .data!.dp, // dp of the user
                                         notifierName: notifierUserSnapshot
@@ -95,6 +97,8 @@ class NotificationScreen extends StatelessWidget {
                                   return Column(
                                     children: [
                                       BoxForCommentNotification(
+                                        articleId: notificationSnapshot
+                                            .data.docs[index]['articleId'],
                                         notifierDp: notifierUserSnapshot
                                             .data!.dp, // dp of the user
                                         notifierName: notifierUserSnapshot
