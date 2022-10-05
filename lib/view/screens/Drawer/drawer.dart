@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -178,10 +179,57 @@ class CustomDrawer extends StatelessWidget {
                         () => Navigator.pushNamed(context, '/search')),
                     drawerTile('Saved articles', saveArticleIcon,
                         () => Navigator.pushNamed(context, '/savedArticles')),
-                    drawerTile('Notifications', notificationIcon,
-                        () => Navigator.pushNamed(context, '/notifications')),
+
+                    // Notification count
+
+                    ListTile(
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/notifications'),
+                      contentPadding: EdgeInsets.zero,
+                      leading: Image.asset(
+                        notificationIcon,
+                        height: 20,
+                        color: Colors.grey,
+                      ),
+                      visualDensity: const VisualDensity(vertical: -2),
+                      minLeadingWidth: 1,
+                      title: const Text(
+                        'Notifications',
+                        style: TextStyle(
+                            fontSize: 13.5,
+                            color: Colors.white,
+                            fontFamily: "Fira",
+                            letterSpacing: 0.6),
+                      ),
+                      trailing: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('notifications')
+                            .doc(controller.user!.userId)
+                            .collection('notification')
+                            .orderBy('createdOn', descending: true)
+                            .snapshots(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            int numberOfNewNotification =
+                                snapshot.data.docs.length;
+                            return CircleAvatar(
+                              radius: 9,
+                              backgroundColor: Colors.red.shade400,
+                              child: Text(
+                                numberOfNewNotification.toString(),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              ),
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        },
+                      ),
+                    ),
+
                     drawerTile('About us', aboutUsIcon,
-                        () => _logger.info("Notifications")),
+                        () => _logger.info("About us")),
                     drawerTile('Logout', logoutIcon, () async {
                       final navigator = Navigator.of(context);
                       await _auth.signOut();

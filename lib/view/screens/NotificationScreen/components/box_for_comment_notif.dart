@@ -35,6 +35,7 @@ class BoxForCommentNotification extends StatelessWidget {
               fontSize: 13.2, color: Colors.black54, letterSpacing: 0.35)),
     ]));
     String createdOn = timeago.format(time.toDate());
+    
     return ListTile(
       leading: CachedNetworkImage(
         imageUrl: notifierDp,
@@ -42,7 +43,8 @@ class BoxForCommentNotification extends StatelessWidget {
         height: 45,
         width: 40,
       ),
-      title: Padding(padding: const EdgeInsets.only(bottom: 4.0), child: title),
+      title: Padding(
+          padding: const EdgeInsets.only(bottom: 4.0, top: 4), child: title),
       // isThreeLine: true,
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
