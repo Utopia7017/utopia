@@ -1,8 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
+import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class BoxForCommentNotification extends StatelessWidget {
   final String notifierDp;
@@ -10,6 +14,7 @@ class BoxForCommentNotification extends StatelessWidget {
   final String notifierId;
   final Timestamp time;
   final String comment;
+  final String articleId;
 
   BoxForCommentNotification(
       {super.key,
@@ -17,6 +22,7 @@ class BoxForCommentNotification extends StatelessWidget {
       required this.notifierName,
       required this.notifierId,
       required this.comment,
+      required this.articleId,
       required this.time});
 
   @override
@@ -45,13 +51,49 @@ class BoxForCommentNotification extends StatelessWidget {
       lastLetter = initials[1].characters.first;
     }
     String createdOn = timeago.format(time.toDate());
-    
+
     return ListTile(
-      leading: CachedNetworkImage(
-        imageUrl: notifierDp,
-        fit: BoxFit.fitWidth,
-        height: 45,
-        width: 40,
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CommentScreen(
+                  articleId: articleId,
+                  authorId: FirebaseAuth.instance.currentUser!.uid))),
+      leading: InkWell(
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserProfileScreen(userId: notifierId),
+            )),
+        child: (notifierDp.isEmpty)
+            ? Container(
+                height: 40,
+                width: 35,
+                color: authMaterialButtonColor,
+                child: Center(
+                  child: initials.length > 1
+                      ? Text(
+                          "$firstLetter.$lastLetter".toUpperCase(),
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
+                        )
+                      : Text(
+                          firstLetter.toUpperCase(),
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white),
+                        ),
+                ),
+              )
+            : CachedNetworkImage(
+                imageUrl: notifierDp,
+                fit: BoxFit.fitWidth,
+                height: 45,
+                width: 40,
+              ),
       ),
       title: Padding(
           padding: const EdgeInsets.only(bottom: 4.0, top: 4), child: title),
