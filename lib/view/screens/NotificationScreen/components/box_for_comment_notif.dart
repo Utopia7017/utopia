@@ -9,12 +9,14 @@ class BoxForCommentNotification extends StatelessWidget {
   final String notifierName;
   final String notifierId;
   final Timestamp time;
+  final String comment;
 
   BoxForCommentNotification(
       {super.key,
       required this.notifierDp,
       required this.notifierName,
       required this.notifierId,
+      required this.comment,
       required this.time});
 
   @override
@@ -41,13 +43,31 @@ class BoxForCommentNotification extends StatelessWidget {
         width: 40,
       ),
       title: Padding(padding: const EdgeInsets.only(bottom: 4.0), child: title),
-      subtitle: Text(
-        createdOn,
-        style: const TextStyle(
-            fontSize: 11.5,
-            color: Colors.grey,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Open"),
+      // isThreeLine: true,
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            comment,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.black87.withOpacity(0.6),
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              fontFamily: "Open",
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            createdOn,
+            style: const TextStyle(
+                fontSize: 11.5,
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Open"),
+          ),
+        ],
       ),
       trailing:
           Image.asset(notificationCommentIcon, height: 30, fit: BoxFit.cover),
