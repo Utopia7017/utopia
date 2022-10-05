@@ -34,6 +34,16 @@ class BoxForCommentNotification extends StatelessWidget {
           style: TextStyle(
               fontSize: 13.2, color: Colors.black54, letterSpacing: 0.35)),
     ]));
+
+    List<String> initials = notifierName.split(" ");
+    String firstLetter = "", lastLetter = "";
+
+    if (initials.length == 1) {
+      firstLetter = initials[0].characters.first;
+    } else {
+      firstLetter = initials[0].characters.first;
+      lastLetter = initials[1].characters.first;
+    }
     String createdOn = timeago.format(time.toDate());
     
     return ListTile(
