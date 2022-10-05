@@ -50,7 +50,6 @@ class NotificationScreen extends StatelessWidget {
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: BoxForLikeNotification(
-                                   
                                     notifierDp: notifierUserSnapshot
                                         .data!.dp, // dp of the user
                                     notifierName: notifierUserSnapshot
@@ -63,16 +62,17 @@ class NotificationScreen extends StatelessWidget {
                                 );
                               case 'comment':
                                 return BoxForCommentNotification(
-                                     notifierDp: notifierUserSnapshot
-                                        .data!.dp, // dp of the user
-                                    notifierName: notifierUserSnapshot
-                                        .data!.name, // name of the user
-                                    notifierId: notifierUserSnapshot.data!
-                                        .userId, // user id of the user who has done something
-                                    time: notificationSnapshot.data.docs[index][
-                                        'createdOn'], 
-                                    
-                                   );
+                                  notifierDp: notifierUserSnapshot
+                                      .data!.dp, // dp of the user
+                                  notifierName: notifierUserSnapshot
+                                      .data!.name, // name of the user
+                                  notifierId: notifierUserSnapshot.data!
+                                      .userId, // user id of the user who has done something
+                                  time: notificationSnapshot.data.docs[index]
+                                      ['createdOn'],
+                                  comment: notificationSnapshot.data.docs[index]
+                                      ['comment'],
+                                );
                               case 'follow':
                                 return Text('Follow');
                               default:

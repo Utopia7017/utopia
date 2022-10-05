@@ -20,7 +20,7 @@ class Notification {
   Map<String, dynamic> toJson() {
     return {
       'notificationId': '',
-      'comment': '',
+      'comment': comment,
       'read': false,
       'createdOn': createdOn,
       'notifierId': notifierId,
