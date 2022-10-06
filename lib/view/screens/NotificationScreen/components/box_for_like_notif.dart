@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/controller/my_articles_controller.dart';
+import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class BoxForLikeNotification extends StatelessWidget {
@@ -14,6 +17,7 @@ class BoxForLikeNotification extends StatelessWidget {
   final String notifierName;
   final String notifierId;
   final Timestamp time;
+  bool read;
 
   BoxForLikeNotification(
       {super.key,
@@ -21,7 +25,10 @@ class BoxForLikeNotification extends StatelessWidget {
       required this.notifierName,
       required this.articleId,
       required this.notifierId,
+      required this.read,
       required this.time});
+
+  String myUid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -86,17 +93,47 @@ class BoxForLikeNotification extends StatelessWidget {
                 width: 40,
               ),
       ),
-      title: Padding(padding: const EdgeInsets.only(bottom: 4.0), child: title),
-      subtitle: Text(
-        createdOn,
-        style: const TextStyle(
-            fontSize: 11.5,
-            color: Colors.grey,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Open"),
+      title: Padding(
+          padding: const EdgeInsets.only(bottom: 4.0, top: 4), child: title),
+      subtitle: Row(
+        children: [
+          Text(
+            createdOn,
+            style: const TextStyle(
+                fontSize: 11.5,
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Open"),
+          ),
+          SizedBox(
+            width: displayWidth(context) * 0.05,
+          ),
+          (!read)
+              ? Image.asset(
+                  newNotification,
+                  height: 30,
+                )
+              : const SizedBox(),
+        ],
       ),
-      trailing:
-          Image.asset(notificationLikeIcon, height: 25, fit: BoxFit.cover),
+      trailing: Consumer<MyArticlesController>(
+        builder: (context, controller, child) {
+          if (controller.fetchingMyArticleStatus == FetchingMyArticle.nil) {
+            controller.fetchMyArticles(myUid);
+          }
+          switch (controller.fetchingMyArticleStatus) {
+            case FetchingMyArticle.nil:
+              return Image.asset(notificationLikeIcon,
+                  height: 25, fit: BoxFit.cover);
+            case FetchingMyArticle.fetching:
+              return Image.asset(notificationLikeIcon,
+                  height: 25, fit: BoxFit.cover);
+            case FetchingMyArticle.fetched:
+              return Image.asset(notificationLikeIcon,
+                  height: 25, fit: BoxFit.cover);
+          }
+        },
+      ),
     );
   }
 }

@@ -12,11 +12,13 @@ class BoxForFollowNotification extends StatelessWidget {
   final String notifierName;
   final String notifierId;
   final Timestamp time;
+  bool read;
 
   BoxForFollowNotification(
       {super.key,
       required this.notifierDp,
       required this.notifierName,
+      required this.read,
       required this.notifierId,
       required this.time});
 
@@ -80,14 +82,28 @@ class BoxForFollowNotification extends StatelessWidget {
               height: 45,
               width: 40,
             ),
-      title: Padding(padding: const EdgeInsets.only(bottom: 4.0), child: title),
-      subtitle: Text(
-        createdOn,
-        style: const TextStyle(
-            fontSize: 11.5,
-            color: Colors.grey,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Open"),
+      title: Padding(
+          padding: const EdgeInsets.only(bottom: 4.0, top: 4), child: title),
+      subtitle: Row(
+        children: [
+          Text(
+            createdOn,
+            style: const TextStyle(
+                fontSize: 11.5,
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Open"),
+          ),
+          SizedBox(
+            width: displayWidth(context) * 0.05,
+          ),
+          (!read)
+              ? Image.asset(
+                  newNotification,
+                  height: 30,
+                )
+              : const SizedBox(),
+        ],
       ),
       trailing:
           Image.asset(notificationFollowIcon, height: 25, fit: BoxFit.cover),
