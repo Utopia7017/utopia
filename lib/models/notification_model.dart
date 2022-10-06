@@ -1,31 +1,16 @@
 class Notification {
-  final String notificationId;
-  final String type; // [ like,comment,follow ]
-  final DateTime createdOn;
-  final String notifierId;
-  String? articleId;
-  String? comment;
-  bool read;
+  String type;
+  DateTime createdOn;
+  String authentication;
+  String update;
+  String deleteArticle;
 
   Notification({
-    required this.notificationId,
-    required this.notifierId,
     required this.type,
-    this.comment,
     required this.createdOn,
-    this.articleId,
-    required this.read,
+    required this.authentication,
+    required this.update,
+    required this.deleteArticle,
+    
   });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'notificationId': '',
-      'comment': comment,
-      'read': false,
-      'createdOn': createdOn,
-      'notifierId': notifierId,
-      'type': type,
-      'articleId': articleId,
-    };
-  }
 }
