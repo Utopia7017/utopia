@@ -206,7 +206,7 @@ class CustomDrawer extends StatelessWidget {
                             .collection('notifications')
                             .doc(controller.user!.userId)
                             .collection('notification')
-                            .orderBy('createdOn', descending: true)
+                            .where('read', isEqualTo: false)
                             .snapshots(),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {

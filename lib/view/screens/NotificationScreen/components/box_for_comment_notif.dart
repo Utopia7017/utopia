@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
@@ -15,11 +16,13 @@ class BoxForCommentNotification extends StatelessWidget {
   final Timestamp time;
   final String comment;
   final String articleId;
+  bool read;
 
   BoxForCommentNotification(
       {super.key,
       required this.notifierDp,
       required this.notifierName,
+      required this.read,
       required this.notifierId,
       required this.comment,
       required this.articleId,
@@ -113,13 +116,26 @@ class BoxForCommentNotification extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            createdOn,
-            style: const TextStyle(
-                fontSize: 11.5,
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Open"),
+          Row(
+            children: [
+              Text(
+                createdOn,
+                style: const TextStyle(
+                    fontSize: 11.5,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Open"),
+              ),
+              SizedBox(
+                width: displayWidth(context) * 0.05,
+              ),
+              (!read)
+                  ? Image.asset(
+                      newNotification,
+                      height: 30,
+                    )
+                  : const SizedBox(),
+            ],
           ),
         ],
       ),

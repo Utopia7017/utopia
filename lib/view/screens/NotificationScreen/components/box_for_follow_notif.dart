@@ -12,11 +12,13 @@ class BoxForFollowNotification extends StatelessWidget {
   final String notifierName;
   final String notifierId;
   final Timestamp time;
+  bool read;
 
   BoxForFollowNotification(
       {super.key,
       required this.notifierDp,
       required this.notifierName,
+      required this.read,
       required this.notifierId,
       required this.time});
 
@@ -46,50 +48,62 @@ class BoxForFollowNotification extends StatelessWidget {
       lastLetter = initials[1].characters.first;
     }
     return ListTile(
-      leading: InkWell(
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserProfileScreen(userId: notifierId),
-            )),
-        child: (notifierDp.isEmpty)
-            ? Container(
-                height: 40,
-                width: 35,
-                color: authMaterialButtonColor,
-                child: Center(
-                  child: initials.length > 1
-                      ? Text(
-                          "$firstLetter.$lastLetter".toUpperCase(),
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                        )
-                      : Text(
-                          firstLetter.toUpperCase(),
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                        ),
-                ),
-              )
-            : CachedNetworkImage(
-                imageUrl: notifierDp,
-                fit: BoxFit.fitWidth,
-                height: 45,
-                width: 40,
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserProfileScreen(userId: notifierId),
+          )),
+      leading: (notifierDp.isEmpty)
+          ? Container(
+              height: 40,
+              width: 35,
+              color: authMaterialButtonColor,
+              child: Center(
+                child: initials.length > 1
+                    ? Text(
+                        "$firstLetter.$lastLetter".toUpperCase(),
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white),
+                      )
+                    : Text(
+                        firstLetter.toUpperCase(),
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white),
+                      ),
               ),
-      ),
-      title: Padding(padding: const EdgeInsets.only(bottom: 4.0), child: title),
-      subtitle: Text(
-        createdOn,
-        style: const TextStyle(
-            fontSize: 11.5,
-            color: Colors.grey,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Open"),
+            )
+          : CachedNetworkImage(
+              imageUrl: notifierDp,
+              fit: BoxFit.fitWidth,
+              height: 45,
+              width: 40,
+            ),
+      title: Padding(
+          padding: const EdgeInsets.only(bottom: 4.0, top: 4), child: title),
+      subtitle: Row(
+        children: [
+          Text(
+            createdOn,
+            style: const TextStyle(
+                fontSize: 11.5,
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Open"),
+          ),
+          SizedBox(
+            width: displayWidth(context) * 0.05,
+          ),
+          (!read)
+              ? Image.asset(
+                  newNotification,
+                  height: 30,
+                )
+              : const SizedBox(),
+        ],
       ),
       trailing:
           Image.asset(notificationFollowIcon, height: 25, fit: BoxFit.cover),

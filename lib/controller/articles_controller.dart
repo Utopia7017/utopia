@@ -70,9 +70,10 @@ class ArticlesController with ChangeNotifier {
         // for every following user id we will check if they have posted any article.
         // If posted then we will traverse all his articles and save it in our local 'for you' category
 
-        final articlesResponse =
+        final Response? articlesResponse =
             await _apiServices.get(endUrl: 'articles/$followingUid.json');
-        if (articlesResponse != null) {
+
+        if (articlesResponse != null && articlesResponse.data != null) {
           Map<String, dynamic> articles = articlesResponse.data;
           for (var data in articles.values) {
             fetchedArticles['For you']!.add(Article.fromJson(data));
@@ -133,19 +134,20 @@ class ArticlesController with ChangeNotifier {
         if (key != 'For you') {
           // obviously all the articles in 'For you' category are derived from other categories
           for (Article art in value) {
-          
             // traverse each article
-            if (art.category.toLowerCase().startsWith(query.toLowerCase())
-             ||  ( query.length>=4  && art.title.toLowerCase().contains(query.toLowerCase())  )
-             
-             
-             ) {
+            if (art.category.toLowerCase().startsWith(query.toLowerCase()) ||
+                (query.length >= 4 &&
+                    art.title.toLowerCase().contains(query.toLowerCase()))) {
               logger.info("Category = $key , article id = ${art.articleId}");
               tempSearchedArticles.add(art);
             } else {
               // traverse every tag
               for (dynamic tag in art.tags) {
-                if (tag.toString().length>=4 && tag.toString().toLowerCase().startsWith(query.toLowerCase())) {
+                if (tag.toString().length >= 4 &&
+                    tag
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(query.toLowerCase())) {
                   tempSearchedArticles.add(art);
                   break;
                 }
@@ -160,7 +162,10 @@ class ArticlesController with ChangeNotifier {
         if (userResponse != null) {
           Map<String, dynamic> userDataMap = userResponse.data;
           for (var userData in userDataMap.values) {
-            if (userModel.User.fromJson(userData).name.toLowerCase().startsWith(query.toLowerCase())) {
+            if (userModel.User.fromJson(userData)
+                .name
+                .toLowerCase()
+                .startsWith(query.toLowerCase())) {
               tempSearchUsers.add(userModel.User.fromJson(userData));
             }
           }
