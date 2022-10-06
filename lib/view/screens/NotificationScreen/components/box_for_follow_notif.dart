@@ -47,40 +47,40 @@ class BoxForFollowNotification extends StatelessWidget {
     }
     return ListTile(
       leading: InkWell(
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserProfileScreen(userId: notifierId),
-            )),
-        child: (notifierDp.isEmpty)
-            ? Container(
-                height: 40,
-                width: 35,
-                color: authMaterialButtonColor,
-                child: Center(
-                  child: initials.length > 1
-                      ? Text(
-                          "$firstLetter.$lastLetter".toUpperCase(),
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                        )
-                      : Text(
-                          firstLetter.toUpperCase(),
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                        ),
-                ),
-              )
-            : CachedNetworkImage(
-                imageUrl: notifierDp,
-                fit: BoxFit.fitWidth,
-                height: 45,
-                width: 40,
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserProfileScreen(userId: notifierId),
+          )),
+      leading: (notifierDp.isEmpty)
+          ? Container(
+              height: 40,
+              width: 35,
+              color: authMaterialButtonColor,
+              child: Center(
+                child: initials.length > 1
+                    ? Text(
+                        "$firstLetter.$lastLetter".toUpperCase(),
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white),
+                      )
+                    : Text(
+                        firstLetter.toUpperCase(),
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white),
+                      ),
               ),
+            )
+          : CachedNetworkImage(
+              imageUrl: notifierDp,
+              fit: BoxFit.fitWidth,
+              height: 45,
+              width: 40,
+            ),
       ),
       title: Padding(padding: const EdgeInsets.only(bottom: 4.0), child: title),
       subtitle: Text(
