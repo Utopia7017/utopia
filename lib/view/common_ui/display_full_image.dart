@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:utopia/constants/color_constants.dart';
+
 
 class DisplayFullImage extends StatelessWidget {
  
@@ -19,6 +21,9 @@ class DisplayFullImage extends StatelessWidget {
       body: Center(
         child:  CachedNetworkImage(
                           imageUrl: imageurl,
+                          imageBuilder: (context, imageProvider) => PhotoView(
+                              imageProvider: imageProvider,
+                           ),
                           placeholder: (context, url) {
                             return const Center(
                               child: CircularProgressIndicator(
