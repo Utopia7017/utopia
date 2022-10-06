@@ -46,7 +46,6 @@ class BoxForFollowNotification extends StatelessWidget {
       lastLetter = initials[1].characters.first;
     }
     return ListTile(
-      leading: InkWell(
       onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
@@ -81,7 +80,6 @@ class BoxForFollowNotification extends StatelessWidget {
               height: 45,
               width: 40,
             ),
-      ),
       title: Padding(padding: const EdgeInsets.only(bottom: 4.0), child: title),
       subtitle: Text(
         createdOn,
