@@ -16,14 +16,14 @@ class NotificationBell extends StatelessWidget {
           .collection('notifications')
           .doc(myuid)
           .collection('notification')
-          .orderBy('createdOn', descending: true)
+          .where('read', isEqualTo: false)
           .snapshots(),
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           int numberOfNewNotification = snapshot.data.docs.length;
           return Badge(
             elevation: 2,
-            position: BadgePosition(top: 3, isCenter: false, end: -6),
+            position: const BadgePosition(top: 3, isCenter: false, end: -6),
             badgeColor: Colors.red.shade400,
             badgeContent: Text(
               numberOfNewNotification.toString(),
