@@ -8,6 +8,7 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/models/article_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
@@ -116,23 +117,37 @@ class BoxForLikeNotification extends StatelessWidget {
               : const SizedBox(),
         ],
       ),
-      trailing: Consumer<MyArticlesController>(
-        builder: (context, controller, child) {
-          if (controller.fetchingMyArticleStatus == FetchingMyArticle.nil) {
-            controller.fetchMyArticles(myUid);
-          }
-          switch (controller.fetchingMyArticleStatus) {
-            case FetchingMyArticle.nil:
-              return Image.asset(notificationLikeIcon,
-                  height: 25, fit: BoxFit.cover);
-            case FetchingMyArticle.fetching:
-              return Image.asset(notificationLikeIcon,
-                  height: 25, fit: BoxFit.cover);
-            case FetchingMyArticle.fetched:
-              return Image.asset(notificationLikeIcon,
-                  height: 25, fit: BoxFit.cover);
-          }
-        },
+      trailing: SizedBox(
+        height: 25,
+        width: 28,
+        child: Consumer<MyArticlesController>(
+          builder: (context, controller, child) {
+            if (controller.fetchingMyArticleStatus == FetchingMyArticle.nil) {
+              controller.fetchMyArticles(myUid);
+            }
+            switch (controller.fetchingMyArticleStatus) {
+              case FetchingMyArticle.nil:
+                return Image.asset(notificationLikeIcon,
+                    height: 25, fit: BoxFit.cover);
+              case FetchingMyArticle.fetching:
+                return Image.asset(notificationLikeIcon,
+                    height: 25, fit: BoxFit.cover);
+              case FetchingMyArticle.fetched:
+                Article thisArticle = controller.publishedArticles
+                    .firstWhere((element) => element.articleId == articleId);
+                String? imagePreview;
+
+                imagePreview = thisArticle.body.firstWhere(
+                    (element) => element['type'] == "image")['image'];
+            
+                return (imagePreview != null)
+                    ? CachedNetworkImage(
+                        imageUrl: imagePreview, height: 25, fit: BoxFit.cover)
+                    : Image.asset(defaultArticleImage,
+                        height: 25, fit: BoxFit.cover);
+            }
+          },
+        ),
       ),
     );
   }
