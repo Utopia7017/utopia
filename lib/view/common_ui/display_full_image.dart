@@ -23,6 +23,12 @@ class DisplayFullImage extends StatelessWidget {
                           imageUrl: imageurl,
                           imageBuilder: (context, imageProvider) => PhotoView(
                               imageProvider: imageProvider,
+                              basePosition: Alignment.center,
+                              minScale: PhotoViewComputedScale.contained * 1,
+                              maxScale: PhotoViewComputedScale.covered * 0.9,
+                               backgroundDecoration: BoxDecoration(
+                                color: Theme.of(context).canvasColor,
+                                ),
                            ),
                           placeholder: (context, url) {
                             return const Center(
