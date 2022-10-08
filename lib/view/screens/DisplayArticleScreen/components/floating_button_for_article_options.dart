@@ -8,13 +8,12 @@ import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
 
 class FloatingButtonForArticleOptions extends StatefulWidget {
   final Article article;
   final bool isVisible;
-  FloatingButtonForArticleOptions(
+  const FloatingButtonForArticleOptions(
       {Key? key, required this.isVisible, required this.article})
       : super(key: key);
 
@@ -35,7 +34,7 @@ class _FloatingButtonForArticleOptionsState
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 750),
-        height: widget.isVisible ? displayHeight(context) * 0.2 : 0.0,
+        height: widget.isVisible ? displayHeight(context) * 0.22 : 0.0,
         width: displayWidth(context) * 0.1,
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(15)),
@@ -66,7 +65,7 @@ class _FloatingButtonForArticleOptionsState
                             if (!loadingForLikeProcess) {
                               if (alreadyLiked == -1) {
                                 // Not liked yet
-                                print("Called from not Liked yet if part");
+
                                 setState(() {
                                   loadingForLikeProcess = true;
                                 });
@@ -92,11 +91,19 @@ class _FloatingButtonForArticleOptionsState
                               }
                             }
                           },
-                          child: Image.asset(
-                            (alreadyLiked == -1)
-                                ? likeNotPressedIcon
-                                : likePressedIcon,
-                            height: 18,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                (alreadyLiked == -1)
+                                    ? likeNotPressedIcon
+                                    : likePressedIcon,
+                                height: 18,
+                              ),
+                              const SizedBox(
+                                height: 2,
+                              ),
+                              Text(likes.length.toString())
+                            ],
                           ),
                         );
                       }
@@ -125,7 +132,33 @@ class _FloatingButtonForArticleOptionsState
                           ),
                         ));
                   },
-                  child: Image.asset(commentArticleIcon, height: 18),
+                  child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('articles')
+                          .doc(widget.article.articleId)
+                          .collection('comments')
+                          .snapshots(),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          return Column(
+                            children: [
+                              Image.asset(commentArticleIcon, height: 18),
+                              Text(
+                                snapshot.data.docs.length.toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Column(
+                            children: [
+                              Image.asset(commentArticleIcon, height: 18),
+                              const Text('0'),
+                            ],
+                          );
+                        }
+                      }),
                 ),
               ),
             ),

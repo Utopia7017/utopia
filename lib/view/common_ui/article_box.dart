@@ -10,9 +10,7 @@ import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
-import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
 import 'package:utopia/view/shimmers/article_shimmer.dart';
@@ -225,54 +223,11 @@ class _ArticleBoxState extends State<ArticleBox> {
                                                                 .user!.userId,
                                                       );
 
-                                                      return InkWell(
-                                                        onTap: () async {
-                                                          if (!loadingForLikeProcess) {
-                                                            if (alreadyLiked ==
-                                                                -1) {
-                                                              // Not liked yet
-                                                              setState(() {
-                                                                loadingForLikeProcess =
-                                                                    true;
-                                                              });
-                                                              await likeArticle(
-                                                                  widget
-                                                                      .article!
-                                                                      .articleId,
-                                                                  userController
-                                                                      .user!
-                                                                      .userId);
-                                                              setState(() {
-                                                                loadingForLikeProcess =
-                                                                    false;
-                                                              });
-                                                            } else {
-                                                              // Already liked
-                                                              setState(() {
-                                                                loadingForLikeProcess =
-                                                                    true;
-                                                              });
-
-                                                              await dislikeArticle(
-                                                                  widget
-                                                                      .article!
-                                                                      .articleId,
-                                                                  userController
-                                                                      .user!
-                                                                      .userId);
-                                                              setState(() {
-                                                                loadingForLikeProcess =
-                                                                    false;
-                                                              });
-                                                            }
-                                                          }
-                                                        },
-                                                        child: Image.asset(
-                                                          (alreadyLiked == -1)
-                                                              ? likeNotPressedIcon
-                                                              : likePressedIcon,
-                                                          height: 18,
-                                                        ),
+                                                      return Image.asset(
+                                                        (alreadyLiked == -1)
+                                                            ? likeNotPressedIcon
+                                                            : likePressedIcon,
+                                                        height: 18,
                                                       );
                                                     }
                                                     return Image.asset(

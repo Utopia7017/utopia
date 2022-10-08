@@ -9,12 +9,14 @@ import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
+import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class BoxForLikeNotification extends StatelessWidget {
   final String notifierDp;
   final String articleId;
+  final String notificationId;
   final String notifierName;
   final String notifierId;
   final Timestamp time;
@@ -23,6 +25,7 @@ class BoxForLikeNotification extends StatelessWidget {
   BoxForLikeNotification(
       {super.key,
       required this.notifierDp,
+      required this.notificationId,
       required this.notifierName,
       required this.articleId,
       required this.notifierId,
@@ -57,7 +60,7 @@ class BoxForLikeNotification extends StatelessWidget {
       lastLetter = initials[1].characters.first;
     }
     return ListTile(
-      // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DisplayArticleScreen(article: article, author: author),)),
+      onTap: () => readThisNotification(FirebaseAuth.instance.currentUser!.uid, notificationId),
       leading: InkWell(
         onTap: () => Navigator.push(
             context,

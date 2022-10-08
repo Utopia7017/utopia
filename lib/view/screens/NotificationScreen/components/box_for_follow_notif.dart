@@ -1,15 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class BoxForFollowNotification extends StatelessWidget {
   final String notifierDp;
   final String notifierName;
+  final String notificationId;
   final String notifierId;
   final Timestamp time;
   bool read;
@@ -18,6 +21,7 @@ class BoxForFollowNotification extends StatelessWidget {
       {super.key,
       required this.notifierDp,
       required this.notifierName,
+      required this.notificationId,
       required this.read,
       required this.notifierId,
       required this.time});
@@ -48,11 +52,15 @@ class BoxForFollowNotification extends StatelessWidget {
       lastLetter = initials[1].characters.first;
     }
     return ListTile(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => UserProfileScreen(userId: notifierId),
-          )),
+      onTap: () {
+        readThisNotification(
+            FirebaseAuth.instance.currentUser!.uid, notificationId);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserProfileScreen(userId: notifierId),
+            ));
+      },
       leading: (notifierDp.isEmpty)
           ? Container(
               height: 40,
