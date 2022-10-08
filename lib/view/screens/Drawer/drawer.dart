@@ -8,6 +8,7 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/utils/all_controllers.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import '../../../services/firebase/auth_services.dart';
@@ -237,6 +238,7 @@ class CustomDrawer extends StatelessWidget {
                         () => _logger.info("About us")),
                     drawerTile('Logout', logoutIcon, () async {
                       final navigator = Navigator.of(context);
+                      AppProviders.disposeAllDisposableProviders(context);
                       await _auth.signOut();
                       navigator.pushReplacementNamed('/auth');
                     }),

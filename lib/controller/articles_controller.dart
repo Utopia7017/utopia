@@ -1,20 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
+import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart' as userModel;
 import 'package:utopia/services/api/api_services.dart';
 
-class ArticlesController with ChangeNotifier {
+class ArticlesController extends DisposableProvider {
   int selectedCategory = 0;
   final ApiServices _apiServices = ApiServices();
   ArticlesStatus articlesStatus = ArticlesStatus.nil;
-  final String myUid = FirebaseAuth.instance.currentUser!.uid;
+  String? myUid = FirebaseAuth.instance.currentUser!.uid;
   List<Article> searchedArticles = [];
   List<userModel.User> searchedAuthors = [];
-  bool isSearching = false;
 
   Map<String, List<Article>> articles = {
     'For you': [],
@@ -56,6 +55,7 @@ class ArticlesController with ChangeNotifier {
 
     try {
       articlesStatus = ArticlesStatus.fetching;
+      myUid ??= FirebaseAuth.instance.currentUser!.uid;
       await Future.delayed(const Duration(microseconds: 1));
       List<dynamic> following = [];
       notifyListeners();
@@ -177,5 +177,14 @@ class ArticlesController with ChangeNotifier {
     searchedArticles = tempSearchedArticles;
     searchedAuthors = tempSearchUsers;
     notifyListeners();
+  }
+
+  @override
+  void disposeValues() {
+    articles = {};
+    myUid = null;
+    searchedAuthors = [];
+    articlesStatus = ArticlesStatus.nil;
+    searchedArticles = [];
   }
 }

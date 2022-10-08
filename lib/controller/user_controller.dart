@@ -1,18 +1,15 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
-import 'package:utopia/models/saved_article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/api/api_services.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
-
 import '../services/firebase/storage_service.dart';
 
-class UserController with ChangeNotifier {
+class UserController extends DisposableProvider {
   final Logger _logger = Logger("UserController");
   final ApiServices _apiServices = ApiServices();
   ProfileStatus profileStatus = ProfileStatus.nil;
@@ -226,5 +223,13 @@ class UserController with ChangeNotifier {
       logger.shout(error.toString());
     }
     notifyListeners();
+  }
+
+  @override
+  void disposeValues() {
+    profileStatus = ProfileStatus.nil;
+    userUploadingImage = UserUploadingImage.notLoading;
+    followingUserStatus = FollowingUserStatus.no;
+    user = null;
   }
 }
