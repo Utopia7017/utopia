@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logging/logging.dart';
 
 import 'package:utopia/models/notification_model.dart';
 
@@ -106,4 +107,26 @@ notifyUserWhenFollowedUser(
   var response = await notificationDB.add(notification.toJson());
 
   await notificationDB.doc(response.id).update({'notificationId': response.id});
+}
+
+readThisNotification(String currentUserId, String notificationId) async {
+  var notificationDB = FirebaseFirestore.instance
+      .collection('notifications')
+      .doc(currentUserId)
+      .collection('notification');
+
+  await notificationDB.doc(notificationId).update({'read': true});
+}
+
+readAllNotifications(String currentUserId) async {
+  Logger logger = Logger("readAll");
+  var notificationDB = await FirebaseFirestore.instance
+      .collection('notifications')
+      .doc(currentUserId)
+      .collection('notification')
+      .get();
+
+  for (QueryDocumentSnapshot<Map<String, dynamic>> doc in notificationDB.docs) {
+    await readThisNotification(currentUserId, doc.id);
+  }
 }

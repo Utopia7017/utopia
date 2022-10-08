@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class BoxForCommentNotification extends StatelessWidget {
+  final String notificationId;
   final String notifierDp;
   final String notifierName;
   final String notifierId;
@@ -21,6 +23,7 @@ class BoxForCommentNotification extends StatelessWidget {
   BoxForCommentNotification(
       {super.key,
       required this.notifierDp,
+      required this.notificationId,
       required this.notifierName,
       required this.read,
       required this.notifierId,
@@ -56,12 +59,15 @@ class BoxForCommentNotification extends StatelessWidget {
     String createdOn = timeago.format(time.toDate());
 
     return ListTile(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CommentScreen(
-                  articleId: articleId,
-                  authorId: FirebaseAuth.instance.currentUser!.uid))),
+      onTap: () {
+        readThisNotification(FirebaseAuth.instance.currentUser!.uid, notificationId);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CommentScreen(
+                    articleId: articleId,
+                    authorId: FirebaseAuth.instance.currentUser!.uid)));
+      },
       leading: InkWell(
         onTap: () => Navigator.push(
             context,
