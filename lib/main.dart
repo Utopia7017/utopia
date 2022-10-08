@@ -39,6 +39,13 @@ void main() async {
     debugPrint(
         '${record.loggerName} -> ${record.level.name}: ${record.message}');
   });
+  ErrorWidget.builder = (FlutterErrorDetails details) => Material(
+    color: Colors.green.shade200,
+    child: Text(details.exception.toString(),style: const TextStyle(
+      fontFamily: "Fira",
+      color: Colors.white,
+    ),),
+  );
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
