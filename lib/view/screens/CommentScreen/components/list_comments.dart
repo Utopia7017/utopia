@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart';
+import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/comment_container.dart';
+import 'package:utopia/view/common_ui/skeleton.dart';
+import 'package:utopia/view/shimmers/comment_shimmer.dart';
 
 class ListComments extends StatelessWidget {
   final dynamic commentData;
@@ -30,9 +33,10 @@ class ListComments extends StatelessWidget {
                       userFollowers: snapshot.data!.followers.length,
                       comment: comment,
                       createdAt: createdAt);
+              
                 } else {
-                  // TODO: Add Shimmer effect for comment box when loading
-                  return const Center(child: CircularProgressIndicator());
+                 
+                  return const CommentShimmer();
                 }
               },
             );
