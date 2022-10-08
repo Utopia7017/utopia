@@ -21,21 +21,30 @@ class NotificationBell extends StatelessWidget {
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           int numberOfNewNotification = snapshot.data.docs.length;
-          return Badge(
-            elevation: 2,
-            position: const BadgePosition(top: 3, isCenter: false, end: -6),
-            badgeColor: Colors.red.shade400,
-            badgeContent: Text(
-              numberOfNewNotification.toString(),
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-            ),
-            child: Image.asset(
+          if (numberOfNewNotification == 0) {
+            return Image.asset(
               notificationIcon,
               width: 21,
               fit: BoxFit.contain,
               color: Colors.black,
-            ),
-          );
+            );
+          } else {
+            return Badge(
+              elevation: 2,
+              position: const BadgePosition(top: 3, isCenter: false, end: -6),
+              badgeColor: Colors.red.shade400,
+              badgeContent: Text(
+                numberOfNewNotification.toString(),
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              child: Image.asset(
+                notificationIcon,
+                width: 21,
+                fit: BoxFit.contain,
+                color: Colors.black,
+              ),
+            );
+          }
         } else {
           return Image.asset(
             notificationIcon,

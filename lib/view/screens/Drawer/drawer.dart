@@ -212,15 +212,20 @@ class CustomDrawer extends StatelessWidget {
                           if (snapshot.hasData) {
                             int numberOfNewNotification =
                                 snapshot.data.docs.length;
-                            return CircleAvatar(
-                              radius: 9,
-                              backgroundColor: Colors.red.shade400,
-                              child: Text(
-                                numberOfNewNotification.toString(),
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              ),
-                            );
+
+                            if (numberOfNewNotification == 0) {
+                              return const SizedBox();
+                            } else {
+                              return CircleAvatar(
+                                radius: 9,
+                                backgroundColor: Colors.red.shade400,
+                                child: Text(
+                                  numberOfNewNotification.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              );
+                            }
                           } else {
                             return const SizedBox();
                           }
