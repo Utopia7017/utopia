@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_body_model.dart';
 import 'package:utopia/models/article_model.dart';
@@ -13,7 +14,7 @@ import 'package:utopia/services/firebase/storage_service.dart';
 import '../utils/article_body_component.dart';
 import '../view/common_ui/article_textfield.dart';
 
-class MyArticlesController with ChangeNotifier {
+class MyArticlesController extends DisposableProvider {
   ArticleUploadingStatus uploadingStatus = ArticleUploadingStatus.notUploading;
   List<BodyComponent> bodyComponents = [];
   List<Article> publishedArticles = [];
@@ -232,5 +233,18 @@ class MyArticlesController with ChangeNotifier {
       logger.shout(error.toString());
     }
     return article;
+  }
+
+  @override
+  void disposeValues() {
+    uploadingStatus = ArticleUploadingStatus.notUploading;
+    bodyComponents = [];
+    publishedArticles = [];
+    draftArticles = [];
+    savedArticles = [];
+    savedArticlesDetails = [];
+    fetchingMyArticleStatus = FetchingMyArticle.nil;
+    category = null;
+    fetchingSavedArticlesStatus = FetchingSavedArticles.nil;
   }
 }
