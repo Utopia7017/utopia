@@ -29,6 +29,14 @@ class NotificationScreen extends StatelessWidget {
             "Notification",
             style: TextStyle(fontFamily: "Open", fontSize: 14),
           ),
+          actions: [
+            PopupMenuButton(
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem(child: Text('Mark all as read')),
+                PopupMenuItem(child: Text('Delete all notification')),
+              ],
+            ),
+          ],
         ),
         body: Consumer<UserController>(
           builder: (context, userController, child) {
