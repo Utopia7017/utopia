@@ -61,6 +61,26 @@ class BoxForLikeNotification extends StatelessWidget {
     }
     return ListTile(
       onTap: () => readThisNotification(FirebaseAuth.instance.currentUser!.uid, notificationId),
+      onLongPress: () {
+        showDialog(
+          context: context,
+           builder: (context) {
+            return AlertDialog(
+              title: Text('Remove '),
+              content: Text('Are you sure you want to remove  this notification?',style: TextStyle(fontSize: 14),),
+              actions: [
+                TextButton(onPressed: () {
+                  Navigator.pop(context);
+                }, child: Text('Cancel',style: TextStyle(fontSize: 14),)),
+                TextButton(onPressed: () {
+                  deleteSingleNotification(FirebaseAuth.instance.currentUser!.uid, notificationId);
+                  Navigator.pop(context);
+                }, child: Text('Remove',style: TextStyle(fontSize: 14),))
+              ],
+            );
+           }
+           );
+      },
       leading: InkWell(
         onTap: () => Navigator.push(
             context,
