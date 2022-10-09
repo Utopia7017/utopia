@@ -61,6 +61,26 @@ class BoxForFollowNotification extends StatelessWidget {
               builder: (context) => UserProfileScreen(userId: notifierId),
             ));
       },
+      onLongPress: () {
+        showDialog(
+          context: context,
+           builder: (context) {
+            return AlertDialog(
+              title: Text('Remove '),
+              content: Text('Are you sure you want to remove  this notification?',style: TextStyle(fontSize: 14),),
+              actions: [
+                TextButton(onPressed: () {
+                  Navigator.pop(context);
+                }, child: Text('Cancel',style: TextStyle(fontSize: 14),)),
+                TextButton(onPressed: () {
+                  deleteSingleNotification(FirebaseAuth.instance.currentUser!.uid, notificationId);
+                  Navigator.pop(context);
+                }, child: Text('Remove',style: TextStyle(fontSize: 14),))
+              ],
+            );
+           }
+           );
+      },
       leading: (notifierDp.isEmpty)
           ? Container(
               height: 40,
