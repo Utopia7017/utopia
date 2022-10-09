@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart' as user;
+import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/NotificationScreen/components/box_for_comment_notif.dart';
 import 'package:utopia/view/screens/NotificationScreen/components/box_for_follow_notif.dart';
@@ -18,6 +20,7 @@ class NotificationScreen extends StatelessWidget {
     color: Colors.grey,
     thickness: 0.1,
   );
+  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,9 +34,30 @@ class NotificationScreen extends StatelessWidget {
           ),
           actions: [
             PopupMenuButton(
+              onSelected: (value) async {
+                if (value == 'Mark all as read') {
+                  await readAllNotifications(currentUserId);
+                } else {
+                  print("tap");
+                  await deleteAllNotifications(currentUserId);
+                }
+              },
               itemBuilder: (BuildContext context) => [
-                PopupMenuItem(child: Text('Mark all as read')),
-                PopupMenuItem(child: Text('Delete all notification')),
+                PopupMenuItem(
+                  height: displayHeight(context) * 0.05,
+                  value: 'Mark all as read',
+                  child: const Text(
+                    'Mark all as read',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ),
+                PopupMenuItem(
+                    height: displayHeight(context) * 0.05,
+                    value: "Delete all",
+                    child: const Text(
+                      'Delete all',
+                      style: TextStyle(fontSize: 14),
+                    )),
               ],
             ),
           ],
