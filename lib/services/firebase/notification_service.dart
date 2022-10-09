@@ -130,3 +130,25 @@ readAllNotifications(String currentUserId) async {
     await readThisNotification(currentUserId, doc.id);
   }
 }
+
+deleteSingleNotification(String currentUserId, String notificationId) async {
+  await FirebaseFirestore.instance
+      .collection('notifications')
+      .doc(currentUserId)
+      .collection('notification')
+      .doc(notificationId)
+      .delete();
+}
+
+deleteAllNotifications(String currentUserId) async {
+  Logger logger = Logger("deleteAllNotifications");
+  var notificationDB = await FirebaseFirestore.instance
+      .collection('notifications')
+      .doc(currentUserId)
+      .collection('notification')
+      .get();
+
+  for (QueryDocumentSnapshot<Map<String, dynamic>> doc in notificationDB.docs) {
+    await deleteSingleNotification(currentUserId, doc.id);
+  }
+}
