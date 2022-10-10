@@ -10,6 +10,7 @@ import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
+import 'package:utopia/view/screens/NoConnectionScreen/no_connection_screen.dart';
 import 'package:utopia/view/screens/NotificationScreen/notification_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import 'package:utopia/view/screens/SavedArticlesScreen/saved_article_screen.dart';
@@ -40,12 +41,17 @@ void main() async {
         '${record.loggerName} -> ${record.level.name}: ${record.message}');
   });
   ErrorWidget.builder = (FlutterErrorDetails details) => Material(
-    color: Colors.green.shade200,
-    child: Text(details.exception.toString(),style: const TextStyle(
-      fontFamily: "Fira",
-      color: Colors.white,
-    ),),
-  );
+        color: Colors.green.shade200,
+        child: Center(
+          child: Text(
+            details.exception.toString(),
+            style: const TextStyle(
+              fontFamily: "Fira",
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -106,6 +112,7 @@ class Utopia extends StatelessWidget {
         },
 
         home: const SplashScreen(),
+        // home: NoConnectionScreen(),
       ),
     );
   }

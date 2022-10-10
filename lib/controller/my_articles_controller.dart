@@ -31,8 +31,10 @@ class MyArticlesController extends DisposableProvider {
   void addTextField() {
     TextEditingController textEditingController =
         TextEditingController(text: "");
-    ArticleTextField textField =
-        ArticleTextField(controller: textEditingController);
+    ArticleTextField textField = ArticleTextField(
+      controller: textEditingController,
+      isFirstTextBox: (bodyComponents.isEmpty),
+    );
 
     bodyComponents.add(BodyComponent(
         type: "text",
@@ -82,7 +84,10 @@ class MyArticlesController extends DisposableProvider {
     bodyComponents.removeWhere((element) => element.key == sublist[0].key);
     bodyComponents.removeWhere((element) => element.key == sublist[1].key);
     bodyComponents.removeWhere((element) => element.key == sublist[2].key);
-    ArticleTextField textField = ArticleTextField(controller: ctr);
+    ArticleTextField textField = ArticleTextField(
+      controller: ctr,
+      isFirstTextBox: false,
+    );
 
     bodyComponents.insert(
         indexOfBodyComponentToBeUpdated,

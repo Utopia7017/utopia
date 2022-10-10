@@ -165,7 +165,7 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                     return Padding(
                       padding: const EdgeInsets.only(
                           bottom: 12.0, left: 20, right: 20),
-                      child: Text(
+                      child: SelectableText(
                         widget.article.body[index]['text']!,
                         style:
                             const TextStyle(fontFamily: "Open", fontSize: 15.5),
@@ -177,7 +177,13 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                           bottom: 12.0, left: 20, right: 20),
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder:  (context) => DisplayFullImage(imageurl: widget.article.body[index]['image']!),));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DisplayFullImage(
+                                    imageurl: widget.article.body[index]
+                                        ['image']!),
+                              ));
                         },
                         child: CachedNetworkImage(
                           imageUrl: widget.article.body[index]['image']!,
@@ -191,8 +197,8 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                           errorWidget: (context, url, error) {
                             return const Text(
                               "Could not load image",
-                              style:
-                                  TextStyle(color: Colors.black87, fontSize: 10),
+                              style: TextStyle(
+                                  color: Colors.black87, fontSize: 10),
                             );
                           },
                         ),
