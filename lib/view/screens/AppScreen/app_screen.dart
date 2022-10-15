@@ -4,13 +4,19 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:logging/logging.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/utils/global_context.dart';
 import 'package:utopia/view/screens/AppScreen/components/notification_bell.dart';
 import 'package:utopia/view/screens/Drawer/drawer.dart';
 import 'package:utopia/view/screens/ExploreScreen/explore_screen.dart';
 import '../../../constants/color_constants.dart';
 
 class AppScreen extends StatefulWidget {
+  bool internetConnection;
+
+  AppScreen(this.internetConnection);
+
   @override
   State<AppScreen> createState() => _AppScreenState();
 }
@@ -18,13 +24,13 @@ class AppScreen extends StatefulWidget {
 class _AppScreenState extends State<AppScreen> {
   final _advancedDrawerController = AdvancedDrawerController();
 
+  final Logger _logger = Logger("AppScreen");
+
   void _handleMenuButtonPressed() {
     _advancedDrawerController.showDrawer();
   }
 
   late StreamSubscription internetSubscription;
-  bool isDeviceConnected = false;
-  bool alert = false;
 
   @override
   void dispose() {
@@ -37,55 +43,34 @@ class _AppScreenState extends State<AppScreen> {
     super.initState();
     getConnectivity();
   }
-  
+
   getConnectivity() {
+    final scaffold =
+        ScaffoldMessenger.of(GlobalContext.contextKey.currentContext!);
+
     internetSubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) async {
-      isDeviceConnected = await InternetConnectionChecker().hasConnection;
-      if (!isDeviceConnected && !alert) {
-        showInternetError();
-        setState(() {
-          alert = true;
-        });
+      bool oldInternetConnection = widget.internetConnection;
+      widget.internetConnection =
+          await InternetConnectionChecker().hasConnection;
+      if (!oldInternetConnection && widget.internetConnection) {
+        scaffold.showSnackBar(SnackBar(
+            backgroundColor: Colors.green.shade400,
+            content: const Text(
+              "Reconnected !",
+              style: TextStyle(color: Colors.white),
+            )));
+      } else if (oldInternetConnection && !widget.internetConnection) {
+        scaffold.showSnackBar(SnackBar(
+            backgroundColor: Colors.red.shade400,
+            content: const Text(
+              "Connection lost !",
+              style: TextStyle(color: Colors.white),
+            )));
       }
+      setState(() {});
     });
-  }
-
-  showInternetError() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            "No Internet Connection",
-            style: TextStyle(color: Colors.blue.shade600, fontSize: 15),
-          ),
-          content: const Text(
-            "Please check your internet connection before trying again !",
-            style: TextStyle(fontSize: 13.5),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  setState(() {
-                    alert = false;
-                  });
-                  isDeviceConnected =
-                      await InternetConnectionChecker().hasConnection;
-                  if (!isDeviceConnected) {
-                    showInternetError();
-                    setState(() {
-                      alert = true;
-                    });
-                  }
-                },
-                child: const Text("Retry"))
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -101,7 +86,7 @@ class _AppScreenState extends State<AppScreen> {
       childDecoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
-      drawer: CustomDrawer(),
+      drawer: widget.internetConnection ? CustomDrawer() : const SizedBox(),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -116,7 +101,9 @@ class _AppScreenState extends State<AppScreen> {
           ),
           centerTitle: true,
           leading: InkWell(
-            onTap: _handleMenuButtonPressed,
+            onTap: () => (widget.internetConnection)
+                ? _handleMenuButtonPressed()
+                : _logger.info("Not connected to internet"),
             child: ValueListenableBuilder<AdvancedDrawerValue>(
               valueListenable: _advancedDrawerController,
               builder: (_, value, __) {
@@ -134,13 +121,52 @@ class _AppScreenState extends State<AppScreen> {
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
               child: InkWell(
-                  onTap: () => Navigator.pushNamed(context, '/notifications'),
-                  child: NotificationBell()),
+                  onTap: () => (widget.internetConnection)
+                      ? Navigator.pushNamed(context, '/notifications')
+                      : _logger.info("Not connected to internet"),
+                  child: Container(
+                      width: 35,
+                      padding: const EdgeInsets.all(6.5),
+                      child: NotificationBell())),
             )
           ],
         ),
         backgroundColor: primaryBackgroundColor,
-        body: SafeArea(child: ExploreScreen()),
+        body: (widget.internetConnection)
+            ? SafeArea(child: ExploreScreen())
+            : SafeArea(
+                child: Center(
+                    child: TextButton(
+                        onPressed: () async {
+                          final scaffold = ScaffoldMessenger.of(
+                              GlobalContext.contextKey.currentContext!);
+                          widget.internetConnection =
+                              await InternetConnectionChecker().hasConnection;
+                          bool oldInternetConnection =
+                              widget.internetConnection;
+                          widget.internetConnection =
+                              await InternetConnectionChecker().hasConnection;
+                          if (!oldInternetConnection &&
+                              widget.internetConnection) {
+                            scaffold.showSnackBar(SnackBar(
+                                backgroundColor: Colors.green.shade400,
+                                content: const Text(
+                                  "Reconnected !",
+                                  style: TextStyle(color: Colors.white),
+                                )));
+                          } else if (oldInternetConnection &&
+                              !widget.internetConnection) {
+                            scaffold.showSnackBar(SnackBar(
+                                backgroundColor: Colors.red.shade400,
+                                content: const Text(
+                                  "Connection lost !",
+                                  style: TextStyle(color: Colors.white),
+                                )));
+                          }
+
+                          setState(() {});
+                        },
+                        child: const Text("Retry")))),
       ),
     );
   }

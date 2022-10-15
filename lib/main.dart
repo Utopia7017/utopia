@@ -4,19 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
-import 'package:utopia/view/screens/NoConnectionScreen/no_connection_screen.dart';
 import 'package:utopia/view/screens/NotificationScreen/notification_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import 'package:utopia/view/screens/SavedArticlesScreen/saved_article_screen.dart';
 import 'package:utopia/view/screens/SearchScreen/search_screen.dart';
 import 'package:utopia/view/screens/SplashScreen/splash_screen.dart';
-import 'package:utopia/view/screens/UtopiaRoot/utopia_root.dart';
 import 'controller/articles_controller.dart';
 import 'controller/auth_screen_controller.dart';
 import 'controller/my_articles_controller.dart';
@@ -98,11 +95,10 @@ class Utopia extends StatelessWidget {
         navigatorKey: GlobalContext.contextKey, // global context
         debugShowCheckedModeBanner: false,
         routes: {
-          '/utopiaRoot': (context) => UtopiaRoot(),
+     
           '/auth': (context) => const AuthScreen(),
           '/login': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
-          '/app': (context) => AppScreen(),
           '/profile': (context) => const ProfileScreen(),
           '/newArticle': (context) => NewArticleScreen(),
           '/myArticles': (context) => MyArticleScreen(),

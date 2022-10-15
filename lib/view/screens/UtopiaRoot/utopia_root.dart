@@ -6,31 +6,31 @@ import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 
 class UtopiaRoot extends StatelessWidget {
-  const UtopiaRoot({super.key});
+  bool internetConnected;
+ UtopiaRoot({super.key,required this.internetConnected});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthNotifier>(
       builder: (context, notifier, child) {
-        return notifier.user != null ? AppScreen() : const Wrapper();
+        return notifier.user != null ? AppScreen(internetConnected) : Wrapper(internetConnected: internetConnected,);
       },
     );
   }
 }
 
-
 class Wrapper extends StatelessWidget {
-  const Wrapper({Key? key}) : super(key: key);
+  bool internetConnected;
+  Wrapper({Key? key,required this.internetConnected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser != null) {
-      return AppScreen();
+      return AppScreen(internetConnected);
     } else {
       return const AuthScreen();
     }
   }
 }
-

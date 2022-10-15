@@ -48,230 +48,234 @@ class CustomDrawer extends StatelessWidget {
                       CircularProgressIndicator(color: authMaterialButtonColor),
                 );
               case ProfileStatus.fetched:
-                List<String> initials = controller.user!.name.split(" ");
-                String firstLetter = "", lastLetter = "";
+                if (controller.user != null) {
+                  List<String> initials = controller.user!.name.split(" ");
+                  String firstLetter = "", lastLetter = "";
 
-                if (initials.length == 1) {
-                  firstLetter = initials[0].characters.first;
-                } else {
-                  firstLetter = initials[0].characters.first;
-                  lastLetter = initials[1].characters.first;
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/profile');
-                      },
-                      child: CircleAvatar(
-                        radius: displayWidth(context) * 0.125,
-                        backgroundColor: Colors.white,
-                        child: (controller.user!.dp.isEmpty)
-                            ? CircleAvatar(
-                                backgroundColor: authMaterialButtonColor,
-                                radius: displayWidth(context) * 0.12,
-                                child: Center(
-                                  child: initials.length > 1
-                                      ? Text(
-                                          "$firstLetter.$lastLetter"
-                                              .toUpperCase(),
-                                          style: const TextStyle(
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.white),
-                                        )
-                                      : Text(
-                                          firstLetter.toUpperCase(),
-                                          style: const TextStyle(
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.white),
-                                        ),
+                  if (initials.length == 1) {
+                    firstLetter = initials[0].characters.first;
+                  } else {
+                    firstLetter = initials[0].characters.first;
+                    lastLetter = initials[1].characters.first;
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/profile');
+                        },
+                        child: CircleAvatar(
+                          radius: displayWidth(context) * 0.125,
+                          backgroundColor: Colors.white,
+                          child: (controller.user!.dp.isEmpty)
+                              ? CircleAvatar(
+                                  backgroundColor: authMaterialButtonColor,
+                                  radius: displayWidth(context) * 0.12,
+                                  child: Center(
+                                    child: initials.length > 1
+                                        ? Text(
+                                            "$firstLetter.$lastLetter"
+                                                .toUpperCase(),
+                                            style: const TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white),
+                                          )
+                                        : Text(
+                                            firstLetter.toUpperCase(),
+                                            style: const TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white),
+                                          ),
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  radius: displayWidth(context) * 0.12,
+                                  backgroundImage: CachedNetworkImageProvider(
+                                      controller.user!.dp),
                                 ),
-                              )
-                            : CircleAvatar(
-                                radius: displayWidth(context) * 0.12,
-                                backgroundImage: CachedNetworkImageProvider(
-                                    controller.user!.dp),
-                              ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/profile');
-                      },
-                      child: Text(
-                        '@${controller.user!.name}',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontFamily: "Fira"),
+                      const SizedBox(
+                        height: 8,
                       ),
-                    ),
-                    const SizedBox(height: 16),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/profile');
+                        },
+                        child: Text(
+                          '@${controller.user!.name}',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontFamily: "Fira"),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
 
-                    // Follower detail box
-                    Container(
-                      height: displayHeight(context) * 0.08,
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      // Follower detail box
+                      Container(
+                        height: displayHeight(context) * 0.08,
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  controller.user!.followers.length.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                const Text(
+                                  'Followers',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  controller.user!.following.length.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                const Text(
+                                  'Following',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      drawerTile('Write new article', newArticleIcon,
+                          () => Navigator.pushNamed(context, '/newArticle')),
+                      drawerTile('My articles', myArticlesIcon,
+                          () => Navigator.pushNamed(context, '/myArticles')),
+                      drawerTile('Search articles', searchIcon,
+                          () => Navigator.pushNamed(context, '/search')),
+                      drawerTile('Saved articles', saveArticleIcon,
+                          () => Navigator.pushNamed(context, '/savedArticles')),
+
+                      // Notification count
+
+                      ListTile(
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/notifications'),
+                        contentPadding: EdgeInsets.zero,
+                        leading: Image.asset(
+                          notificationIcon,
+                          height: 20,
+                          color: Colors.grey,
+                        ),
+                        visualDensity: const VisualDensity(vertical: -2),
+                        minLeadingWidth: 1,
+                        title: const Text(
+                          'Notifications',
+                          style: TextStyle(
+                              fontSize: 13.5,
+                              color: Colors.white,
+                              fontFamily: "Fira",
+                              letterSpacing: 0.6),
+                        ),
+                        trailing: StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('notifications')
+                              .doc(controller.user!.userId)
+                              .collection('notification')
+                              .where('read', isEqualTo: false)
+                              .snapshots(),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              int numberOfNewNotification =
+                                  snapshot.data.docs.length;
+
+                              if (numberOfNewNotification == 0) {
+                                return const SizedBox();
+                              } else {
+                                return CircleAvatar(
+                                  radius: 9,
+                                  backgroundColor: Colors.red.shade400,
+                                  child: Text(
+                                    numberOfNewNotification.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                );
+                              }
+                            } else {
+                              return const SizedBox();
+                            }
+                          },
+                        ),
+                      ),
+
+                      drawerTile('About us', aboutUsIcon,
+                          () => _logger.info("About us")),
+                      drawerTile('Logout', logoutIcon, () async {
+                        final navigator = Navigator.of(context);
+                        AppProviders.disposeAllDisposableProviders(context);
+                        await _auth.signOut();
+                        navigator.pushReplacementNamed('/auth');
+                      }),
+                      SizedBox(height: displayHeight(context) * 0.075),
+
+                      // Made with love in India message
+                      Row(
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                controller.user!.followers.length.toString(),
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              const SizedBox(
-                                height: 3,
-                              ),
-                              const Text(
-                                'Followers',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
+                          const Text(
+                            "Made with ",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "Fira",
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                controller.user!.following.length.toString(),
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              const SizedBox(
-                                height: 3,
-                              ),
-                              const Text(
-                                'Following',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          )
+                          Icon(
+                            Icons.favorite,
+                            size: 13,
+                            color: Colors.pink.shade400,
+                          ),
+                          const Text(
+                            " in India",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "Fira",
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    drawerTile('Write new article', newArticleIcon,
-                        () => Navigator.pushNamed(context, '/newArticle')),
-                    drawerTile('My articles', myArticlesIcon,
-                        () => Navigator.pushNamed(context, '/myArticles')),
-                    drawerTile('Search articles', searchIcon,
-                        () => Navigator.pushNamed(context, '/search')),
-                    drawerTile('Saved articles', saveArticleIcon,
-                        () => Navigator.pushNamed(context, '/savedArticles')),
-
-                    // Notification count
-
-                    ListTile(
-                      onTap: () =>
-                          Navigator.pushNamed(context, '/notifications'),
-                      contentPadding: EdgeInsets.zero,
-                      leading: Image.asset(
-                        notificationIcon,
-                        height: 20,
-                        color: Colors.grey,
-                      ),
-                      visualDensity: const VisualDensity(vertical: -2),
-                      minLeadingWidth: 1,
-                      title: const Text(
-                        'Notifications',
-                        style: TextStyle(
-                            fontSize: 13.5,
-                            color: Colors.white,
-                            fontFamily: "Fira",
-                            letterSpacing: 0.6),
-                      ),
-                      trailing: StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('notifications')
-                            .doc(controller.user!.userId)
-                            .collection('notification')
-                            .where('read', isEqualTo: false)
-                            .snapshots(),
-                        builder: (context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            int numberOfNewNotification =
-                                snapshot.data.docs.length;
-
-                            if (numberOfNewNotification == 0) {
-                              return const SizedBox();
-                            } else {
-                              return CircleAvatar(
-                                radius: 9,
-                                backgroundColor: Colors.red.shade400,
-                                child: Text(
-                                  numberOfNewNotification.toString(),
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 12),
-                                ),
-                              );
-                            }
-                          } else {
-                            return const SizedBox();
-                          }
-                        },
-                      ),
-                    ),
-
-                    drawerTile('About us', aboutUsIcon,
-                        () => _logger.info("About us")),
-                    drawerTile('Logout', logoutIcon, () async {
-                      final navigator = Navigator.of(context);
-                      AppProviders.disposeAllDisposableProviders(context);
-                      await _auth.signOut();
-                      navigator.pushReplacementNamed('/auth');
-                    }),
-                    SizedBox(height: displayHeight(context) * 0.075),
-
-                    // Made with love in India message
-                    Row(
-                      children: [
-                        const Text(
-                          "Made with ",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Fira",
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Icon(
-                          Icons.favorite,
-                          size: 13,
-                          color: Colors.pink.shade400,
-                        ),
-                        const Text(
-                          " in India",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Fira",
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
+                    ],
+                  );
+                } else {
+                  return SizedBox();
+                }
             }
           },
         ),

@@ -9,6 +9,7 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/services/firebase/auth_services.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
+import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final Logger _logger = Logger("LoginScreen");
@@ -60,30 +61,39 @@ class LoginScreen extends StatelessWidget {
                       return "Cannot be empty";
                     }
                     return null;
-                  }, 
+                  },
                 ),
                 space,
                 Consumer<AuthScreenController>(
                   builder: (context, controller, child) {
                     return AuthTextField(
-                    controller: passwordController,
-                    label: "Password",
-                    visible: controller.showLoginPassword,
-                    suffixIcon: IconButton(onPressed: () {
-                      controller.showLoginPassword?controller.loginOffVisibility():controller.loginOnVisibility(); 
-                    }, 
-                    icon: controller.showLoginPassword? Icon(Icons.visibility_off,color: Colors.white60,) : Icon(Icons.visibility,color: Colors.white60),),
-                    prefixIcon: const Icon(
-                      Icons.email,
-                      color: Colors.white60,
-                    ),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "Cannot be empty";
-                      }
-                      return null;
-                    },
-                  );
+                      controller: passwordController,
+                      label: "Password",
+                      visible: controller.showLoginPassword,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          controller.showLoginPassword
+                              ? controller.loginOffVisibility()
+                              : controller.loginOnVisibility();
+                        },
+                        icon: controller.showLoginPassword
+                            ? Icon(
+                                Icons.visibility_off,
+                                color: Colors.white60,
+                              )
+                            : Icon(Icons.visibility, color: Colors.white60),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.email,
+                        color: Colors.white60,
+                      ),
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "Cannot be empty";
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
                 const SizedBox(
@@ -97,13 +107,13 @@ class LoginScreen extends StatelessWidget {
                         return MaterialButton(
                           height: displayHeight(context) * 0.055,
                           onPressed: () async {
-                            if (_formKey.currentState!.validate() ) {
+                            if (_formKey.currentState!.validate()) {
                               final navigator = Navigator.of(context);
                               final sms = ScaffoldMessenger.of(context);
-                              final userController = Provider.of<UserController>(
-                                context,
-                                listen: false);
-                            controller.startLogin();
+                              final userController =
+                                  Provider.of<UserController>(context,
+                                      listen: false);
+                              controller.startLogin();
                               final dynamic loginResponse = await _auth.signIn(
                                   email: emailController.text,
                                   password: passwordController.text);
@@ -111,7 +121,10 @@ class LoginScreen extends StatelessWidget {
                               if (loginResponse.runtimeType == UserCredential) {
                                 await userController
                                     .setUser(loginResponse.user.uid);
-                                navigator.pushReplacementNamed('/app');
+
+                                navigator.pushReplacement(MaterialPageRoute(
+                                  builder: (context) => AppScreen(true),
+                                ));
                               } else {
                                 sms.showSnackBar(
                                   SnackBar(
