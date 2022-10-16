@@ -45,3 +45,5 @@ const notificationFollowIcon = 'assets/icons/notification_follow.png';
 const newNotification = 'assets/icons/new_notif.png';
 
 const blockedUsersIcon = 'assets/icons/block_user.png';
+
+const noInternetIcon = 'assets/icons/no_internet.png';
