@@ -77,11 +77,11 @@ class LoginScreen extends StatelessWidget {
                               : controller.loginOnVisibility();
                         },
                         icon: controller.showLoginPassword
-                            ? Icon(
+                            ? const Icon(
                                 Icons.visibility_off,
                                 color: Colors.white60,
                               )
-                            : Icon(Icons.visibility, color: Colors.white60),
+                            : const Icon(Icons.visibility, color: Colors.white60),
                       ),
                       prefixIcon: const Icon(
                         Icons.email,

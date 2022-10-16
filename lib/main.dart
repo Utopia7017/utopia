@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
+import 'package:utopia/view/screens/BlockedUsersScreen/blocked_users_screen.dart';
 import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
 import 'package:utopia/view/screens/NotificationScreen/notification_screen.dart';
@@ -104,7 +105,8 @@ class Utopia extends StatelessWidget {
           '/myArticles': (context) => MyArticleScreen(),
           '/savedArticles': (context) => SavedArticlesScreen(),
           '/search': (context) => SearchScreen(),
-          '/notifications': (context) => NotificationScreen()
+          '/notifications': (context) => NotificationScreen(),
+          '/blockedUsers':(context) => BlockedUsersScreen(),
         },
 
         home: const SplashScreen(),

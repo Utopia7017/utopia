@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
@@ -177,6 +178,25 @@ class ArticlesController extends DisposableProvider {
     searchedArticles = tempSearchedArticles;
     searchedAuthors = tempSearchUsers;
     notifyListeners();
+  }
+
+  Future<List<Article>> fetchThisUsersArticles(String uid) async {
+    List<Article> articles = [];
+    try {
+      final Response? response =
+          await _apiServices.get(endUrl: 'articles/$uid.json');
+      if (response != null) {
+        Map<String, dynamic> articleData = response.data;
+        if (articleData.isNotEmpty) {
+          for (var art in articleData.values) {
+            articles.add(Article.fromJson(art));
+          }
+        }
+      }
+    } catch (error) {
+      debugPrint(error.toString());
+    }
+    return articles;
   }
 
   @override

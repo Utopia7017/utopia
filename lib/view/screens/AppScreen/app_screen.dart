@@ -1,11 +1,11 @@
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/global_context.dart';
 import 'package:utopia/view/screens/AppScreen/components/notification_bell.dart';
 import 'package:utopia/view/screens/Drawer/drawer.dart';
@@ -136,37 +136,78 @@ class _AppScreenState extends State<AppScreen> {
             ? SafeArea(child: ExploreScreen())
             : SafeArea(
                 child: Center(
-                    child: TextButton(
-                        onPressed: () async {
-                          final scaffold = ScaffoldMessenger.of(
-                              GlobalContext.contextKey.currentContext!);
-                          widget.internetConnection =
-                              await InternetConnectionChecker().hasConnection;
-                          bool oldInternetConnection =
-                              widget.internetConnection;
-                          widget.internetConnection =
-                              await InternetConnectionChecker().hasConnection;
-                          if (!oldInternetConnection &&
-                              widget.internetConnection) {
-                            scaffold.showSnackBar(SnackBar(
-                                backgroundColor: Colors.green.shade400,
-                                content: const Text(
-                                  "Reconnected !",
-                                  style: TextStyle(color: Colors.white),
-                                )));
-                          } else if (oldInternetConnection &&
-                              !widget.internetConnection) {
-                            scaffold.showSnackBar(SnackBar(
-                                backgroundColor: Colors.red.shade400,
-                                content: const Text(
-                                  "Connection lost !",
-                                  style: TextStyle(color: Colors.white),
-                                )));
-                          }
+                    child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    noInternetIcon,
+                    height: displayHeight(context) * 0.35,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Oops, No Internet Connection",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: authBackground,
+                        letterSpacing: 0.2,
+                        fontSize: 16.5,
+                        fontFamily: "Open"),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30.0, right: 30),
+                    child: Text(
+                      "Please make sure your wifi or cellular data is turned on and then try again.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 12.8,
+                          color: Colors.grey.shade600,
+                          fontFamily: "Open",
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  MaterialButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
+                    color: const Color(0xfbe4181e),
+                    onPressed: () async {
+                      final scaffold = ScaffoldMessenger.of(
+                          GlobalContext.contextKey.currentContext!);
+                      widget.internetConnection =
+                          await InternetConnectionChecker().hasConnection;
+                      bool oldInternetConnection = widget.internetConnection;
+                      widget.internetConnection =
+                          await InternetConnectionChecker().hasConnection;
+                      if (!oldInternetConnection && widget.internetConnection) {
+                        scaffold.showSnackBar(SnackBar(
+                            backgroundColor: Colors.green.shade400,
+                            content: const Text(
+                              "Reconnected !",
+                              style: TextStyle(color: Colors.white),
+                            )));
+                      } else if (oldInternetConnection &&
+                          !widget.internetConnection) {
+                        scaffold.showSnackBar(SnackBar(
+                            backgroundColor: Colors.red.shade400,
+                            content: const Text(
+                              "Connection lost !",
+                              style: TextStyle(color: Colors.white),
+                            )));
+                      }
 
-                          setState(() {});
-                        },
-                        child: const Text("Retry")))),
+                      setState(() {});
+                    },
+                    child: Text(
+                      "TRY AGAIN",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ))),
       ),
     );
   }
