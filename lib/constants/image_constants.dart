@@ -43,3 +43,5 @@ const notificationCommentIcon = 'assets/icons/notification_comment.png';
 const notificationFollowIcon = 'assets/icons/notification_follow.png';
 
 const newNotification = 'assets/icons/new_notif.png';
+
+const blockedUsersIcon = 'assets/icons/block_user.png';
