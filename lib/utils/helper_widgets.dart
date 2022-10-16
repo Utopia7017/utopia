@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 
 drawerTile(String title, String icon, Function() callbackAction) {
   return ListTile(
@@ -11,7 +9,7 @@ drawerTile(String title, String icon, Function() callbackAction) {
       height: 20,
       color: Colors.grey,
     ),
-    visualDensity: const VisualDensity(vertical: -2),
+    visualDensity: const VisualDensity(vertical: -3),
     minLeadingWidth: 1,
     title: Text(
       title,
