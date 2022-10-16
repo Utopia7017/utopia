@@ -21,7 +21,8 @@ class Authservice {
       {required String email, required String password}) async {
     try {
       print("reaching here");
-      UserCredential? userCredential =  await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential? userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       print(userCredential.toString());
       return userCredential;
     } on FirebaseAuthException catch (e) {
@@ -32,11 +33,11 @@ class Authservice {
   Future<dynamic> signUp(
       {required String email,
       required String password,
-      required BuildContext context}) async {
+      }) async {
     try {
-     
       UserCredential? userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
+      await userCredential.user!.sendEmailVerification();
       return userCredential;
     } on FirebaseAuthException catch (e) {
       return e.message;

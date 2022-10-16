@@ -27,7 +27,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
 
-    if (firebaseUser != null) {
+    if (firebaseUser != null && firebaseUser.emailVerified) {
       return AppScreen(internetConnected);
     } else {
       return const AuthScreen();
