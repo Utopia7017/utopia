@@ -70,7 +70,7 @@ class ArticlesController extends DisposableProvider {
       for (dynamic followingUid in following) {
         // for every following user id we will check if they have posted any article.
         // If posted then we will traverse all his articles and save it in our local 'for you' category
-
+      
         final Response? articlesResponse =
             await _apiServices.get(endUrl: 'articles/$followingUid.json');
 
@@ -85,7 +85,7 @@ class ArticlesController extends DisposableProvider {
       final Response? response =
           await _apiServices.get(endUrl: 'articles.json');
       // fetching articles for categories
-      if (response != null) {
+      if (response != null && response.data != null) {
         Map<String, dynamic> articlesByUsers = response.data;
 
         // fetched articles by user id ( for every user as key we will get a list of articles as value)
