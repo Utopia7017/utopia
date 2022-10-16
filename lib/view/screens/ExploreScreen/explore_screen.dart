@@ -111,20 +111,47 @@ class ExploreScreen extends StatelessWidget {
                             );
 
                           case ArticlesStatus.fetched:
-                            return ListView.builder(
-                              itemCount: controller
-                                  .articles[articleCategoriesForDisplaying[
-                                      controller.selectedCategory]]!
-                                  .length,
-                              itemBuilder: (context, index) {
-                                // return ArticleSkeleton();
-                                return ArticleBox(
-                                    article: controller.articles[
-                                        articleCategoriesForDisplaying[
-                                            controller
-                                                .selectedCategory]]![index]);
-                              },
-                            );
+                            if (controller
+                                .articles[articleCategoriesForDisplaying[
+                                    controller.selectedCategory]]!
+                                .isNotEmpty) {
+                              return ListView.builder(
+                                itemCount: controller
+                                    .articles[articleCategoriesForDisplaying[
+                                        controller.selectedCategory]]!
+                                    .length,
+                                itemBuilder: (context, index) {
+                                  // return ArticleSkeleton();
+                                  return ArticleBox(
+                                      article: controller.articles[
+                                          articleCategoriesForDisplaying[
+                                              controller
+                                                  .selectedCategory]]![index]);
+                                },
+                              );
+                            } else {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      noArticleFoundIcon,
+                                      height: displayHeight(context) * 0.22,
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    const Text(
+                                      "No articles present in this category",
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontFamily: "Open"),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+
                           case ArticlesStatus.fetching:
                             return ListView.builder(
                               itemCount: 8,
