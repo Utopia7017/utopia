@@ -8,6 +8,21 @@ class AuthScreenController extends DisposableProvider {
   bool showLoginPassword = false;
   bool showSignupPasswprd = false;
   bool showSignupConfirmPassword = false;
+  int registrationPageIndex = 1;
+
+  increaseRegistrationPageIndex() {
+    if (registrationPageIndex == 1) {
+      ++registrationPageIndex;
+      notifyListeners();
+    }
+  }
+
+  decreaseRegistrationPageIndex() {
+    if (registrationPageIndex == 2) {
+      --registrationPageIndex;
+      notifyListeners();
+    }
+  }
 
   startSigningUp() {
     signupStatus = AuthSignUpStatus.loading;

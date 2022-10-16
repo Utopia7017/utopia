@@ -81,7 +81,8 @@ class LoginScreen extends StatelessWidget {
                                 Icons.visibility_off,
                                 color: Colors.white60,
                               )
-                            : const Icon(Icons.visibility, color: Colors.white60),
+                            : const Icon(Icons.visibility,
+                                color: Colors.white60),
                       ),
                       prefixIcon: const Icon(
                         Icons.email,
@@ -119,12 +120,22 @@ class LoginScreen extends StatelessWidget {
                                   password: passwordController.text);
                               controller.stopLogin();
                               if (loginResponse.runtimeType == UserCredential) {
-                                await userController
-                                    .setUser(loginResponse.user.uid);
+                                if ((loginResponse as UserCredential)
+                                    .user!
+                                    .emailVerified) {
+                                  print("valid email");
+                                } else {
+                                  (loginResponse)
+                                      .user!
+                                      .sendEmailVerification()
+                                      .then((value) => print("sent"));
+                                }
+                                // await userController
+                                //     .setUser(loginResponse.user.uid);
 
-                                navigator.pushReplacement(MaterialPageRoute(
-                                  builder: (context) => AppScreen(true),
-                                ));
+                                // navigator.pushReplacement(MaterialPageRoute(
+                                //   builder: (context) => AppScreen(true),
+                                // ));
                               } else {
                                 sms.showSnackBar(
                                   SnackBar(
