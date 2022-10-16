@@ -86,10 +86,11 @@ class NotificationScreen extends StatelessWidget {
                           const Text(
                             "Nothing here",
                             style: TextStyle(
-                                // fontFamily: "Open",
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
+                                fontFamily: "Open",
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                              fontSize: 15
+                                ),
                           )
                         ],
                       ),
