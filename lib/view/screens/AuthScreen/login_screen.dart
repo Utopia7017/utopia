@@ -111,9 +111,7 @@ class LoginScreen extends StatelessWidget {
                             if (_formKey.currentState!.validate()) {
                               final navigator = Navigator.of(context);
                               final sms = ScaffoldMessenger.of(context);
-                              final userController =
-                                  Provider.of<UserController>(context,
-                                      listen: false);
+
                               controller.startLogin();
                               final dynamic loginResponse = await _auth.signIn(
                                   email: emailController.text,
@@ -123,19 +121,14 @@ class LoginScreen extends StatelessWidget {
                                 if ((loginResponse as UserCredential)
                                     .user!
                                     .emailVerified) {
-                                  print("valid email");
+                                  navigator.pushReplacement(MaterialPageRoute(
+                                    builder: (context) => AppScreen(true),
+                                  ));
                                 } else {
-                                  (loginResponse)
-                                      .user!
-                                      .sendEmailVerification()
-                                      .then((value) => print("sent"));
+                                  sms.showSnackBar(const SnackBar(
+                                      content: Text(
+                                          "Please verify your email first")));
                                 }
-                                // await userController
-                                //     .setUser(loginResponse.user.uid);
-
-                                // navigator.pushReplacement(MaterialPageRoute(
-                                //   builder: (context) => AppScreen(true),
-                                // ));
                               } else {
                                 sms.showSnackBar(
                                   SnackBar(
