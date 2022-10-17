@@ -106,6 +106,39 @@ class UserProfileScreen extends StatelessWidget {
                                           const Icon(Icons.keyboard_backspace)),
                                 ),
                                 Positioned(
+                                  top: displayHeight(context) * 0.03,
+                                  right: displayWidth(context) * 0.01,
+                                  child: PopupMenuButton(
+                                    onSelected: (value) {
+                                      switch (value) {
+                                        case 'Block Author':
+                                          Provider.of<UserController>(context,
+                                                  listen: false)
+                                              .blockThisUser(userId);
+                                          break;
+                                        case 'Report Author':
+                                          print("lorem ipsum");
+                                          break;
+                                        default:
+                                          print("lorem ipsum");
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) => [
+                                      const PopupMenuItem(
+                                          height: 40,
+                                          value: "Block Author",
+                                          child: Text(
+                                            'Block Author',
+                                          )),
+                                      const PopupMenuItem(
+                                        height: 40,
+                                        value: "Report Author",
+                                        child: Text('Report Author'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
                                   top: displayHeight(context) * 0.15,
                                   left: 16,
                                   child: (thisUser.dp.isEmpty)

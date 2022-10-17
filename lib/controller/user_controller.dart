@@ -225,6 +225,26 @@ class UserController extends DisposableProvider {
     notifyListeners();
   }
 
+  blockThisUser(String uid) async {
+    Logger logger = Logger("Block This User");
+    try {
+      if (!user!.blocked.contains(uid)) {
+        List<dynamic> currentBlockedUsers = user!.blocked;
+        currentBlockedUsers.add(uid);
+        final Response? response = await _apiServices.update(
+            endUrl: 'users/${user!.userId}.json',
+            data: {'blocked': currentBlockedUsers});
+        if (response != null) {
+          user!.blockUser(uid);
+        }
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    notifyListeners();
+  }
+
+  // Dispose this provider
   @override
   void disposeValues() {
     profileStatus = ProfileStatus.nil;
