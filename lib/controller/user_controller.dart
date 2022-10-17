@@ -225,6 +225,7 @@ class UserController extends DisposableProvider {
     notifyListeners();
   }
 
+  // method to unblock user ( user id of the persopn is required )
   blockThisUser(String uid) async {
     Logger logger = Logger("Block This User");
     try {
@@ -238,6 +239,28 @@ class UserController extends DisposableProvider {
             data: {'blocked': currentBlockedUsers});
         if (response != null) {
           user!.blockUser(uid);
+        }
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    notifyListeners();
+  }
+
+  // method to unblock user ( user id of the persopn is required )
+  unBlockThisUser(String uid) async {
+    Logger logger = Logger("Unblock This User");
+    try {
+      if (user!.blocked.contains(uid)) {
+        List<dynamic> currentBlockedUsers = user!.blocked;
+        currentBlockedUsers.remove(uid);
+        final Response? response = await _apiServices.update(
+            message: "Unblocked", // TODO: display something more alluring
+            showMessage: true,
+            endUrl: 'users/${user!.userId}.json',
+            data: {'blocked': currentBlockedUsers});
+        if (response != null) {
+          user!.unblockUser(uid);
         }
       }
     } catch (error) {

@@ -108,35 +108,48 @@ class UserProfileScreen extends StatelessWidget {
                                 Positioned(
                                   top: displayHeight(context) * 0.03,
                                   right: displayWidth(context) * 0.01,
-                                  child: PopupMenuButton(
-                                    onSelected: (value) async {
-                                      switch (value) {
-                                        case 'Block Author':
-                                        
-                                          await Provider.of<UserController>(context,
-                                                  listen: false)
-                                              .blockThisUser(userId);
-                                          break;
-                                        case 'Report Author':
-                                          print("lorem ipsum");
-                                          break;
-                                        default:
-                                          print("lorem ipsum");
-                                      }
+                                  child: Consumer<UserController>(
+                                    builder: (context, controller, child) {
+                                      return PopupMenuButton(
+                                          onSelected: (value) async {
+                                            switch (value) {
+                                              case 'Block Author':
+                                                await controller
+                                                    .blockThisUser(userId);
+                                                break;
+                                              case 'Unblock Author':
+                                                await controller
+                                                    .unBlockThisUser(userId);
+                                                break;
+                                              case 'Report Author':
+                                                print("lorem ipsum");
+                                                break;
+                                              default:
+                                                print("lorem ipsum");
+                                            }
+                                          },
+                                          itemBuilder: (BuildContext context) =>
+                                              [
+                                                PopupMenuItem(
+                                                    height: 40,
+                                                    value: controller
+                                                            .user!.blocked
+                                                            .contains(userId)
+                                                        ? "Unblock Author"
+                                                        : "Block Author",
+                                                    child: Text(
+                                                      controller.user!.blocked
+                                                              .contains(userId)
+                                                          ? "Unblock Author"
+                                                          : 'Block Author',
+                                                    )),
+                                                const PopupMenuItem(
+                                                  height: 40,
+                                                  value: "Report Author",
+                                                  child: Text('Report Author'),
+                                                ),
+                                              ]);
                                     },
-                                    itemBuilder: (BuildContext context) => [
-                                      const PopupMenuItem(
-                                          height: 40,
-                                          value: "Block Author",
-                                          child: Text(
-                                            'Block Author',
-                                          )),
-                                      const PopupMenuItem(
-                                        height: 40,
-                                        value: "Report Author",
-                                        child: Text('Report Author'),
-                                      ),
-                                    ],
                                   ),
                                 ),
                                 Positioned(
@@ -264,27 +277,49 @@ class UserProfileScreen extends StatelessWidget {
                                                         authBackground),
                                               ),
                                               onPressed: () {
-                                                if (user.followers.contains(
-                                                    controller.user!.userId)) {
-                                                  controller.unFollowUser(
-                                                      userId: userId);
+                                                if (controller.user!.blocked
+                                                    .contains(userId)) {
+                                                  // TODO : unblock user
+                                                  controller
+                                                      .unBlockThisUser(userId);
                                                 } else {
-                                                  controller.followUser(
-                                                      userId: user.userId);
+                                                  if (user.followers.contains(
+                                                      controller
+                                                          .user!.userId)) {
+                                                    controller.unFollowUser(
+                                                        userId: userId);
+                                                  } else {
+                                                    controller.followUser(
+                                                        userId: user.userId);
+                                                  }
                                                 }
                                               },
-                                              child: Text(
-                                                (user.followers.contains(
-                                                        controller
-                                                            .user!.userId))
-                                                    ? "Unfollow"
-                                                    : "Follow",
-                                                style: TextStyle(
-                                                    fontFamily: "",
-                                                    letterSpacing: 0.4,
-                                                    color: Colors.white
-                                                        .withOpacity(0.85)),
-                                              ),
+                                              child: (controller.user!.blocked
+                                                      .contains(userId))
+                                                  ? Text("Unblock",
+                                                      style: TextStyle(
+                                                          fontFamily: "Open",
+                                                          letterSpacing: 0.4,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white
+                                                              .withOpacity(
+                                                                  0.85)))
+                                                  : Text(
+                                                      (user.followers.contains(
+                                                              controller.user!
+                                                                  .userId))
+                                                          ? "Unfollow"
+                                                          : "Follow",
+                                                      style: TextStyle(
+                                                          fontFamily: "Open",
+                                                          letterSpacing: 0.4,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white
+                                                              .withOpacity(
+                                                                  0.85)),
+                                                    ),
                                             ),
                                           ),
                                         ),
@@ -339,61 +374,92 @@ class UserProfileScreen extends StatelessWidget {
                             }
                           }),
                           space,
-                          const Padding(
-                            padding: EdgeInsets.only(left: 16.0),
-                            child: Text(
-                              "Talks about",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: "Fira"),
-                            ),
-                          ),
-                          space,
-                          SizedBox(
-                            height: displayHeight(context) * 0.065,
-                            width: displayWidth(context),
-                            // color: Colors.blue.shade100,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.only(left: 8),
-                              itemCount: tags.length,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                int randomIndex =
-                                    random.nextInt(listOfCardColors.length);
-                                Color cardColor = listOfCardColors[randomIndex];
-                                return Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25)),
-                                  color: cardColor,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 12.0,
-                                        right: 12,
-                                        top: 8,
-                                        bottom: 8),
-                                    child: Center(
-                                      child: Text(
-                                        tags[index],
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13),
+                          Consumer<UserController>(
+                            builder: (context, controller, child) {
+                              return (controller.user!.blocked.contains(userId))
+                                  ? SizedBox(
+                                      height: displayHeight(context) * 0.2,
+                                      child: const Center(
+                                        child: Text(
+                                          "Unblock user to see details",
+                                          style: TextStyle(
+                                            fontFamily: "Open",
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          ListView.builder(
-                            itemBuilder: (context, index) {
-                              return ArticleBox(article: articles[index]);
+                                    )
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 16.0),
+                                          child: Text(
+                                            "Talks about",
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Fira"),
+                                          ),
+                                        ),
+                                        space,
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.065,
+                                          width: displayWidth(context),
+                                          // color: Colors.blue.shade100,
+                                          child: ListView.builder(
+                                            padding:
+                                                const EdgeInsets.only(left: 8),
+                                            itemCount: tags.length,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (context, index) {
+                                              int randomIndex = random.nextInt(
+                                                  listOfCardColors.length);
+                                              Color cardColor =
+                                                  listOfCardColors[randomIndex];
+                                              return Card(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            25)),
+                                                color: cardColor,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 12.0,
+                                                          right: 12,
+                                                          top: 8,
+                                                          bottom: 8),
+                                                  child: Center(
+                                                    child: Text(
+                                                      tags[index],
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 13),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        ListView.builder(
+                                          itemBuilder: (context, index) {
+                                            return ArticleBox(
+                                                article: articles[index]);
+                                          },
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: articles.length,
+                                        )
+                                      ],
+                                    );
                             },
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: articles.length,
-                          )
+                          ),
                         ],
                       ),
                     );
