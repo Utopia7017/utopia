@@ -101,7 +101,7 @@ class UserController extends DisposableProvider {
     notifyListeners();
   }
 
-  // By calling this method currently signed in user can follow the user with the passed userd id.
+  // By calling this method currently signed in user can follow the user with the provided userd id.
   void followUser({required userId}) async {
     Logger logger = Logger("FollowAuthor");
     followingUserStatus = FollowingUserStatus.yes;
@@ -225,6 +225,51 @@ class UserController extends DisposableProvider {
     notifyListeners();
   }
 
+  // method to unblock user ( user id of the persopn is required )
+  blockThisUser(String uid) async {
+    Logger logger = Logger("Block This User");
+    try {
+      if (!user!.blocked.contains(uid)) {
+        List<dynamic> currentBlockedUsers = user!.blocked;
+        currentBlockedUsers.add(uid);
+        final Response? response = await _apiServices.update(
+            message: "Blocked", // TODO: display something more alluring
+            showMessage: true,
+            endUrl: 'users/${user!.userId}.json',
+            data: {'blocked': currentBlockedUsers});
+        if (response != null) {
+          user!.blockUser(uid);
+        }
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    notifyListeners();
+  }
+
+  // method to unblock user ( user id of the persopn is required )
+  unBlockThisUser(String uid) async {
+    Logger logger = Logger("Unblock This User");
+    try {
+      if (user!.blocked.contains(uid)) {
+        List<dynamic> currentBlockedUsers = user!.blocked;
+        currentBlockedUsers.remove(uid);
+        final Response? response = await _apiServices.update(
+            message: "Unblocked", // TODO: display something more alluring
+            showMessage: true,
+            endUrl: 'users/${user!.userId}.json',
+            data: {'blocked': currentBlockedUsers});
+        if (response != null) {
+          user!.unblockUser(uid);
+        }
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    notifyListeners();
+  }
+
+  // Dispose this provider
   @override
   void disposeValues() {
     profileStatus = ProfileStatus.nil;

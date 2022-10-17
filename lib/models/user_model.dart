@@ -1,4 +1,3 @@
-import 'saved_article_model.dart';
 
 class User {
   String name;
@@ -6,6 +5,7 @@ class User {
   String email;
   List<dynamic> followers;
   List<dynamic> following;
+  List<dynamic> blocked;
   String dp;
   String bio;
   String cp;
@@ -17,6 +17,7 @@ class User {
       {required this.name,
       required this.dp,
       required this.email,
+      required this.blocked,
       required this.followers,
       required this.userId,
       required this.bio,
@@ -32,6 +33,7 @@ class User {
         cp: data['cp'] ?? '',
         bio: data['bio'] ?? '',
         dp: data['dp'],
+        blocked: data['blocked'] ?? [],
         draftArticles: data['draftArticles'] ?? [],
         savedArticles: data['savedArticles'] ?? [],
         email: data['email'],
@@ -49,6 +51,7 @@ class User {
       'dp': dp,
       'bio': bio,
       'userId': userId,
+      'blocked': blocked,
       'followers': followers,
       'following': following,
       'draftArticles': [],
@@ -73,4 +76,18 @@ class User {
     name = updatedName;
     bio = updatedBio;
   }
+
+  blockUser(String uid) {
+    if (!blocked.contains(uid)) {
+      blocked.add(uid);
+    }
+  }
+
+  unblockUser(String uid) {
+    if (blocked.contains(uid)) {
+      blocked.remove(uid);
+    }
+  }
+
+
 }

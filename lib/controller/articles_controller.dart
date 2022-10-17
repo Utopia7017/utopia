@@ -59,18 +59,20 @@ class ArticlesController extends DisposableProvider {
       myUid ??= FirebaseAuth.instance.currentUser!.uid;
       await Future.delayed(const Duration(microseconds: 1));
       List<dynamic> following = [];
+      List<dynamic> blocked = [];
       notifyListeners();
       // Firstly fetch the current user details ( specifically followings)
       final currentUserResponse =
           await _apiServices.get(endUrl: 'users/$myUid.json');
       if (currentUserResponse != null) {
         following = userModel.User.fromJson(currentUserResponse.data).following;
+        blocked = userModel.User.fromJson(currentUserResponse.data).blocked;
       }
 
       for (dynamic followingUid in following) {
         // for every following user id we will check if they have posted any article.
         // If posted then we will traverse all his articles and save it in our local 'for you' category
-      
+
         final Response? articlesResponse =
             await _apiServices.get(endUrl: 'articles/$followingUid.json');
 
@@ -91,10 +93,14 @@ class ArticlesController extends DisposableProvider {
         // fetched articles by user id ( for every user as key we will get a list of articles as value)
 
         for (var userId in articlesByUsers.keys) {
-          Map<String, dynamic> arts = articlesByUsers[userId];
-          for (var data in arts.values) {
-            Article article = Article.fromJson(data);
-            fetchedArticles[article.category]!.add(article);
+          if (blocked.contains(userId)) {
+            continue;
+          } else {
+            Map<String, dynamic> arts = articlesByUsers[userId];
+            for (var data in arts.values) {
+              Article article = Article.fromJson(data);
+              fetchedArticles[article.category]!.add(article);
+            }
           }
         }
       }

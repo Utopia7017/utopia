@@ -345,6 +345,7 @@ class SignUpScreen extends StatelessWidget {
                     if (FirebaseAuth.instance.currentUser!.emailVerified) {
                       await userController.createUser(user.User(
                           draftArticles: [],
+                          blocked: [],
                           emailVerified: false,
                           savedArticles: [],
                           cp: '',
