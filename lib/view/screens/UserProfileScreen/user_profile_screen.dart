@@ -109,10 +109,11 @@ class UserProfileScreen extends StatelessWidget {
                                   top: displayHeight(context) * 0.03,
                                   right: displayWidth(context) * 0.01,
                                   child: PopupMenuButton(
-                                    onSelected: (value) {
+                                    onSelected: (value) async {
                                       switch (value) {
                                         case 'Block Author':
-                                          Provider.of<UserController>(context,
+                                        
+                                          await Provider.of<UserController>(context,
                                                   listen: false)
                                               .blockThisUser(userId);
                                           break;
