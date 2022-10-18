@@ -63,16 +63,7 @@ class ProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Profile box
-                            ProfileBox(
-                                coverPhoto: userController.user!.cp,
-                                dp: userController.user!.dp,
-                                name: userController.user!.name,
-                                followers:
-                                    userController.user!.followers.length,
-                                following:
-                                    userController.user!.following.length,
-                                numberOfArticles: 10,
-                                bio: userController.user!.bio),
+                            ProfileBox(user: userController.user!),
                             const SizedBox(height: 10),
                             // Recent Articles or Top 10 articles
                             TopArticlesList(user: userController.user!),
