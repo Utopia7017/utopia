@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 
 class ProfileBox extends StatelessWidget {
-  final String coverPhoto;
-  final String dp;
-  final String name;
-  final int followers;
-  final int following;
-  final int numberOfArticles;
-  final String bio;
-
-  const ProfileBox(
-      {super.key,
-      required this.coverPhoto,
-      required this.dp,
-      required this.name,
-      required this.followers,
-      required this.following,
-      required this.numberOfArticles,
-      required this.bio});
+  final User user;
+  const ProfileBox({
+    super.key,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
+    List<String> initials = user.name.split(" ");
+    String firstLetter = "", lastLetter = "";
+
+    if (initials.length == 1) {
+      firstLetter = initials[0].characters.first;
+    } else {
+      firstLetter = initials[0].characters.first;
+      lastLetter = initials[1].characters.first;
+    }
     return Column(
       children: [
         SizedBox(
@@ -33,9 +33,9 @@ class ProfileBox extends StatelessWidget {
           width: displayWidth(context),
           child: Stack(
             children: [
-              (coverPhoto.isNotEmpty)
+              (user.cp.isNotEmpty)
                   ? CachedNetworkImage(
-                      imageUrl: coverPhoto,
+                      imageUrl: user.cp,
                       height: displayHeight(context) * 0.25,
                       width: displayWidth(context),
                       fit: BoxFit.fitWidth,
@@ -77,12 +77,53 @@ class ProfileBox extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // user dp
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                imageUrl: dp,
-                                height: displayHeight(context) * 0.13,
-                              ),
+                            InkWell(
+                              onTap: () async {
+                                XFile? pickCoverPhoto =
+                                    await pickImage(context);
+                                if (pickCoverPhoto != null) {
+                                } else {}
+                              },
+                              child: (user.dp.isEmpty)
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xfb7F7FD5),
+                                                Color(0xfb86A8E7),
+                                                Color(0xfb91EAE4),
+                                              ],
+                                              begin: Alignment.bottomLeft,
+                                              end: Alignment.topRight),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      height: displayHeight(context) * 0.13,
+                                      width: displayWidth(context) * 0.22,
+                                      alignment: Alignment.center,
+                                      child: initials.length > 1
+                                          ? Text(
+                                              "$firstLetter.$lastLetter"
+                                                  .toUpperCase(),
+                                              style: const TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            )
+                                          : Text(
+                                              firstLetter.toUpperCase(),
+                                              style: const TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            ),
+                                    )
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: CachedNetworkImage(
+                                        imageUrl: user.dp,
+                                        height: displayHeight(context) * 0.13,
+                                      ),
+                                    ),
                             ),
                             SizedBox(
                               width: displayWidth(context) * 0.04,
@@ -93,7 +134,7 @@ class ProfileBox extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  name,
+                                  user.name,
                                   style: TextStyle(
                                     color: Colors.grey.shade700,
                                     fontWeight: FontWeight.bold,
@@ -104,14 +145,14 @@ class ProfileBox extends StatelessWidget {
                                 const SizedBox(
                                   height: 6,
                                 ),
-                                (bio.isNotEmpty)
+                                (user.bio.isNotEmpty)
                                     ? SizedBox(
                                         height: displayHeight(context) * 0.1,
                                         width: displayWidth(context) * 0.55,
                                         // color: Colors
                                         //     .blue.shade100,
                                         child: Text(
-                                          bio,
+                                          user.bio,
                                           style: const TextStyle(
                                               color: Colors.blueGrey,
                                               fontSize: 12.2,
@@ -176,7 +217,8 @@ class ProfileBox extends StatelessWidget {
                                 context: context,
                                 builder: (context) {
                                   return EditProfileDialogbox(
-                                      currentName: name, currentBio: bio);
+                                      currentName: user.name,
+                                      currentBio: user.bio);
                                 },
                               );
                             },
