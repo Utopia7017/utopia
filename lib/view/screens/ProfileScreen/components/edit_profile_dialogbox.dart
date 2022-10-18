@@ -7,7 +7,8 @@ class EditProfileDialogbox extends StatefulWidget {
   String currentName;
   String currentBio;
 
-  EditProfileDialogbox({required this.currentName, required this.currentBio});
+  EditProfileDialogbox(
+      {super.key, required this.currentName, required this.currentBio});
 
   @override
   State<EditProfileDialogbox> createState() => _EditProfileDialogboxState();
@@ -86,7 +87,7 @@ class _EditProfileDialogboxState extends State<EditProfileDialogbox> {
                   expands: false,
                   maxLines: 2,
                   minLines: null,
-                  maxLength: 250,
+                  maxLength: 120,
                 ),
               ),
             ],
@@ -106,7 +107,6 @@ class _EditProfileDialogboxState extends State<EditProfileDialogbox> {
             return TextButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  // TODO: call edit profile method from user controller to update user detail
                   controller.updateProfile(
                       name: nameController.text, bio: bioController.text);
                   Navigator.pop(context);

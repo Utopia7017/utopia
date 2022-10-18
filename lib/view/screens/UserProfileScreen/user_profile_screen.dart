@@ -74,8 +74,8 @@ class UserProfileScreen extends StatelessWidget {
                             width: displayWidth(context),
                             child: Stack(
                               children: [
-                                Image.network(
-                                  thisUser.cp,
+                                CachedNetworkImage(
+                                  imageUrl: thisUser.cp,
                                   width: displayWidth(context),
                                   height: displayHeight(context) * 0.26,
                                   fit: BoxFit.fitWidth,

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/controller/disposable_controller.dart';
@@ -62,7 +63,7 @@ class UserController extends DisposableProvider {
   }
 
   // Change cover picture , user needs to pass an XFile
-  void changeCoverPhoto(XFile imageFile) async {
+  void changeCoverPhoto(CroppedFile imageFile) async {
     Logger logger = Logger("ChangeCP");
     try {
       userUploadingImage = UserUploadingImage.loading;
@@ -82,7 +83,7 @@ class UserController extends DisposableProvider {
   }
 
   // Change display picture , user needs to pass an XFile
-  void changeDisplayPhoto(XFile imageFile) async {
+  void changeDisplayPhoto(CroppedFile imageFile) async {
     Logger logger = Logger("ChangeDP");
     try {
       userUploadingImage = UserUploadingImage.loading;
