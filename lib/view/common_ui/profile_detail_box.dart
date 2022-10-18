@@ -20,7 +20,7 @@ class ProfileDetailBox extends StatelessWidget {
           Text(
             value.toString(),
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               color: Colors.black87,
               fontWeight: FontWeight.bold,
             ),
@@ -29,8 +29,8 @@ class ProfileDetailBox extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w500,
+                fontSize: 11,
+                // fontWeight: FontWeight.w500,
                 color: Colors.grey.shade500),
           ),
         ],
