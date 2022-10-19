@@ -50,6 +50,7 @@ dependencies:
   firebase_auth: ^3.7.0
   firebase_core: ^1.21.1
   connectivity_plus: ^2.3.9
+  image_cropper: ^3.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

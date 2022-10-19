@@ -179,6 +179,8 @@ class MyArticlesController extends DisposableProvider {
           tempPublished.add(art);
         }
         publishedArticles = tempPublished;
+        publishedArticles
+            .sort((a, b) => b.articleCreated.compareTo(a.articleCreated));
       }
     } catch (error) {
       _logger.shout(error.toString());
