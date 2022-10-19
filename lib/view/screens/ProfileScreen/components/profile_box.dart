@@ -38,20 +38,44 @@ class ProfileBox extends StatelessWidget {
           width: displayWidth(context),
           child: Stack(
             children: [
-              (user.cp.isNotEmpty)
-                  ? CachedNetworkImage(
-                      imageUrl: user.cp,
-                      height: displayHeight(context) * 0.25,
-                      width: displayWidth(context),
-                      fit: BoxFit.fitWidth,
-                    )
-                  : CachedNetworkImage(
-                      imageUrl:
-                          'https://i.pinimg.com/564x/21/65/0a/21650a0e6039a967ae95c2e03dfc3361.jpg',
-                      width: displayWidth(context),
-                      height: displayHeight(context) * 0.25,
-                      fit: BoxFit.fitWidth,
-                    ),
+              InkWell(
+                onTap: () async {
+                  // update cover photo
+                  final sms = ScaffoldMessenger.of(context);
+                  final userController =
+                  Provider.of<UserController>(context,
+                      listen: false);
+                  XFile? pickCoverPhoto =
+                  await pickImage(context);
+                  if (pickCoverPhoto != null) {
+                    CroppedFile? croppedFile = await cropImage(
+                        File(pickCoverPhoto.path));
+                    if (croppedFile != null) {
+                      userController
+                          .changeCoverPhoto(croppedFile);
+                    } else {
+                      // nothing to be done
+                    }
+                  } else {
+                    sms.showSnackBar(const SnackBar(
+                        content: Text("No image picked")));
+                  }
+                },
+                child: (user.cp.isNotEmpty)
+                    ? CachedNetworkImage(
+                        imageUrl: user.cp,
+                        height: displayHeight(context) * 0.25,
+                        width: displayWidth(context),
+                        fit: BoxFit.fitWidth,
+                      )
+                    : CachedNetworkImage(
+                        imageUrl:
+                            'https://i.pinimg.com/564x/21/65/0a/21650a0e6039a967ae95c2e03dfc3361.jpg',
+                        width: displayWidth(context),
+                        height: displayHeight(context) * 0.25,
+                        fit: BoxFit.fitWidth,
+                      ),
+              ),
               Positioned(
                   top: displayHeight(context) * 0.03,
                   child: IconButton(
@@ -84,15 +108,16 @@ class ProfileBox extends StatelessWidget {
                             // user dp
                             InkWell(
                               onTap: () async {
+                                // update dp
                                 final sms = ScaffoldMessenger.of(context);
                                 final userController =
                                     Provider.of<UserController>(context,
                                         listen: false);
-                                XFile? pickCoverPhoto =
+                                XFile? pickDisplayPhoto =
                                     await pickImage(context);
-                                if (pickCoverPhoto != null) {
+                                if (pickDisplayPhoto != null) {
                                   CroppedFile? croppedFile = await cropImage(
-                                      File(pickCoverPhoto.path));
+                                      File(pickDisplayPhoto.path));
                                   if (croppedFile != null) {
                                     userController
                                         .changeDisplayPhoto(croppedFile);
