@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
@@ -187,11 +186,12 @@ class ArticlesController extends DisposableProvider {
   }
 
   Future<List<Article>> fetchThisUsersArticles(String uid) async {
+    Logger logger = Logger('FetchThisUserArticle');
     List<Article> articles = [];
     try {
       final Response? response =
           await _apiServices.get(endUrl: 'articles/$uid.json');
-      if (response != null) {
+      if (response != null && response.data != null) {
         Map<String, dynamic> articleData = response.data;
         if (articleData.isNotEmpty) {
           for (var art in articleData.values) {
@@ -199,9 +199,7 @@ class ArticlesController extends DisposableProvider {
           }
         }
       }
-    } catch (error) {
-      debugPrint(error.toString());
-    }
+    } catch (error) {}
     return articles;
   }
 

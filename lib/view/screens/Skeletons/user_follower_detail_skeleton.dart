@@ -14,6 +14,28 @@ class UserFollowersDetailBoxSkeleton extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
-    return Skeleton(height: displayHeight(context) * 0.08, width:  displayWidth(context) * 0.6,);
+    return Column(
+      children: [
+        Skeleton(
+          height: displayHeight(context) * 0.08,
+          width: displayWidth(context) * 0.6,
+        ),
+        const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Skeleton(
+              height: displayHeight(context) * 0.06,
+              width: displayWidth(context) * 0.3,
+            ),
+            const SizedBox(width: 25),
+            Skeleton(
+              height: displayHeight(context) * 0.06,
+              width: displayWidth(context) * 0.3,
+            ),
+          ],
+        )
+      ],
+    );
   }
 }

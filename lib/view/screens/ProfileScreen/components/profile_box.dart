@@ -13,7 +13,7 @@ import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
-import 'package:utopia/view/shimmers/user_follower_detail_shimmer.dart';
+import 'package:utopia/view/shimmers/my_followers_box_shimmer.dart';
 import '../../../../controller/articles_controller.dart';
 
 class ProfileBox extends StatelessWidget {
@@ -46,22 +46,19 @@ class ProfileBox extends StatelessWidget {
                   // update cover photo
                   final sms = ScaffoldMessenger.of(context);
                   final userController =
-                  Provider.of<UserController>(context,
-                      listen: false);
-                  XFile? pickCoverPhoto =
-                  await pickImage(context);
+                      Provider.of<UserController>(context, listen: false);
+                  XFile? pickCoverPhoto = await pickImage(context);
                   if (pickCoverPhoto != null) {
-                    CroppedFile? croppedFile = await cropImage(
-                        File(pickCoverPhoto.path));
+                    CroppedFile? croppedFile =
+                        await cropImage(File(pickCoverPhoto.path));
                     if (croppedFile != null) {
-                      userController
-                          .changeCoverPhoto(croppedFile);
+                      userController.changeCoverPhoto(croppedFile);
                     } else {
                       // nothing to be done
                     }
                   } else {
-                    sms.showSnackBar(const SnackBar(
-                        content: Text("No image picked")));
+                    sms.showSnackBar(
+                        const SnackBar(content: Text("No image picked")));
                   }
                 },
                 child: (user.cp.isNotEmpty)
@@ -217,25 +214,28 @@ class ProfileBox extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         Consumer<UserController>(
                           builder: (context, value, child) {
                             return FutureBuilder(
-                              future: Provider.of<ArticlesController>(context).fetchThisUsersArticles(user.userId),
-                              builder: (context, AsyncSnapshot<List<Article>> snapshot) {
-                                if(snapshot.hasData){
-
+                              future: Provider.of<ArticlesController>(context)
+                                  .fetchThisUsersArticles(user.userId),
+                              builder: (context,
+                                  AsyncSnapshot<List<Article>> snapshot) {
+                                if (snapshot.hasData) {
                                   return Container(
                                     height: displayHeight(context) * 0.08,
                                     width: displayWidth(context) * 0.6,
                                     decoration: BoxDecoration(
-                                        color: Colors.blue.shade100.withOpacity(0.25),
+                                        color: Colors.blue.shade100
+                                            .withOpacity(0.25),
                                         borderRadius: BorderRadius.circular(8)),
                                     padding: const EdgeInsets.only(
                                         top: 4, left: 12, right: 12, bottom: 4),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         ProfileDetailBox(
                                           value: user.following.length,
@@ -255,25 +255,21 @@ class ProfileBox extends StatelessWidget {
                                       ],
                                     ),
                                   );
+                                } else {
+                                  return MyFollowerBoxShimmer();
                                 }
-                                else{
-                                  return UserFollowerDetailShimmer();
-                                }
-
                               },
-
                             );
                           },
-
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         SizedBox(
                           width: displayWidth(context) * 0.5,
                           child: ElevatedButton(
                             style: ButtonStyle(
-                              elevation: MaterialStateProperty.all(6),
+                              elevation: MaterialStateProperty.all(3),
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8))),
