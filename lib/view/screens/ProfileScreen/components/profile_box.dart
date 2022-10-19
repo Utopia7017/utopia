@@ -6,12 +6,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
+import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
+import 'package:utopia/view/shimmers/user_follower_detail_shimmer.dart';
+import '../../../../controller/articles_controller.dart';
 
 class ProfileBox extends StatelessWidget {
   final User user;
@@ -216,34 +219,52 @@ class ProfileBox extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        Container(
-                          height: displayHeight(context) * 0.08,
-                          width: displayWidth(context) * 0.6,
-                          decoration: BoxDecoration(
-                              color: Colors.blue.shade100.withOpacity(0.25),
-                              borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.only(
-                              top: 4, left: 12, right: 12, bottom: 4),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ProfileDetailBox(
-                                value: 127,
-                                label: "Followings",
-                                callback: () {},
-                              ),
-                              ProfileDetailBox(
-                                value: 500,
-                                label: "Followers",
-                                callback: () {},
-                              ),
-                              ProfileDetailBox(
-                                value: 785,
-                                label: "Articles",
-                                callback: () {},
-                              )
-                            ],
-                          ),
+                        Consumer<UserController>(
+                          builder: (context, value, child) {
+                            return FutureBuilder(
+                              future: Provider.of<ArticlesController>(context).fetchThisUsersArticles(user.userId),
+                              builder: (context, AsyncSnapshot<List<Article>> snapshot) {
+                                if(snapshot.hasData){
+
+                                  return Container(
+                                    height: displayHeight(context) * 0.08,
+                                    width: displayWidth(context) * 0.6,
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue.shade100.withOpacity(0.25),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    padding: const EdgeInsets.only(
+                                        top: 4, left: 12, right: 12, bottom: 4),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        ProfileDetailBox(
+                                          value: user.following.length,
+                                          label: "Followings",
+                                          callback: () {},
+                                        ),
+                                        ProfileDetailBox(
+                                          value: user.followers.length,
+                                          label: "Followers",
+                                          callback: () {},
+                                        ),
+                                        ProfileDetailBox(
+                                          value: snapshot.data!.length,
+                                          label: "Articles",
+                                          callback: () {},
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                                else{
+                                  return UserFollowerDetailShimmer();
+                                }
+
+                              },
+
+                            );
+                          },
+
                         ),
                         const SizedBox(
                           height: 10,

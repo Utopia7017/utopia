@@ -8,7 +8,7 @@ import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
-import 'package:utopia/view/screens/Skeletons/user_profile_overview_skeleton.dart';
+import 'package:utopia/view/screens/Skeletons/user_follower_detail_skeleton.dart';
 
 class UserProfileOverView extends StatelessWidget {
   final String userId;

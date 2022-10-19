@@ -12,7 +12,7 @@ import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
-import '../Skeletons/user_profile_overview_skeleton.dart';
+import '../Skeletons/user_follower_detail_skeleton.dart';
 
 class UserProfileScreen extends StatelessWidget {
   final String userId;
@@ -357,11 +357,7 @@ class UserProfileScreen extends StatelessWidget {
                                       ],
                                     );
                                   } else {
-                                    return Shimmer.fromColors(
-                                        baseColor: Colors.black54,
-                                        highlightColor: Colors.black,
-                                        enabled: true,
-                                        child: UserProfileOverviewSkeleton());
+                                    return Text("hello");
                                   }
                                 },
                               );
@@ -370,7 +366,7 @@ class UserProfileScreen extends StatelessWidget {
                                   baseColor: Colors.black54,
                                   highlightColor: Colors.black,
                                   enabled: true,
-                                  child: UserProfileOverviewSkeleton());
+                                  child: Text(""));
                             }
                           }),
                           space,
