@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
@@ -79,10 +84,25 @@ class ProfileBox extends StatelessWidget {
                             // user dp
                             InkWell(
                               onTap: () async {
+                                final sms = ScaffoldMessenger.of(context);
+                                final userController =
+                                    Provider.of<UserController>(context,
+                                        listen: false);
                                 XFile? pickCoverPhoto =
                                     await pickImage(context);
                                 if (pickCoverPhoto != null) {
-                                } else {}
+                                  CroppedFile? croppedFile = await cropImage(
+                                      File(pickCoverPhoto.path));
+                                  if (croppedFile != null) {
+                                    userController
+                                        .changeDisplayPhoto(croppedFile);
+                                  } else {
+                                    // nothing to be done
+                                  }
+                                } else {
+                                  sms.showSnackBar(const SnackBar(
+                                      content: Text("No image picked")));
+                                }
                               },
                               child: (user.dp.isEmpty)
                                   ? Container(
@@ -122,6 +142,8 @@ class ProfileBox extends StatelessWidget {
                                       child: CachedNetworkImage(
                                         imageUrl: user.dp,
                                         height: displayHeight(context) * 0.13,
+                                        width: displayWidth(context) * 0.22,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                             ),

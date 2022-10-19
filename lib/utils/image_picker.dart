@@ -10,9 +10,5 @@ Future<XFile?> pickImage(BuildContext context) async {
       return pickedFile;
     }
     return null;
-  } else {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Permission denied !')));
-    return null;
   }
 }
