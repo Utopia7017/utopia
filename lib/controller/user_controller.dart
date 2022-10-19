@@ -106,7 +106,7 @@ class UserController extends DisposableProvider {
   void followUser({required userId}) async {
     Logger logger = Logger("FollowAuthor");
     followingUserStatus = FollowingUserStatus.yes;
-    await Future.delayed(const Duration(milliseconds: 1));
+    await Future.delayed(const Duration(microseconds: 1));
     notifyListeners();
     try {
       User? userToFollow = await getUser(userId); // get user by user id
@@ -139,7 +139,7 @@ class UserController extends DisposableProvider {
   void unFollowUser({required userId}) async {
     Logger logger = Logger("FollowAuthor");
     followingUserStatus = FollowingUserStatus.yes;
-    await Future.delayed(const Duration(milliseconds: 1));
+    await Future.delayed(const Duration(microseconds: 1));
     notifyListeners();
     try {
       User? userToFollow = await getUser(userId); // get user by user id
