@@ -135,8 +135,7 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
               // Options
               PopupMenuButton(
                 itemBuilder: (BuildContext context) => [
-                  PopupMenuItem(child: Text('Report Article')),
-                  PopupMenuItem(child: Text('Block Author')),
+                  PopupMenuItem(child: Text('Delete Article')),
                 ],
               ),
             ],
