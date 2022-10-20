@@ -242,6 +242,22 @@ class MyArticlesController extends DisposableProvider {
     return article;
   }
 
+  // Deletes articles
+  deleteThisArticle({required String myUid, required String articleId}) async {
+    Logger logger = Logger("Delete this article");
+    try {
+      final Response? response =
+          await _apiServices.delete(endUrl: 'articles/$myUid/$articleId.json');
+      if (response != null) {
+        publishedArticles
+            .removeWhere((element) => element.articleId == articleId);
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    notifyListeners();
+  }
+
   @override
   void disposeValues() {
     uploadingStatus = ArticleUploadingStatus.notUploading;

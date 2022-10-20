@@ -1,9 +1,6 @@
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseuser;
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
@@ -11,11 +8,8 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/utils/helper_widgets.dart';
-import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/common_ui/display_full_image.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
-import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 import 'package:utopia/view/shimmers/user_follower_detail_shimmer.dart';
 import '../../../../controller/articles_controller.dart';
 
