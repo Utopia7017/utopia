@@ -62,9 +62,13 @@ notifyUserWhenLikedArticle(
       type: 'like',
       createdOn: DateTime.now());
 
-  var response = await notificationDB.add(notification.toJson());
+  if (userId != currentUserId) {
+    var response = await notificationDB.add(notification.toJson());
 
-  await notificationDB.doc(response.id).update({'notificationId': response.id});
+    await notificationDB
+        .doc(response.id)
+        .update({'notificationId': response.id});
+  }
 }
 
 notifyUserWhenCommentOnArticle(String currentUserId, String userId,
@@ -83,9 +87,13 @@ notifyUserWhenCommentOnArticle(String currentUserId, String userId,
       type: 'comment',
       createdOn: DateTime.now());
 
-  var response = await notificationDB.add(notification.toJson());
+  if (userId != currentUserId) {
+    var response = await notificationDB.add(notification.toJson());
 
-  await notificationDB.doc(response.id).update({'notificationId': response.id});
+    await notificationDB
+        .doc(response.id)
+        .update({'notificationId': response.id});
+  }
 }
 
 notifyUserWhenFollowedUser(
