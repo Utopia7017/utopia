@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:utopia/constants/calender_constant.dart';
+import 'package:utopia/constants/color_constants.dart';
 
 class CommentContainer extends StatelessWidget {
   final String userName;
@@ -19,6 +20,19 @@ class CommentContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool hasPicture = userDp.isNotEmpty;
+
+    String? initials;
+
+    if (!hasPicture) {
+      if (userName.length == 1) {
+        initials = userName.characters.first;
+      } else {
+        final split = userName.split(" ");
+        initials = "${split[0].characters.first}.${split[1].characters.first}";
+      }
+    }
+
     return InkWell(
       onLongPress: () {
         // TODO: prompt a dialog box and ask user if he/she wants to delete the comment.
@@ -35,7 +49,19 @@ class CommentContainer extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(userDp),
+                    backgroundColor: authMaterialButtonColor,
+                    backgroundImage: hasPicture ? NetworkImage(userDp) : null,
+                    child: !hasPicture
+                        ? Center(
+                            child: Text(
+                              initials!.toUpperCase(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        : null,
                   ),
                   const SizedBox(width: 10),
                   Text(
