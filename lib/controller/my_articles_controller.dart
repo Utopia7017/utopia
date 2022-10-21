@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/controller/disposable_controller.dart';
@@ -65,9 +66,11 @@ class MyArticlesController extends DisposableProvider {
   }
 
   // adds a new image provider to body component list
-  void addImageField(XFile file) {
+  void addImageField(CroppedFile file) {
+    TextEditingController imageCaptionController = TextEditingController();
     bodyComponents.add(BodyComponent(
         type: "image",
+        imageCaption: imageCaptionController,
         key: DateTime.now().toString(),
         imageProvider: Image(image: FileImage(File(file.path))),
         fileImage: file));
@@ -127,7 +130,7 @@ class MyArticlesController extends DisposableProvider {
         } else {
           String? url = await getImageUrl(File(bc.fileImage!.path),
               'articles/$userId/$title/${imageIndex++}');
-          articleBody.add(ArticleBody(type: "image", image: url));
+          articleBody.add(ArticleBody(type: "image", image: url,imageCaption :bc.imageCaption!.text));
         }
       }
       Article article = Article(
