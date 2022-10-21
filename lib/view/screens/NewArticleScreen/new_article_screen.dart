@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/screens/NewArticleScreen/components/article_detail_dialog.dart';
 
@@ -31,7 +36,11 @@ class NewArticleScreen extends StatelessWidget {
                 onPressed: () async {
                   XFile? imageFile = await pickImage(context);
                   if (imageFile != null) {
-                    controller.addImageField(imageFile);
+                    CroppedFile? croppedFile =
+                        await cropImage(File(imageFile.path));
+                    if (croppedFile != null) {
+                      controller.addImageField(croppedFile);
+                    }
                   }
                 },
                 backgroundColor: authBackground,
@@ -44,6 +53,11 @@ class NewArticleScreen extends StatelessWidget {
           ),
           backgroundColor: primaryBackgroundColor,
           appBar: AppBar(
+            title: const Text(
+              "New Article",
+              style: TextStyle(
+                  fontFamily: "Open", fontSize: 14, color: Colors.black),
+            ),
             leading: IconButton(
               onPressed: () {
                 _logger.info("Going back");
@@ -62,30 +76,29 @@ class NewArticleScreen extends StatelessWidget {
                       return const SizedBox();
                     case ArticleUploadingStatus.notUploading:
                       return IconButton(
-                        color: Color(0xfb40B5AD),
-                        icon: Icon(Icons.arrow_forward_sharp),
-                          onPressed: () {
-                            if (controller.validateArticleBody()) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return ArticleDetailDialog();
-                                },
-                                useSafeArea: true,
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text(
-                                  'Article cannot be empty',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                backgroundColor: authBackground,
-                              ));
-                            }
-                          },
-
-                          );
+                        color: const Color(0xfb40B5AD),
+                        icon: const Icon(Icons.arrow_forward_sharp),
+                        onPressed: () {
+                          if (controller.validateArticleBody()) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return ArticleDetailDialog();
+                              },
+                              useSafeArea: true,
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text(
+                                'Article cannot be empty',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: authBackground,
+                            ));
+                          }
+                        },
+                      );
                   }
                 },
               ),
@@ -122,7 +135,49 @@ class NewArticleScreen extends StatelessWidget {
                                 child: Stack(
                                   alignment: Alignment.topRight,
                                   children: [
-                                    bodyComponents[index].imageProvider!,
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        bodyComponents[index].imageProvider!,
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 25.0, right: 25),
+                                          child: SizedBox(
+                                            height:
+                                                displayHeight(context) * 0.055,
+                                            child: TextFormField(
+                                              maxLines: 1,
+                                              maxLength: 50,
+                                              style: const TextStyle(
+                                                  fontFamily: "Open",
+                                                  fontSize: 13),
+                                              textAlign: TextAlign.center,
+                                              decoration: const InputDecoration(
+                                                  alignLabelWithHint: true,
+                                                  border: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors.grey)),
+                                                  focusedBorder:
+                                                      UnderlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Colors
+                                                                      .grey)),
+                                                  focusColor: Colors.black54,
+                                                  hintText: "Add caption"),
+                                              controller: bodyComponents[index]
+                                                  .imageCaption,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: CircleAvatar(

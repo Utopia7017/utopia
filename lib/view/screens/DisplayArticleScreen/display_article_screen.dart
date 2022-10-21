@@ -135,10 +135,10 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
               PopupMenuButton(
                 itemBuilder: (BuildContext context) => [
                   PopupMenuItem(
-                    child: Text(
-                    widget.author.userId== myUserId
-                    ?'Delete Article'
-                    : 'Report Article'),),
+                    child: Text(widget.author.userId == myUserId
+                        ? 'Delete Article'
+                        : 'Report Article'),
+                  ),
                 ],
               ),
             ],
@@ -177,33 +177,43 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                     return Padding(
                       padding: const EdgeInsets.only(
                           bottom: 12.0, left: 20, right: 20),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DisplayFullImage(
-                                    imageurl: widget.article.body[index]
-                                        ['image']!),
-                              ));
-                        },
-                        child: CachedNetworkImage(
-                          imageUrl: widget.article.body[index]['image']!,
-                          placeholder: (context, url) {
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: authMaterialButtonColor,
-                              ),
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return const Text(
-                              "Could not load image",
-                              style: TextStyle(
-                                  color: Colors.black87, fontSize: 10),
-                            );
-                          },
-                        ),
+                      child: Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DisplayFullImage(
+                                        imageurl: widget.article.body[index]
+                                            ['image']!),
+                                  ));
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: widget.article.body[index]['image']!,
+                              placeholder: (context, url) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: authMaterialButtonColor,
+                                  ),
+                                );
+                              },
+                              errorWidget: (context, url, error) {
+                                return const Text(
+                                  "Could not load image",
+                                  style: TextStyle(
+                                      color: Colors.black87, fontSize: 10),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.article.body[index]['imageCaption']!,
+                            style: const TextStyle(
+                                fontFamily: "Open", fontSize: 13),
+                          )
+                        ],
                       ),
                     );
                   default:
