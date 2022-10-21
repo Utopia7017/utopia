@@ -61,7 +61,9 @@ class NewArticleScreen extends StatelessWidget {
                     case ArticleUploadingStatus.uploading:
                       return const SizedBox();
                     case ArticleUploadingStatus.notUploading:
-                      return TextButton(
+                      return IconButton(
+                        color: Color(0xfb40B5AD),
+                        icon: Icon(Icons.arrow_forward_sharp),
                           onPressed: () {
                             if (controller.validateArticleBody()) {
                               showDialog(
@@ -82,13 +84,8 @@ class NewArticleScreen extends StatelessWidget {
                               ));
                             }
                           },
-                          child: const Text(
-                            'Continue',
-                            style: TextStyle(
-                                color: Color(0xfb40B5AD),
-                                fontSize: 15,
-                                letterSpacing: 0.5),
-                          ));
+
+                          );
                   }
                 },
               ),
