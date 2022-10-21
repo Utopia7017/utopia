@@ -80,8 +80,27 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                         EdgeInsets.only(top: displayHeight(context) * 0.07),
                     child: ListView.builder(
                       itemBuilder: (context, index) {
-                        return ArticleBox(
-                            article: controller.publishedArticles[index]);
+                        return InkWell(
+                          onLongPress: () {
+                            showDialog(context: context, builder: (context) {
+                              return AlertDialog(
+                                title: Text('Delete'),
+                                content: Text('Delete this article'),
+                                actions: [
+                                  TextButton(onPressed: () {
+                                    Navigator.pop(context);
+                                  }, child: const Text('No')),
+                                  TextButton(onPressed: () {
+                                    controller.deleteThisArticle(myUid: controller.publishedArticles[index].authorId, articleId: controller.publishedArticles[index].articleId);
+                                    Navigator.pop(context);
+                                  }, child: const Text('Yes')),
+                                ],
+                              );
+                            },);
+                          },
+                          child: ArticleBox(
+                              article: controller.publishedArticles[index]),
+                        );
                       },
                       itemCount: controller.publishedArticles.length,
                     ),
