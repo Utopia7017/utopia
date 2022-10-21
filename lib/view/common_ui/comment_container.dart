@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:utopia/constants/calender_constant.dart';
+import 'package:utopia/constants/color_constants.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class CommentContainer extends StatelessWidget {
   final String userName;
@@ -19,6 +21,18 @@ class CommentContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool hasPicture = userDp.isNotEmpty;
+
+    List<String> initials = userName.split(" ");
+    String firstLetter = "", lastLetter = "";
+
+    if (initials.length == 1) {
+      firstLetter = initials[0].characters.first;
+    } else {
+      firstLetter = initials[0].characters.first;
+      lastLetter = initials[1].characters.first;
+    }
+
     return InkWell(
       onLongPress: () {
         // TODO: prompt a dialog box and ask user if he/she wants to delete the comment.
@@ -34,9 +48,29 @@ class CommentContainer extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(userDp),
-                  ),
+                  (userDp.isNotEmpty)
+                      ? CircleAvatar(
+                          backgroundColor: authMaterialButtonColor,
+                          backgroundImage: CachedNetworkImageProvider(userDp),
+                        )
+                      : CircleAvatar(
+                          backgroundColor: authMaterialButtonColor,
+                          child: initials.length > 1
+                              ? Text(
+                                  "$firstLetter.$lastLetter".toUpperCase(),
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white),
+                                )
+                              : Text(
+                                  firstLetter.toUpperCase(),
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white),
+                                ),
+                        ),
                   const SizedBox(width: 10),
                   Text(
                     userName,
@@ -44,9 +78,8 @@ class CommentContainer extends StatelessWidget {
                   ),
                 ],
               ),
-              // TODO: Show year if current year does not match created year
               Text(
-                '${calender[createdAt.month]} ${createdAt.day}',
+                timeago.format(createdAt),
                 style: const TextStyle(color: Colors.black54),
               )
             ],

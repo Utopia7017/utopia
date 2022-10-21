@@ -10,6 +10,8 @@ import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/display_full_image.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
+import 'package:utopia/view/screens/FollowersScreen/followers_screen.dart';
+import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import 'package:utopia/view/shimmers/user_follower_detail_shimmer.dart';
 import '../../../../controller/articles_controller.dart';
 
@@ -224,12 +226,12 @@ class UserProfileBox extends StatelessWidget {
                                               ProfileDetailBox(
                                                 value: user.following.length,
                                                 label: "Followings",
-                                                callback: () {},
+                                                callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowingScreen(user: user),)),
                                               ),
                                               ProfileDetailBox(
                                                 value: user.followers.length,
                                                 label: "Followers",
-                                                callback: () {},
+                                                callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowersScreen(user: user),)) ,
                                               ),
                                               ProfileDetailBox(
                                                 value: snapshot.data!.length,
