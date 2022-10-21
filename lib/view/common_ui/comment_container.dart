@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:utopia/constants/calender_constant.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class CommentContainer extends StatelessWidget {
   final String userName;
@@ -78,9 +78,8 @@ class CommentContainer extends StatelessWidget {
                   ),
                 ],
               ),
-              // TODO: Show year if current year does not match created year
               Text(
-                '${calender[createdAt.month]} ${createdAt.day}',
+                timeago.format(createdAt),
                 style: const TextStyle(color: Colors.black54),
               )
             ],
