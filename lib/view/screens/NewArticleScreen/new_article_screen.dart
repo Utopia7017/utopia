@@ -142,7 +142,7 @@ class NewArticleScreen extends StatelessWidget {
                                           CrossAxisAlignment.center,
                                       children: [
                                         bodyComponents[index].imageProvider!,
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 12,
                                         ),
                                         Padding(
