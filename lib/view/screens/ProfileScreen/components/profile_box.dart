@@ -12,6 +12,9 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
+import 'package:utopia/view/screens/FollowersScreen/followers_screen.dart';
+import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
+import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 import 'package:utopia/view/shimmers/my_followers_box_shimmer.dart';
 import '../../../../controller/articles_controller.dart';
@@ -240,17 +243,17 @@ class ProfileBox extends StatelessWidget {
                                         ProfileDetailBox(
                                           value: user.following.length,
                                           label: "Followings",
-                                          callback: () {},
+                                          callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowingScreen(user: user),)),
                                         ),
                                         ProfileDetailBox(
                                           value: user.followers.length,
                                           label: "Followers",
-                                          callback: () {},
+                                          callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowersScreen(user: user),)),
                                         ),
                                         ProfileDetailBox(
                                           value: snapshot.data!.length,
                                           label: "Articles",
-                                          callback: () {},
+                                          callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyArticleScreen())),
                                         )
                                       ],
                                     ),
