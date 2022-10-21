@@ -34,17 +34,17 @@ class _FloatingButtonForArticleOptionsState
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 750),
-        height: widget.isVisible ? displayHeight(context) * 0.22 : 0.0,
+        height: widget.isVisible ? displayHeight(context) * 0.21 : 0.0,
         width: displayWidth(context) * 0.1,
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(15)),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // Like Article
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.only(top: 10.0),
                 child: StreamBuilder(
                     // Like stream
                     stream: FirebaseFirestore.instance
@@ -120,7 +120,7 @@ class _FloatingButtonForArticleOptionsState
             // Comment article
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.only(top: 12.0),
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
