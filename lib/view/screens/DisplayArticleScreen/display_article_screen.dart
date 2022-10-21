@@ -132,11 +132,13 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
             backgroundColor: primaryBackgroundColor,
             iconTheme: const IconThemeData(color: Colors.black),
             actions: [
-              // Options
               PopupMenuButton(
                 itemBuilder: (BuildContext context) => [
-                  PopupMenuItem(child: Text('Report Article')),
-                  PopupMenuItem(child: Text('Block Author')),
+                  PopupMenuItem(
+                    child: Text(
+                    widget.author.userId== myUserId
+                    ?'Delete Article'
+                    : 'Report Article'),),
                 ],
               ),
             ],
