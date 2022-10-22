@@ -255,7 +255,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Navigator.pushNamed(context, '/blockedUsers')),
 
                         ListTile(
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              aboutUtopiaOpen = !aboutUtopiaOpen;
+                            });
+                          },
                           contentPadding: EdgeInsets.zero,
                           leading: Image.asset(
                             aboutUsIcon,
@@ -292,15 +296,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   children: [
                                     drawerTile(
                                         'Privacy policy',
-                                        aboutUsIcon,
+                                        privacyPolicyIcon,
                                         () => Navigator.pushNamed(
                                             context, '/privacyPolicy')),
                                     drawerTile(
                                         'Terms of use',
-                                        aboutUsIcon,
+                                        termsIcon,
                                         () => Navigator.pushNamed(
                                             context, '/terms')),
-                                    drawerTile('Help', aboutUsIcon,
+                                    drawerTile('Help', helpIcon,
                                         () => _logger.info("Help")),
                                   ],
                                 ),

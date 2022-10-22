@@ -18,7 +18,7 @@ class TermsOfUseScreen extends StatelessWidget {
           "Terms of use",
           style: TextStyle(
             color: Colors.black,
-            fontSize: 14,
+            fontSize: 15,
             fontFamily: "Open",
           ),
         ),
