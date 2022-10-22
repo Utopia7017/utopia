@@ -295,8 +295,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         aboutUsIcon,
                                         () => Navigator.pushNamed(
                                             context, '/privacyPolicy')),
-                                    drawerTile('Terms of use', aboutUsIcon,
-                                        () => null),
+                                    drawerTile(
+                                        'Terms of use',
+                                        aboutUsIcon,
+                                        () => Navigator.pushNamed(
+                                            context, '/terms')),
                                     drawerTile('Help', aboutUsIcon,
                                         () => _logger.info("Help")),
                                   ],

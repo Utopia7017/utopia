@@ -4,8 +4,8 @@ import 'package:utopia/constants/color_constants.dart';
 class PrivacyPolicyScreen extends StatelessWidget {
   PrivacyPolicyScreen({super.key});
 
-  final normalTextStyle =
-      TextStyle(color: Colors.black, fontSize: 14.6, fontFamily: "Open");
+  final normalTextStyle = TextStyle(
+      color: Colors.grey.shade700, fontSize: 14.6, fontFamily: "Open");
 
   @override
   Widget build(BuildContext context) {
