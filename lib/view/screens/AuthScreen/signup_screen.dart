@@ -349,7 +349,7 @@ class SignUpScreen extends StatelessWidget {
                           emailVerified: false,
                           savedArticles: [],
                           cp: '',
-                          name: nameController.text,
+                          name: nameController.text.trim(),
                           dp: '',
                           email: emailController.text,
                           followers: [],
