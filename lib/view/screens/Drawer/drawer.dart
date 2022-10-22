@@ -13,10 +13,17 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import '../../../services/firebase/auth_services.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
   final Logger _logger = Logger('CustomDrawer');
 
   final Authservice _auth = Authservice(FirebaseAuth.instance);
+
+  bool aboutUtopiaOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -247,8 +254,60 @@ class CustomDrawer extends StatelessWidget {
                             () =>
                                 Navigator.pushNamed(context, '/blockedUsers')),
 
-                        drawerTile('About us', aboutUsIcon,
-                            () => _logger.info("About us")),
+                        ListTile(
+                          onTap: () {},
+                          contentPadding: EdgeInsets.zero,
+                          leading: Image.asset(
+                            aboutUsIcon,
+                            height: 20,
+                            color: Colors.grey,
+                          ),
+                          visualDensity: const VisualDensity(vertical: -3),
+                          minLeadingWidth: 1,
+                          title: const Text(
+                            'About Utopia',
+                            style: TextStyle(
+                                fontSize: 13.5,
+                                color: Colors.white,
+                                fontFamily: "Fira",
+                                letterSpacing: 0.6),
+                          ),
+                          trailing: IconButton(
+                              splashRadius: 12,
+                              color: Colors.white,
+                              onPressed: () {
+                                setState(() {
+                                  aboutUtopiaOpen = !aboutUtopiaOpen;
+                                });
+                              },
+                              icon: Icon(aboutUtopiaOpen
+                                  ? Icons.arrow_drop_up
+                                  : Icons.arrow_drop_down)),
+                        ),
+
+                        (aboutUtopiaOpen)
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: Column(
+                                  children: [
+                                    drawerTile(
+                                        'Privacy policy',
+                                        aboutUsIcon,
+                                        () => Navigator.pushNamed(
+                                            context, '/privacyPolicy')),
+                                    drawerTile(
+                                        'Terms of use',
+                                        aboutUsIcon,
+                                        () => Navigator.pushNamed(
+                                            context, '/terms')),
+                                    drawerTile('Help', aboutUsIcon,
+                                        () => _logger.info("Help")),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                        drawerTile('Rate us on Play store', aboutUsIcon,
+                            () => _logger.info("Help")),
                         drawerTile('Logout', logoutIcon, () async {
                           final navigator = Navigator.of(context);
                           AppProviders.disposeAllDisposableProviders(context);

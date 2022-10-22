@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:utopia/view/screens/AboutUtopiaScreens/terms_of_use_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
@@ -11,6 +12,7 @@ import 'package:utopia/view/screens/BlockedUsersScreen/blocked_users_screen.dart
 import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
 import 'package:utopia/view/screens/NotificationScreen/notification_screen.dart';
+import 'package:utopia/view/screens/AboutUtopiaScreens/privacy_policy_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import 'package:utopia/view/screens/SavedArticlesScreen/saved_article_screen.dart';
 import 'package:utopia/view/screens/SearchScreen/search_screen.dart';
@@ -107,6 +109,8 @@ class Utopia extends StatelessWidget {
           '/search': (context) => SearchScreen(),
           '/notifications': (context) => NotificationScreen(),
           '/blockedUsers':(context) => BlockedUsersScreen(),
+          '/privacyPolicy':(context) => PrivacyPolicyScreen(),
+          '/terms':(context) => TermsOfUseScreen(),
         },
 
         home: const SplashScreen(),
