@@ -49,3 +49,11 @@ const blockedUsersIcon = 'assets/icons/block_user.png';
 const noInternetIcon = 'assets/icons/no_internet.png';
 
 const verifyEmailIcon = 'assets/icons/verify_email_icon.png';
+
+const privacyPolicyIcon = 'assets/icons/privacy_policy.png';
+
+const helpIcon = 'assets/icons/help_icon.png';
+
+const termsIcon = 'assets/icons/terms_icon.png';
+
+const replyNotificationIcon = 'assets/icons/reply_notif.png';

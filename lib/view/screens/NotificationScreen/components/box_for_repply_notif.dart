@@ -1,35 +1,44 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebaseUser;
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/view/screens/CommentScreen/comment_screen.dart';
+import 'package:utopia/view/screens/CommentScreen/reply_comment_screen.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
-class BoxForCommentNotification extends StatelessWidget {
+class BoxForReplyNotification extends StatelessWidget {
   final String notificationId;
   final String notifierDp;
   final String notifierName;
   final String notifierId;
   final Timestamp time;
-  final String comment;
+  final String reply;
+  final String originalComment;
   final String articleId;
+  final String originalCommentId;
+  final User commentOwner;
+  final String articleOwnerId;
   bool read;
 
-  BoxForCommentNotification(
+  BoxForReplyNotification(
       {super.key,
       required this.notifierDp,
       required this.notificationId,
       required this.notifierName,
       required this.read,
+      required this.articleOwnerId,
       required this.notifierId,
-      required this.comment,
+      required this.reply,
       required this.articleId,
-      required this.time});
+      required this.time,
+      required this.originalComment,
+      required this.originalCommentId,
+      required this.commentOwner});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +51,7 @@ class BoxForCommentNotification extends StatelessWidget {
               fontWeight: FontWeight.bold,
               letterSpacing: 0.3)),
       const TextSpan(
-          text: " commented on your article",
+          text: " replied to your comment",
           style: TextStyle(
               fontSize: 13.2, color: Colors.black54, letterSpacing: 0.35)),
     ]));
@@ -61,13 +70,18 @@ class BoxForCommentNotification extends StatelessWidget {
     return ListTile(
       onTap: () {
         readThisNotification(
-            FirebaseAuth.instance.currentUser!.uid, notificationId);
+            firebaseUser.FirebaseAuth.instance.currentUser!.uid,
+            notificationId);
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CommentScreen(
-                    articleId: articleId,
-                    authorId: FirebaseAuth.instance.currentUser!.uid)));
+                builder: (context) => ReplyCommentScreen(
+                    originalComment: originalComment,
+                    commentId: originalCommentId,
+                    commentOwner: commentOwner,
+                    articleOwnerId: articleOwnerId,
+                    createdAt: time.toDate(),
+                    articleId: articleId)));
       },
       onLongPress: () {
         showDialog(
@@ -92,11 +106,11 @@ class BoxForCommentNotification extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       deleteSingleNotification(
-                          FirebaseAuth.instance.currentUser!.uid,
+                          firebaseUser.FirebaseAuth.instance.currentUser!.uid,
                           notificationId);
                       Navigator.pop(context);
                     },
-                    child: Text(
+                    child: const Text(
                       'Remove',
                       style: TextStyle(fontSize: 14),
                     ),
@@ -148,7 +162,7 @@ class BoxForCommentNotification extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            comment,
+            reply,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -183,7 +197,7 @@ class BoxForCommentNotification extends StatelessWidget {
         ],
       ),
       trailing:
-          Image.asset(notificationCommentIcon, height: 30, fit: BoxFit.cover),
+          Image.asset(replyNotificationIcon, height: 30, fit: BoxFit.cover),
     );
   }
 }
