@@ -8,7 +8,6 @@ import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/view/common_ui/comment_container.dart';
-import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart';
 import 'package:utopia/view/screens/CommentScreen/components/list_replies.dart';
 
 class ReplyCommentScreen extends StatelessWidget {
