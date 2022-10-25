@@ -45,22 +45,6 @@ class CommentContainer extends StatelessWidget {
         //Also make sure that user can delete only thier own comment by checking current user id and comment user id
         // @kaizer111
       },
-      onTap: () {
-        if (shouldNavigate) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ReplyCommentScreen(
-                    articleOwnerId: articleOwnerId,
-                    
-                    createdAt: createdAt,
-                    originalComment: comment,
-                    commentId: commentId,
-                    commentOwner: user,
-                    articleId: articleId),
-              ));
-        }
-      },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,23 +97,56 @@ class CommentContainer extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              (shouldNavigate)
-                  ? (numberOfreplies! > 0)
-                      ? Text(
-                          '${numberOfreplies!.toString()} replies',
-                          style: const TextStyle(
-                              fontFamily: "Open",
-                              fontSize: 12,
-                              color: Colors.indigo,
-                              fontWeight: FontWeight.bold),
-                        )
-                      : const SizedBox()
-                  : const SizedBox(),
-            ],
-          ),
+          (shouldNavigate)
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    (shouldNavigate)
+                        ? (numberOfreplies! > 0)
+                            ? Text(
+                                '${numberOfreplies!.toString()} replies',
+                                style: const TextStyle(
+                                    fontFamily: "Open",
+                                    fontSize: 12,
+                                    color: Colors.indigo,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            : const SizedBox()
+                        : const SizedBox(),
+                    const SizedBox(width: 15),
+                    SizedBox(
+                      height: 35,
+                      child: TextButton.icon(
+                          icon: const Icon(
+                            Icons.reply,
+                            size: 18,
+                            color: Colors.indigo,
+                          ),
+                          onPressed: () {
+                            if (shouldNavigate) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ReplyCommentScreen(
+                                        articleOwnerId: articleOwnerId,
+                                        createdAt: createdAt,
+                                        originalComment: comment,
+                                        commentId: commentId,
+                                        commentOwner: user,
+                                        articleId: articleId),
+                                  ));
+                            }
+                          },
+                          label: const Text("Reply",
+                              style: TextStyle(
+                                  fontFamily: "Open",
+                                  fontSize: 12,
+                                  color: Colors.indigo,
+                                  fontWeight: FontWeight.bold))),
+                    ),
+                  ],
+                )
+              : const SizedBox(),
           const Divider(
             // height: 15,
             thickness: 0.25,
