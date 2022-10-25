@@ -2,28 +2,34 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:utopia/models/user_model.dart';
+import 'package:utopia/view/screens/CommentScreen/reply_comment_screen.dart';
 
 class CommentContainer extends StatelessWidget {
-  final String userName;
-  final int userFollowers;
-  final String userDp;
+  final String commentId;
+  final String articleOwnerId;
+  final User user;
   final String comment;
   final DateTime createdAt;
+  final String articleId;
+  final bool shouldNavigate;
+  int? numberOfreplies;
 
   CommentContainer({
     super.key,
-    required this.userDp,
-    required this.userName,
-    required this.userFollowers,
+    required this.commentId,
+    required this.shouldNavigate,
+    required this.user,
+    required this.articleOwnerId,
+    required this.articleId,
     required this.comment,
+    this.numberOfreplies,
     required this.createdAt,
   });
 
   @override
   Widget build(BuildContext context) {
-    bool hasPicture = userDp.isNotEmpty;
-
-    List<String> initials = userName.split(" ");
+    List<String> initials = user.name.split(" ");
     String firstLetter = "", lastLetter = "";
 
     if (initials.length == 1) {
@@ -39,6 +45,22 @@ class CommentContainer extends StatelessWidget {
         //Also make sure that user can delete only thier own comment by checking current user id and comment user id
         // @kaizer111
       },
+      onTap: () {
+        if (shouldNavigate) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ReplyCommentScreen(
+                    articleOwnerId: articleOwnerId,
+                    
+                    createdAt: createdAt,
+                    originalComment: comment,
+                    commentId: commentId,
+                    commentOwner: user,
+                    articleId: articleId),
+              ));
+        }
+      },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,10 +70,10 @@ class CommentContainer extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  (userDp.isNotEmpty)
+                  (user.dp.isNotEmpty)
                       ? CircleAvatar(
                           backgroundColor: authMaterialButtonColor,
-                          backgroundImage: CachedNetworkImageProvider(userDp),
+                          backgroundImage: CachedNetworkImageProvider(user.dp),
                         )
                       : CircleAvatar(
                           backgroundColor: authMaterialButtonColor,
@@ -73,7 +95,7 @@ class CommentContainer extends StatelessWidget {
                         ),
                   const SizedBox(width: 10),
                   Text(
-                    userName,
+                    user.name,
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ],
@@ -90,6 +112,23 @@ class CommentContainer extends StatelessWidget {
           ),
           const SizedBox(
             height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              (shouldNavigate)
+                  ? (numberOfreplies! > 0)
+                      ? Text(
+                          '${numberOfreplies!.toString()} replies',
+                          style: const TextStyle(
+                              fontFamily: "Open",
+                              fontSize: 12,
+                              color: Colors.indigo,
+                              fontWeight: FontWeight.bold),
+                        )
+                      : const SizedBox()
+                  : const SizedBox(),
+            ],
           ),
           const Divider(
             // height: 15,

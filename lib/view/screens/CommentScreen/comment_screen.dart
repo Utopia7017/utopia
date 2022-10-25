@@ -6,25 +6,34 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
-import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart';
 
 class CommentScreen extends StatelessWidget {
   final String articleId;
   final String authorId;
-  CommentScreen({required this.articleId, required this.authorId});
+  CommentScreen({super.key, required this.articleId, required this.authorId});
   final formKey = GlobalKey<FormState>();
   String myUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var commentStream = FirebaseFirestore.instance
+        .collection('articles')
+        .doc(articleId)
+        .collection('comments')
+        .orderBy('createdAt', descending: true)
+        .snapshots();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Comments"),
-        elevation: 0,
+        elevation: 2,
         backgroundColor: authBackground,
-        iconTheme: IconThemeData(color: primaryBackgroundColor),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "Comments",
+          style: TextStyle(fontFamily: "Open", fontSize: 14),
+        ),
       ),
       backgroundColor: primaryBackgroundColor,
       body: Consumer<UserController>(
@@ -56,15 +65,12 @@ class CommentScreen extends StatelessWidget {
                 ? controller.user!.dp
                 : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('articles')
-                  .doc(articleId)
-                  .collection('comments')
-                  .snapshots(),
+              stream: commentStream,
               builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   dynamic commentData = snapshot.data.docs;
                   return ListComments(
+                    articleOwnerId: authorId,
                     commentData: commentData,
                   );
                 } else {

@@ -11,6 +11,7 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/NotificationScreen/components/box_for_comment_notif.dart';
 import 'package:utopia/view/screens/NotificationScreen/components/box_for_follow_notif.dart';
 import 'package:utopia/view/screens/NotificationScreen/components/box_for_like_notif.dart';
+import 'package:utopia/view/screens/NotificationScreen/components/box_for_repply_notif.dart';
 import 'package:utopia/view/shimmers/notification_shimmer.dart';
 
 class NotificationScreen extends StatelessWidget {
@@ -89,8 +90,7 @@ class NotificationScreen extends StatelessWidget {
                                 fontFamily: "Open",
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w500,
-                              fontSize: 15
-                                ),
+                                fontSize: 15),
                           )
                         ],
                       ),
@@ -177,6 +177,58 @@ class NotificationScreen extends StatelessWidget {
                                       ),
                                       space
                                     ],
+                                  );
+                                case 'reply':
+                                  return FutureBuilder<user.User?>(
+                                    future: Provider.of<UserController>(context).getUser(notificationSnapshot
+                                              .data.docs[index]['commentOwnerId']),
+                                    builder: (context, AsyncSnapshot<user.User?> snapshot) {
+                                      if( (snapshot.connectionState == ConnectionState.active || snapshot.connectionState==ConnectionState.done) && snapshot.hasData ){
+                                        return Column(
+                                      children: [
+                                        BoxForReplyNotification(
+                                          commentOwner: snapshot.data!,
+                                          originalComment: notificationSnapshot
+                                              .data.docs[index]['comment'] ,
+                                          originalCommentId: notificationSnapshot
+                                              .data.docs[index]['commentId'],
+                                  
+                                          articleOwnerId: notificationSnapshot
+                                              .data.docs[index]['articleOwnerId'],
+                                          notificationId: notificationSnapshot
+                                              .data.docs[index]['notificationId'],
+                                          read: notificationSnapshot
+                                              .data.docs[index]['read'],
+                                          articleId: notificationSnapshot
+                                              .data.docs[index]['articleId'],
+                                  
+                                          notifierDp: notifierUserSnapshot
+                                              .data!.dp, // dp of the user
+                                          notifierName: notifierUserSnapshot
+                                              .data!.name, // name of the user
+                                          notifierId: notifierUserSnapshot.data!
+                                              .userId, // user id of the user who has done something
+                                          time: notificationSnapshot
+                                                  .data.docs[index][
+                                              'createdOn'], // time when this notification was created
+                                          reply: notificationSnapshot
+                                                  .data.docs[index]
+                                              ['reply'], // comment data
+                                        ),
+                                        space
+                                      ],
+                                    );
+                                      }
+                                      else{
+                                        return Column(
+                                children: [
+                                  const NotificationShimmer(),
+                                  space,
+                                ],
+                              );
+                                      }  
+                                    },
+                                    
                                   );
                                 default:
                                   return const Text("default");
