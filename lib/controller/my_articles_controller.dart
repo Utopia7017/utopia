@@ -130,7 +130,8 @@ class MyArticlesController extends DisposableProvider {
         } else {
           String? url = await getImageUrl(File(bc.fileImage!.path),
               'articles/$userId/$title/${imageIndex++}');
-          articleBody.add(ArticleBody(type: "image", image: url,imageCaption :bc.imageCaption!.text));
+          articleBody.add(ArticleBody(
+              type: "image", image: url, imageCaption: bc.imageCaption!.text));
         }
       }
       Article article = Article(
@@ -258,6 +259,63 @@ class MyArticlesController extends DisposableProvider {
     } catch (error) {
       logger.shout(error.toString());
     }
+    notifyListeners();
+  }
+
+  // draft this article
+  draftMyArticle({
+    required String userId,
+    required String title,
+    required List<String> tags,
+  }) async {
+    uploadingStatus = ArticleUploadingStatus.uploading;
+    notifyListeners();
+    try {
+      List<ArticleBody> articleBody = [];
+      int imageIndex = 0;
+      for (BodyComponent bc in bodyComponents) {
+        if (bc.type == "text") {
+          if (bc.textEditingController != null) {
+            print("enter ${bc.textEditingController!.text}");
+          }
+
+          articleBody.add(
+              ArticleBody(type: "text", text: bc.textEditingController!.text));
+        } else {
+          String? url = await getImageUrl(File(bc.fileImage!.path),
+              'articles/$userId/$title/${imageIndex++}');
+          articleBody.add(ArticleBody(
+              type: "image", image: url, imageCaption: bc.imageCaption!.text));
+        }
+      }
+      Article article = Article(
+          category: "draft",
+          title: title,
+          body: articleBody,
+          tags: tags,
+          reports: [],
+          articleCreated: DateTime.now(),
+          articleId: '',
+          authorId: userId);
+
+      final Response? response = await _apiServices.post(
+          endUrl: 'draft-articles/$userId.json', data: article.toJson());
+
+      if (response != null) {
+        final String articleId = response.data[
+            'name']; // we do not need to decode as dio already does it for us.
+
+        await _apiServices.update(
+            endUrl: 'draft-articles/$userId/$articleId.json',
+            data: {'articleId': articleId},
+            message: "Article published successfully",
+            showMessage: true);
+        clearForm();
+      }
+    } catch (error) {
+      Logger("Draft Article Method").shout(error.toString());
+    }
+    uploadingStatus = ArticleUploadingStatus.notUploading;
     notifyListeners();
   }
 
