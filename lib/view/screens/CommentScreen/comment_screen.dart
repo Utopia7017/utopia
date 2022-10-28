@@ -34,6 +34,11 @@ class CommentScreen extends StatelessWidget {
           "Comments",
           style: TextStyle(fontFamily: "Open", fontSize: 14),
         ),
+        actions: [
+          PopupMenuButton(itemBuilder: (context) => [
+            PopupMenuItem(child: Text('View Article')),
+          ],)
+        ],
       ),
       backgroundColor: primaryBackgroundColor,
       body: Consumer<UserController>(
