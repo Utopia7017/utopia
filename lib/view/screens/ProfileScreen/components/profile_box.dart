@@ -11,6 +11,7 @@ import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
+import 'package:utopia/view/common_ui/display_full_image.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
 import 'package:utopia/view/screens/FollowersScreen/followers_screen.dart';
 import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
@@ -47,7 +48,20 @@ class ProfileBox extends StatelessWidget {
               InkWell(
                 onTap: () async {
                   // update cover photo
-                  final sms = ScaffoldMessenger.of(context);
+                  showModalBottomSheet(context: context, builder: (context) {
+                    return SingleChildScrollView(
+                      padding: EdgeInsets.all(5),
+                      child: Column(
+                        children:  [
+                         (user.cp.isNotEmpty)? ListTile(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => DisplayFullImage(imageurl: user.cp),));
+                            },
+                              title: Text('View Cover Photo'),
+                          ):SizedBox(),
+                          ListTile(
+                            onTap: () async{
+                              final sms = ScaffoldMessenger.of(context);
                   final userController =
                       Provider.of<UserController>(context, listen: false);
                   XFile? pickCoverPhoto = await pickImage(context);
@@ -63,6 +77,17 @@ class ProfileBox extends StatelessWidget {
                     sms.showSnackBar(
                         const SnackBar(content: Text("No image picked")));
                   }
+                            },
+                            title: Text('Change Cover Photo'),
+                          ),
+                          ListTile(
+                            title: Text('Remove Cover Photo'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },);
+                  
                 },
                 child: (user.cp.isNotEmpty)
                     ? CachedNetworkImage(

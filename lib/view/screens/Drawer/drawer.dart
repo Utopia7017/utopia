@@ -11,6 +11,8 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/all_controllers.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
+import 'package:utopia/view/screens/FollowersScreen/followers_screen.dart';
+import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import '../../../services/firebase/auth_services.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -132,53 +134,63 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    controller.user!.followers.length
-                                        .toString(),
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  const SizedBox(
-                                    height: 3,
-                                  ),
-                                  const Text(
-                                    'Followers',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => FollowersScreen(user: controller.user!),));
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      controller.user!.followers.length
+                                          .toString(),
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400),
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    const Text(
+                                      'Followers',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    controller.user!.following.length
-                                        .toString(),
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  const SizedBox(
-                                    height: 3,
-                                  ),
-                                  const Text(
-                                    'Following',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => FollowingScreen(user: controller.user!),));
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      controller.user!.following.length
+                                          .toString(),
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400),
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    const Text(
+                                      'Following',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               )
                             ],
                           ),
