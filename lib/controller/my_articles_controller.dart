@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:logging/logging.dart';
+import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_body_model.dart';
@@ -72,11 +74,14 @@ class MyArticlesController extends DisposableProvider {
     TextEditingController imageCaptionController = TextEditingController();
     bodyComponents.add(BodyComponent(
         type: "image",
+        imageUrl: imageUrl,
         imageCaption: imageCaptionController,
         key: DateTime.now().toString(),
         imageProvider: (file != null)
             ? Image(image: FileImage(File(file.path)))
-            : Image(image: NetworkImage(imageUrl!)),
+            : Image(
+                image: CachedNetworkImageProvider(imageUrl!),
+              ),
         fileImage: file));
     if (imageUrl == null) {
       addTextField(null);
@@ -139,10 +144,19 @@ class MyArticlesController extends DisposableProvider {
           articleBody.add(
               ArticleBody(type: "text", text: bc.textEditingController!.text));
         } else {
-          String? url = await getImageUrl(File(bc.fileImage!.path),
-              'articles/$userId/$title/${imageIndex++}');
-          articleBody.add(ArticleBody(
-              type: "image", image: url, imageCaption: bc.imageCaption!.text));
+          if (bc.fileImage != null) {
+            String? url = await getImageUrl(File(bc.fileImage!.path),
+                'articles/$userId/$title/${imageIndex++}');
+            articleBody.add(ArticleBody(
+                type: "image",
+                image: url,
+                imageCaption: bc.imageCaption!.text));
+          } else {
+            articleBody.add(ArticleBody(
+                type: "image",
+                image: bc.imageUrl,
+                imageCaption: bc.imageCaption!.text));
+          }
         }
       }
       Article article = Article(

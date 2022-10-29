@@ -12,13 +12,15 @@ class BodyComponent {
   CroppedFile? fileImage;
   TextEditingController? imageCaption;
   Image? imageProvider;
+  String? imageUrl;
 
   BodyComponent(
       {required this.type,
-        required this.key,
-        this.textFormField,
-        this.imageCaption,
-        this.fileImage,
-        this.imageProvider,
-        this.textEditingController});
+      required this.key,
+      this.textFormField,
+      this.imageCaption,
+      this.fileImage,
+      this.imageUrl,
+      this.imageProvider,
+      this.textEditingController});
 }
