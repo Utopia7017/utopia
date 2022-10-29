@@ -22,10 +22,12 @@ import '../../../../controller/articles_controller.dart';
 
 class ProfileBox extends StatelessWidget {
   final User user;
-  const ProfileBox({
+  ProfileBox({
     super.key,
     required this.user,
   });
+
+  final textStyle = const TextStyle(fontFamily: "Open", fontSize: 15);
 
   @override
   Widget build(BuildContext context) {
@@ -48,52 +50,82 @@ class ProfileBox extends StatelessWidget {
               InkWell(
                 onTap: () async {
                   // update cover photo
-                  showModalBottomSheet(context: context, builder: (context) {
-                    return SingleChildScrollView(
-                      padding: EdgeInsets.all(5),
-                      child: Column(
-                        children:  [
-                         (user.cp.isNotEmpty)? ListTile(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => DisplayFullImage(imageurl: user.cp),));
-                            },
-                              title: Text('View Cover Photo'),
-                          ):SizedBox(),
-                          ListTile(
-                            onTap: () async{
-                              final sms = ScaffoldMessenger.of(context);
-                  final userController =
-                      Provider.of<UserController>(context, listen: false);
-                  XFile? pickCoverPhoto = await pickImage(context);
-                  if (pickCoverPhoto != null) {
-                    CroppedFile? croppedFile =
-                        await cropImage(File(pickCoverPhoto.path));
-                    if (croppedFile != null) {
-                      userController.changeCoverPhoto(croppedFile);
-                    } else {
-                      // nothing to be done
-                    }
-                  } else {
-                    sms.showSnackBar(
-                        const SnackBar(content: Text("No image picked")));
-                  }
-                            },
-                            title: Text('Change Cover Photo'),
-                          ),
-                         (user.cp.isNotEmpty)? ListTile(
-                          onTap: () {
-                             final userController =
-                      Provider.of<UserController>(context, listen: false);
-                      userController.removeCp();
-                      Navigator.pop(context);
-                          },
-                             title: Text('Remove Cover Photo'),
-                          ): SizedBox(),
-                        ],
-                      ),
-                    );
-                  },);
-                  
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return SingleChildScrollView(
+                        padding: EdgeInsets.zero,
+                        child: Column(
+                          children: [
+                            (user.cp.isNotEmpty)
+                                ? ListTile(
+                                    visualDensity:
+                                        const VisualDensity(vertical: -2),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DisplayFullImage(
+                                                    imageurl: user.cp),
+                                          ));
+                                    },
+                                    title: Text(
+                                      'View Cover Photo',
+                                      style: textStyle,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            ListTile(
+                              visualDensity: const VisualDensity(vertical: -2),
+                              onTap: () async {
+                                final sms = ScaffoldMessenger.of(context);
+                                final userController =
+                                    Provider.of<UserController>(context,
+                                        listen: false);
+                                XFile? pickCoverPhoto =
+                                    await pickImage(context);
+                                if (pickCoverPhoto != null) {
+                                  CroppedFile? croppedFile = await cropImage(
+                                      File(pickCoverPhoto.path));
+                                  if (croppedFile != null) {
+                                    userController
+                                        .changeCoverPhoto(croppedFile);
+                                  } else {
+                                    // nothing to be done
+                                  }
+                                } else {
+                                  sms.showSnackBar(const SnackBar(
+                                      content: Text("No image picked")));
+                                }
+                              },
+                              title: Text(
+                                'Change Cover Photo',
+                                style: textStyle,
+                              ),
+                            ),
+                            (user.cp.isNotEmpty)
+                                ? ListTile(
+                                    visualDensity:
+                                        const VisualDensity(vertical: -2),
+                                    onTap: () {
+                                      final userController =
+                                          Provider.of<UserController>(context,
+                                              listen: false);
+                                      userController.removeCp();
+                                      Navigator.pop(context);
+                                    },
+                                    title: Text(
+                                      'Remove Cover Photo',
+                                      style: textStyle,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
                 child: (user.cp.isNotEmpty)
                     ? CachedNetworkImage(
@@ -143,55 +175,92 @@ class ProfileBox extends StatelessWidget {
                             InkWell(
                               onTap: () async {
                                 // update dp
-                                showModalBottomSheet(context: context, builder: (context) {
-                    return SingleChildScrollView(
-                      padding: EdgeInsets.all(5),
-                      child: Column(
-                        children:  [
-                         (user.dp.isNotEmpty)? ListTile(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => DisplayFullImage(imageurl: user.dp),));
-                            },
-                              title: Text('View Profile Photo'),
-                          ):SizedBox(),
-                          ListTile(
-                            onTap: () async{
-                              final sms = ScaffoldMessenger.of(context);
-                                final userController =
-                                    Provider.of<UserController>(context,
-                                        listen: false);
-                                XFile? pickDisplayPhoto =
-                                    await pickImage(context);
-                                if (pickDisplayPhoto != null) {
-                                  CroppedFile? croppedFile = await cropImage(
-                                      File(pickDisplayPhoto.path));
-                                  if (croppedFile != null) {
-                                    userController
-                                        .changeDisplayPhoto(croppedFile);
-                                  } else {
-                                    // nothing to be done
-                                  }
-                                } else {
-                                  sms.showSnackBar(const SnackBar(
-                                      content: Text("No image picked")));
-                                }
-                            },
-                            title: Text('Change Profile Photo'),
-                          ),
-                          (user.dp.isNotEmpty)? ListTile(
-                            onTap: () {
-                              final userController =
-                                    Provider.of<UserController>(context,
-                                        listen: false);
-                              userController.removeDp();
-                              Navigator.pop(context);
-                            },
-                            title: Text('Remove Profile Photo'),
-                          ): SizedBox(),
-                        ],
-                      ),
-                    );
-                  },);
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          (user.dp.isNotEmpty)
+                                              ? ListTile(
+                                                  visualDensity:
+                                                      const VisualDensity(
+                                                          vertical: -2),
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DisplayFullImage(
+                                                                  imageurl:
+                                                                      user.dp),
+                                                        ));
+                                                  },
+                                                  title: Text(
+                                                    'View Profile Photo',
+                                                    style: textStyle,
+                                                  ),
+                                                )
+                                              : const SizedBox(),
+                                          ListTile(
+                                            visualDensity: const VisualDensity(
+                                                vertical: -2),
+                                            onTap: () async {
+                                              final sms =
+                                                  ScaffoldMessenger.of(context);
+                                              final userController =
+                                                  Provider.of<UserController>(
+                                                      context,
+                                                      listen: false);
+                                              XFile? pickDisplayPhoto =
+                                                  await pickImage(context);
+                                              if (pickDisplayPhoto != null) {
+                                                CroppedFile? croppedFile =
+                                                    await cropImage(File(
+                                                        pickDisplayPhoto.path));
+                                                if (croppedFile != null) {
+                                                  userController
+                                                      .changeDisplayPhoto(
+                                                          croppedFile);
+                                                } else {
+                                                  // nothing to be done
+                                                }
+                                              } else {
+                                                sms.showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "No image picked")));
+                                              }
+                                            },
+                                            title: Text(
+                                              'Change Profile Photo',
+                                              style: textStyle,
+                                            ),
+                                          ),
+                                          (user.dp.isNotEmpty)
+                                              ? ListTile(
+                                                  visualDensity:
+                                                      const VisualDensity(
+                                                          vertical: -2),
+                                                  onTap: () {
+                                                    final userController =
+                                                        Provider.of<
+                                                                UserController>(
+                                                            context,
+                                                            listen: false);
+                                                    userController.removeDp();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  title: Text(
+                                                    'Remove Profile Photo',
+                                                    style: textStyle,
+                                                  ),
+                                                )
+                                              : const SizedBox(),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
                               },
                               child: (user.dp.isEmpty)
                                   ? Container(
@@ -304,17 +373,31 @@ class ProfileBox extends StatelessWidget {
                                         ProfileDetailBox(
                                           value: user.following.length,
                                           label: "Followings",
-                                          callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowingScreen(user: user),)),
+                                          callback: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FollowingScreen(user: user),
+                                              )),
                                         ),
                                         ProfileDetailBox(
                                           value: user.followers.length,
                                           label: "Followers",
-                                          callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowersScreen(user: user),)),
+                                          callback: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FollowersScreen(user: user),
+                                              )),
                                         ),
                                         ProfileDetailBox(
                                           value: snapshot.data!.length,
                                           label: "Articles",
-                                          callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyArticleScreen())),
+                                          callback: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyArticleScreen())),
                                         )
                                       ],
                                     ),
