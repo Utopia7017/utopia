@@ -50,6 +50,11 @@ class ReplyCommentScreen extends StatelessWidget {
           "Reply to ${commentOwner.name}",
           style: const TextStyle(fontFamily: "Open", fontSize: 14),
         ),
+        actions: [
+          PopupMenuButton(itemBuilder: (context) => [
+            PopupMenuItem(child: Text('View Article')),
+          ],)
+        ],
       ),
       body: Consumer<UserController>(
         builder: (context, userController, child) {
