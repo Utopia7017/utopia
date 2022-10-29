@@ -46,7 +46,7 @@ class NewArticleScreen extends StatelessWidget {
                     CroppedFile? croppedFile =
                         await cropImage(File(imageFile.path));
                     if (croppedFile != null) {
-                      controller.addImageField(croppedFile);
+                      controller.addImageField(croppedFile,null);
                     }
                   }
                 },
@@ -117,7 +117,7 @@ class NewArticleScreen extends StatelessWidget {
               builder: (context, controller, child) {
                 if (controller.bodyComponents.isEmpty) {
                   Future.delayed(const Duration(microseconds: 1))
-                      .then((value) => controller.addTextField());
+                      .then((value) => controller.addTextField(null));
                 }
                 List<BodyComponent> bodyComponents = controller.bodyComponents;
                 switch (controller.uploadingStatus) {
@@ -208,7 +208,7 @@ class NewArticleScreen extends StatelessWidget {
                                 ));
 
                           default:
-                            return Text("data");
+                            return const Text("data");
                         }
                       },
                     );

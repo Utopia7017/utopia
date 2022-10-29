@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
@@ -22,16 +21,19 @@ class MyArticlesController extends DisposableProvider {
   List<Article> draftArticles = [];
   List<SavedArticle> savedArticles = [];
   List<Article> savedArticlesDetails = [];
+
   FetchingMyArticle fetchingMyArticleStatus = FetchingMyArticle.nil;
+  FetchingDraftArticles fetchingDraftArticlesStatus = FetchingDraftArticles.nil;
+
   String? category;
   final Logger _logger = Logger("MyArticlesController");
   final ApiServices _apiServices = ApiServices();
   FetchingSavedArticles fetchingSavedArticlesStatus = FetchingSavedArticles.nil;
 
   // adds a new text field to body component list
-  void addTextField() {
+  void addTextField(String? text) {
     TextEditingController textEditingController =
-        TextEditingController(text: "");
+        TextEditingController(text: text);
     ArticleTextField textField = ArticleTextField(
       controller: textEditingController,
       isFirstTextBox: (bodyComponents.isEmpty),
@@ -66,15 +68,19 @@ class MyArticlesController extends DisposableProvider {
   }
 
   // adds a new image provider to body component list
-  void addImageField(CroppedFile file) {
+  void addImageField(CroppedFile? file, String? imageUrl) {
     TextEditingController imageCaptionController = TextEditingController();
     bodyComponents.add(BodyComponent(
         type: "image",
         imageCaption: imageCaptionController,
         key: DateTime.now().toString(),
-        imageProvider: Image(image: FileImage(File(file.path))),
+        imageProvider: (file != null)
+            ? Image(image: FileImage(File(file.path)))
+            : Image(image: NetworkImage(imageUrl!)),
         fileImage: file));
-    addTextField();
+    if (imageUrl == null) {
+      addTextField(null);
+    }
   }
 
   // removes the selected image and its successive body component
@@ -105,7 +111,12 @@ class MyArticlesController extends DisposableProvider {
   // clears the new article form
   clearForm() {
     bodyComponents.clear();
-    addTextField();
+    addTextField(null);
+  }
+
+  clearFullForm() {
+    bodyComponents.clear();
+    notifyListeners();
   }
 
   // publishes the article
@@ -173,7 +184,6 @@ class MyArticlesController extends DisposableProvider {
     notifyListeners();
     try {
       List<Article> tempPublished = [];
-      List<Article> tempDrafts = [];
       final Response? response =
           await _apiServices.get(endUrl: 'articles/$myUid.json');
       if (response != null) {
@@ -316,6 +326,32 @@ class MyArticlesController extends DisposableProvider {
       Logger("Draft Article Method").shout(error.toString());
     }
     uploadingStatus = ArticleUploadingStatus.notUploading;
+    notifyListeners();
+  }
+
+  fetchDraftArticles(String myUid) async {
+    Logger logger = Logger("FetchDraftArticles");
+    fetchingDraftArticlesStatus = FetchingDraftArticles.fetching;
+    await Future.delayed(const Duration(milliseconds: 1));
+    notifyListeners();
+    try {
+      List<Article> tempDrafts = [];
+      final Response? response =
+          await _apiServices.get(endUrl: 'draft-articles/$myUid.json');
+      if (response != null) {
+        final Map<String, dynamic> responseData = response.data;
+        for (var article in responseData.values) {
+          Article art = Article.fromJson(article);
+          tempDrafts.add(art);
+        }
+        draftArticles = tempDrafts;
+        draftArticles
+            .sort((a, b) => b.articleCreated.compareTo(a.articleCreated));
+      }
+    } catch (error) {
+      _logger.shout(error.toString());
+    }
+    fetchingDraftArticlesStatus = FetchingDraftArticles.fetched;
     notifyListeners();
   }
 
