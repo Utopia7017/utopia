@@ -89,5 +89,13 @@ class User {
     }
   }
 
+  removeDp(){
+    dp='';
+  }
+
+  removeCp(){
+    cp='';
+  }
+
 
 }
