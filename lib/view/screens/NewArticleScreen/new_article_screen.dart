@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +11,7 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/screens/NewArticleScreen/components/article_detail_dialog.dart';
+import 'package:utopia/view/screens/NewArticleScreen/components/save_draft_dialog.dart';
 
 import '../../../utils/article_body_component.dart';
 
@@ -25,9 +25,15 @@ class NewArticleScreen extends StatelessWidget {
     return WillPopScope(
       // This widget helps us catching the back button press event from the device's navigator.
       onWillPop: () async {
-        //TODO: Show dialog box asking user to save draft before navigating back.
+        bool shouldPop = true;
         _logger.info("Going back");
-        return true;
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return SaveDraftDialog();
+          },
+        );
+        return shouldPop;
       },
       child: Scaffold(
           floatingActionButton: Consumer<MyArticlesController>(
@@ -39,7 +45,7 @@ class NewArticleScreen extends StatelessWidget {
                     CroppedFile? croppedFile =
                         await cropImage(File(imageFile.path));
                     if (croppedFile != null) {
-                      controller.addImageField(croppedFile);
+                      controller.addImageField(croppedFile,null);
                     }
                   }
                 },
@@ -110,7 +116,7 @@ class NewArticleScreen extends StatelessWidget {
               builder: (context, controller, child) {
                 if (controller.bodyComponents.isEmpty) {
                   Future.delayed(const Duration(microseconds: 1))
-                      .then((value) => controller.addTextField());
+                      .then((value) => controller.addTextField(null));
                 }
                 List<BodyComponent> bodyComponents = controller.bodyComponents;
                 switch (controller.uploadingStatus) {
@@ -201,7 +207,7 @@ class NewArticleScreen extends StatelessWidget {
                                 ));
 
                           default:
-                            return Text("data");
+                            return const Text("data");
                         }
                       },
                     );

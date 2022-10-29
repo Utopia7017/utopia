@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_body_model.dart';
@@ -22,16 +23,19 @@ class MyArticlesController extends DisposableProvider {
   List<Article> draftArticles = [];
   List<SavedArticle> savedArticles = [];
   List<Article> savedArticlesDetails = [];
+
   FetchingMyArticle fetchingMyArticleStatus = FetchingMyArticle.nil;
+  FetchingDraftArticles fetchingDraftArticlesStatus = FetchingDraftArticles.nil;
+
   String? category;
   final Logger _logger = Logger("MyArticlesController");
   final ApiServices _apiServices = ApiServices();
   FetchingSavedArticles fetchingSavedArticlesStatus = FetchingSavedArticles.nil;
 
   // adds a new text field to body component list
-  void addTextField() {
+  void addTextField(String? text) {
     TextEditingController textEditingController =
-        TextEditingController(text: "");
+        TextEditingController(text: text);
     ArticleTextField textField = ArticleTextField(
       controller: textEditingController,
       isFirstTextBox: (bodyComponents.isEmpty),
@@ -66,15 +70,22 @@ class MyArticlesController extends DisposableProvider {
   }
 
   // adds a new image provider to body component list
-  void addImageField(CroppedFile file) {
+  void addImageField(CroppedFile? file, String? imageUrl) {
     TextEditingController imageCaptionController = TextEditingController();
     bodyComponents.add(BodyComponent(
         type: "image",
+        imageUrl: imageUrl,
         imageCaption: imageCaptionController,
         key: DateTime.now().toString(),
-        imageProvider: Image(image: FileImage(File(file.path))),
+        imageProvider: (file != null)
+            ? Image(image: FileImage(File(file.path)))
+            : Image(
+                image: CachedNetworkImageProvider(imageUrl!),
+              ),
         fileImage: file));
-    addTextField();
+    if (imageUrl == null) {
+      addTextField(null);
+    }
   }
 
   // removes the selected image and its successive body component
@@ -105,7 +116,12 @@ class MyArticlesController extends DisposableProvider {
   // clears the new article form
   clearForm() {
     bodyComponents.clear();
-    addTextField();
+    addTextField(null);
+  }
+
+  clearFullForm() {
+    bodyComponents.clear();
+    notifyListeners();
   }
 
   // publishes the article
@@ -128,9 +144,19 @@ class MyArticlesController extends DisposableProvider {
           articleBody.add(
               ArticleBody(type: "text", text: bc.textEditingController!.text));
         } else {
-          String? url = await getImageUrl(File(bc.fileImage!.path),
-              'articles/$userId/$title/${imageIndex++}');
-          articleBody.add(ArticleBody(type: "image", image: url,imageCaption :bc.imageCaption!.text));
+          if (bc.fileImage != null) {
+            String? url = await getImageUrl(File(bc.fileImage!.path),
+                'articles/$userId/$title/${imageIndex++}');
+            articleBody.add(ArticleBody(
+                type: "image",
+                image: url,
+                imageCaption: bc.imageCaption!.text));
+          } else {
+            articleBody.add(ArticleBody(
+                type: "image",
+                image: bc.imageUrl,
+                imageCaption: bc.imageCaption!.text));
+          }
         }
       }
       Article article = Article(
@@ -172,7 +198,6 @@ class MyArticlesController extends DisposableProvider {
     notifyListeners();
     try {
       List<Article> tempPublished = [];
-      List<Article> tempDrafts = [];
       final Response? response =
           await _apiServices.get(endUrl: 'articles/$myUid.json');
       if (response != null) {
@@ -258,6 +283,89 @@ class MyArticlesController extends DisposableProvider {
     } catch (error) {
       logger.shout(error.toString());
     }
+    notifyListeners();
+  }
+
+  // draft this article
+  draftMyArticle({
+    required String userId,
+    required String title,
+    required List<String> tags,
+  }) async {
+    uploadingStatus = ArticleUploadingStatus.uploading;
+    notifyListeners();
+    try {
+      List<ArticleBody> articleBody = [];
+      int imageIndex = 0;
+      for (BodyComponent bc in bodyComponents) {
+        if (bc.type == "text") {
+          if (bc.textEditingController != null) {
+            print("enter ${bc.textEditingController!.text}");
+          }
+
+          articleBody.add(
+              ArticleBody(type: "text", text: bc.textEditingController!.text));
+        } else {
+          String? url = await getImageUrl(File(bc.fileImage!.path),
+              'articles/$userId/$title/${imageIndex++}');
+          articleBody.add(ArticleBody(
+              type: "image", image: url, imageCaption: bc.imageCaption!.text));
+        }
+      }
+      Article article = Article(
+          category: "draft",
+          title: title,
+          body: articleBody,
+          tags: tags,
+          reports: [],
+          articleCreated: DateTime.now(),
+          articleId: '',
+          authorId: userId);
+
+      final Response? response = await _apiServices.post(
+          endUrl: 'draft-articles/$userId.json', data: article.toJson());
+
+      if (response != null) {
+        final String articleId = response.data[
+            'name']; // we do not need to decode as dio already does it for us.
+
+        await _apiServices.update(
+            endUrl: 'draft-articles/$userId/$articleId.json',
+            data: {'articleId': articleId},
+            message: "Article published successfully",
+            showMessage: true);
+        clearForm();
+      }
+    } catch (error) {
+      Logger("Draft Article Method").shout(error.toString());
+    }
+    uploadingStatus = ArticleUploadingStatus.notUploading;
+    notifyListeners();
+  }
+
+  fetchDraftArticles(String myUid) async {
+    Logger logger = Logger("FetchDraftArticles");
+    fetchingDraftArticlesStatus = FetchingDraftArticles.fetching;
+    await Future.delayed(const Duration(milliseconds: 1));
+    notifyListeners();
+    try {
+      List<Article> tempDrafts = [];
+      final Response? response =
+          await _apiServices.get(endUrl: 'draft-articles/$myUid.json');
+      if (response != null) {
+        final Map<String, dynamic> responseData = response.data;
+        for (var article in responseData.values) {
+          Article art = Article.fromJson(article);
+          tempDrafts.add(art);
+        }
+        draftArticles = tempDrafts;
+        draftArticles
+            .sort((a, b) => b.articleCreated.compareTo(a.articleCreated));
+      }
+    } catch (error) {
+      _logger.shout(error.toString());
+    }
+    fetchingDraftArticlesStatus = FetchingDraftArticles.fetched;
     notifyListeners();
   }
 

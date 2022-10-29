@@ -15,3 +15,5 @@ enum FetchingMyArticle {nil,fetching,fetched}
 enum FollowingUserStatus {yes,no}
 
 enum FetchingSavedArticles {nil,fetching,fetched}
+
+enum FetchingDraftArticles {nil,fetching,fetched}

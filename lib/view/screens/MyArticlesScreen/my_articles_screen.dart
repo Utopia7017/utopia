@@ -6,6 +6,7 @@ import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
+import 'package:utopia/view/common_ui/draft_article_box.dart';
 
 class MyArticleScreen extends StatefulWidget {
   @override
@@ -82,21 +83,34 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                       itemBuilder: (context, index) {
                         return InkWell(
                           onLongPress: () {
-                            showDialog(context: context, builder: (context) {
-                              return AlertDialog(
-                                title: Text('Delete'),
-                                content: Text('Delete this article'),
-                                actions: [
-                                  TextButton(onPressed: () {
-                                    Navigator.pop(context);
-                                  }, child: const Text('No')),
-                                  TextButton(onPressed: () {
-                                    controller.deleteThisArticle(myUid: controller.publishedArticles[index].authorId, articleId: controller.publishedArticles[index].articleId);
-                                    Navigator.pop(context);
-                                  }, child: const Text('Yes')),
-                                ],
-                              );
-                            },);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Delete'),
+                                  content: const Text('Delete this article'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('No')),
+                                    TextButton(
+                                        onPressed: () {
+                                          controller.deleteThisArticle(
+                                              myUid: controller
+                                                  .publishedArticles[index]
+                                                  .authorId,
+                                              articleId: controller
+                                                  .publishedArticles[index]
+                                                  .articleId);
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Yes')),
+                                  ],
+                                );
+                              },
+                            );
                           },
                           child: ArticleBox(
                               article: controller.publishedArticles[index]),
@@ -108,8 +122,68 @@ class _MyArticleScreenState extends State<MyArticleScreen>
               }
             },
           ),
-          const Center(
-            child: Text('Draft articles'),
+          Consumer<MyArticlesController>(
+            builder: (context, controller, child) {
+              if (controller.fetchingDraftArticlesStatus ==
+                  FetchingDraftArticles.nil) {
+                controller.fetchDraftArticles(myUserId);
+              }
+
+              switch (controller.fetchingDraftArticlesStatus) {
+                case FetchingDraftArticles.nil:
+                  return const Center(child: Text('Swipe to refresh'));
+                case FetchingDraftArticles.fetching:
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: authMaterialButtonColor,
+                    ),
+                  );
+                case FetchingDraftArticles.fetched:
+                  return Padding(
+                    padding:
+                        EdgeInsets.only(top: displayHeight(context) * 0.07),
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          // onLongPress: () {
+                          //   showDialog(
+                          //     context: context,
+                          //     builder: (context) {
+                          //       return AlertDialog(
+                          //         title: const Text('Delete'),
+                          //         content: const Text('Delete this article'),
+                          //         actions: [
+                          //           TextButton(
+                          //               onPressed: () {
+                          //                 Navigator.pop(context);
+                          //               },
+                          //               child: const Text('No')),
+                          //           TextButton(
+                          //               onPressed: () {
+                          //                 controller.deleteThisArticle(
+                          //                     myUid: controller
+                          //                         .publishedArticles[index]
+                          //                         .authorId,
+                          //                     articleId: controller
+                          //                         .publishedArticles[index]
+                          //                         .articleId);
+                          //                 Navigator.pop(context);
+                          //               },
+                          //               child: const Text('Yes')),
+                          //         ],
+                          //       );
+                          //     },
+                          //   );
+                          // },
+                          child: DraftArticleBox(
+                              article: controller.draftArticles[index]),
+                        );
+                      },
+                      itemCount: controller.draftArticles.length,
+                    ),
+                  );
+              }
+            },
           ),
         ]),
       ),
