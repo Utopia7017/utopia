@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
@@ -9,7 +10,9 @@ import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class FollowersScreen extends StatelessWidget {
   final User user;
-  const FollowersScreen({Key? key, required this.user}) : super(key: key);
+  FollowersScreen({Key? key, required this.user}) : super(key: key);
+
+  String currentuserid = firebase.FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -74,13 +77,16 @@ class FollowersScreen extends StatelessWidget {
                           lastLetter = initials[1].characters.first;
                         }
                         return ListTile(
+                          visualDensity: VisualDensity(vertical: 2.5),
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => UserProfileScreen(
-                                      userId: followerUser.userId),
-                                ));
+                            if (currentuserid != followerUser.userId) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UserProfileScreen(
+                                        userId: followerUser.userId),
+                                  ));
+                            }
                           },
                           leading: (followerUser.dp.isEmpty)
                               ? CircleAvatar(
@@ -110,21 +116,23 @@ class FollowersScreen extends StatelessWidget {
                                 ),
                           title: Text(followerUser.name),
                           dense: true,
-                          trailing: MaterialButton(
-                            onPressed: () {},
-                            height: 30,
-                            color: authMaterialButtonColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: const Text(
-                              'Remove',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ),
+                          trailing: (currentuserid == user.userId)
+                              ? MaterialButton(
+                                  onPressed: () {},
+                                  height: 30,
+                                  color: authMaterialButtonColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text(
+                                    'Remove',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                )
+                              : null,
                         );
                       } else if (snapshot.hasError) {
                         return Center(
