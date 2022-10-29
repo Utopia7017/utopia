@@ -80,9 +80,15 @@ class ProfileBox extends StatelessWidget {
                             },
                             title: Text('Change Cover Photo'),
                           ),
-                          ListTile(
-                            title: Text('Remove Cover Photo'),
-                          ),
+                         (user.cp.isNotEmpty)? ListTile(
+                          onTap: () {
+                             final userController =
+                      Provider.of<UserController>(context, listen: false);
+                      userController.removeCp();
+                      Navigator.pop(context);
+                          },
+                             title: Text('Remove Cover Photo'),
+                          ): SizedBox(),
                         ],
                       ),
                     );
@@ -137,7 +143,20 @@ class ProfileBox extends StatelessWidget {
                             InkWell(
                               onTap: () async {
                                 // update dp
-                                final sms = ScaffoldMessenger.of(context);
+                                showModalBottomSheet(context: context, builder: (context) {
+                    return SingleChildScrollView(
+                      padding: EdgeInsets.all(5),
+                      child: Column(
+                        children:  [
+                         (user.dp.isNotEmpty)? ListTile(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => DisplayFullImage(imageurl: user.dp),));
+                            },
+                              title: Text('View Profile Photo'),
+                          ):SizedBox(),
+                          ListTile(
+                            onTap: () async{
+                              final sms = ScaffoldMessenger.of(context);
                                 final userController =
                                     Provider.of<UserController>(context,
                                         listen: false);
@@ -156,6 +175,23 @@ class ProfileBox extends StatelessWidget {
                                   sms.showSnackBar(const SnackBar(
                                       content: Text("No image picked")));
                                 }
+                            },
+                            title: Text('Change Profile Photo'),
+                          ),
+                          (user.dp.isNotEmpty)? ListTile(
+                            onTap: () {
+                              final userController =
+                                    Provider.of<UserController>(context,
+                                        listen: false);
+                              userController.removeDp();
+                              Navigator.pop(context);
+                            },
+                            title: Text('Remove Profile Photo'),
+                          ): SizedBox(),
+                        ],
+                      ),
+                    );
+                  },);
                               },
                               child: (user.dp.isEmpty)
                                   ? Container(

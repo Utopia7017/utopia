@@ -270,6 +270,39 @@ class UserController extends DisposableProvider {
     notifyListeners();
   }
 
+  void removeDp() async {
+    try{
+      final Response? response= await _apiServices.update(endUrl: 'users/${user!.userId}.json', data: {
+        'dp':''
+      });
+      if(response!=null){
+        user!.removeDp();
+      }
+
+    }
+    catch(errror){
+      print(errror);
+    }
+    notifyListeners();
+    
+  }
+   void removeCp() async {
+    try{
+      final Response? response= await _apiServices.update(endUrl: 'users/${user!.userId}.json', data: {
+        'cp':''
+      });
+      if(response!=null){
+        user!.removeCp();
+      }
+
+    }
+    catch(errror){
+      print(errror);
+    }
+    notifyListeners();
+    
+  }
+
   // Dispose this provider
   @override
   void disposeValues() {
@@ -278,4 +311,5 @@ class UserController extends DisposableProvider {
     followingUserStatus = FollowingUserStatus.no;
     user = null;
   }
+
 }
