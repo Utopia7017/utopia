@@ -68,7 +68,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     lastLetter = initials[1].characters.first;
                   }
                   return SingleChildScrollView(
-                    padding: EdgeInsets.zero,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -136,7 +136,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => FollowersScreen(user: controller.user!),));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FollowersScreen(
+                                            user: controller.user!),
+                                      ));
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -165,7 +170,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => FollowingScreen(user: controller.user!),));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FollowingScreen(
+                                            user: controller.user!),
+                                      ));
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -357,9 +367,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   fontWeight: FontWeight.bold),
                             ),
                           ],
-                        ),
-                        const SizedBox(
-                          height: 10,
                         ),
                       ],
                     ),
