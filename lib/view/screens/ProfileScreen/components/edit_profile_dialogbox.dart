@@ -44,6 +44,7 @@ class _EditProfileDialogboxState extends State<EditProfileDialogbox> {
                     }
                     return null;
                   },
+                  maxLength: 20,
                   decoration: InputDecoration(
                     labelText: "Name",
                     border: OutlineInputBorder(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
@@ -160,13 +161,37 @@ class UserProfileBox extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  user.name,
-                                  style: TextStyle(
-                                    color: Colors.grey.shade700,
-                                    fontWeight: FontWeight.bold,
-                                    // fontFamily: "Fira",
-                                    fontSize: 18,
+                                Container(
+                                  // color: Colors.red.shade100,
+                                  constraints: BoxConstraints.tightForFinite(
+                                    width: displayWidth(context) * 0.5,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          user.name,
+                                          // "jkshkhkdhdkhkhhdshkfhjkdshfkhdskjhfkjdhkjfhjkhfkjhskfhdkjshfkjdhskfjhdskhfksdhfkshdkfhksdhkfhd",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.grey.shade700,
+                                            fontWeight: FontWeight.bold,
+                                            // fontFamily: "Fira",
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      (user.isVerified)
+                                          ? Image.asset(
+                                              verifyIcon,
+                                              height: 15,
+                                            )
+                                          : const SizedBox(),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(
@@ -226,12 +251,24 @@ class UserProfileBox extends StatelessWidget {
                                               ProfileDetailBox(
                                                 value: user.following.length,
                                                 label: "Followings",
-                                                callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowingScreen(user: user),)),
+                                                callback: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          FollowingScreen(
+                                                              user: user),
+                                                    )),
                                               ),
                                               ProfileDetailBox(
                                                 value: user.followers.length,
                                                 label: "Followers",
-                                                callback: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FollowersScreen(user: user),)) ,
+                                                callback: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          FollowersScreen(
+                                                              user: user),
+                                                    )),
                                               ),
                                               ProfileDetailBox(
                                                 value: snapshot.data!.length,
