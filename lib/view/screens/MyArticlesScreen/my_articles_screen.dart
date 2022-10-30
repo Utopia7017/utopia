@@ -7,6 +7,7 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/common_ui/draft_article_box.dart';
+import 'package:utopia/view/shimmers/article_shimmer.dart';
 
 class MyArticleScreen extends StatefulWidget {
   @override
@@ -70,11 +71,8 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                 case FetchingMyArticle.nil:
                   return const Center(child: Text('Swipe to refresh'));
                 case FetchingMyArticle.fetching:
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: authMaterialButtonColor,
-                    ),
-                  );
+                  return const ShimmerForArticles();
+
                 case FetchingMyArticle.fetched:
                   return Padding(
                     padding:
@@ -145,36 +143,36 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                     child: ListView.builder(
                       itemBuilder: (context, index) {
                         return InkWell(
-                          // onLongPress: () {
-                          //   showDialog(
-                          //     context: context,
-                          //     builder: (context) {
-                          //       return AlertDialog(
-                          //         title: const Text('Delete'),
-                          //         content: const Text('Delete this article'),
-                          //         actions: [
-                          //           TextButton(
-                          //               onPressed: () {
-                          //                 Navigator.pop(context);
-                          //               },
-                          //               child: const Text('No')),
-                          //           TextButton(
-                          //               onPressed: () {
-                          //                 controller.deleteThisArticle(
-                          //                     myUid: controller
-                          //                         .publishedArticles[index]
-                          //                         .authorId,
-                          //                     articleId: controller
-                          //                         .publishedArticles[index]
-                          //                         .articleId);
-                          //                 Navigator.pop(context);
-                          //               },
-                          //               child: const Text('Yes')),
-                          //         ],
-                          //       );
-                          //     },
-                          //   );
-                          // },
+                          onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Delete'),
+                                  content: const Text('Delete this draft'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('No')),
+                                    TextButton(
+                                        onPressed: () {
+                                          controller.deleteDraftArticle(
+                                              myUid: controller
+                                                  .draftArticles[index]
+                                                  .authorId,
+                                              articleId: controller
+                                                  .draftArticles[index]
+                                                  .articleId);
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Yes')),
+                                  ],
+                                );
+                              },
+                            );
+                          },
                           child: DraftArticleBox(
                               article: controller.draftArticles[index]),
                         );

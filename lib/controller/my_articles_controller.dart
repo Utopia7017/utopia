@@ -286,6 +286,21 @@ class MyArticlesController extends DisposableProvider {
     notifyListeners();
   }
 
+  // Deletes articles
+  deleteDraftArticle({required String myUid, required String articleId}) async {
+    Logger logger = Logger("Delete this article");
+    try {
+      final Response? response = await _apiServices.delete(
+          endUrl: 'draft-articles/$myUid/$articleId.json');
+      if (response != null) {
+        draftArticles.removeWhere((element) => element.articleId == articleId);
+      }
+    } catch (error) {
+      logger.shout(error.toString());
+    }
+    notifyListeners();
+  }
+
   // draft this article
   draftMyArticle({
     required String userId,
