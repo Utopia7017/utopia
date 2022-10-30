@@ -57,3 +57,5 @@ const helpIcon = 'assets/icons/help_icon.png';
 const termsIcon = 'assets/icons/terms_icon.png';
 
 const replyNotificationIcon = 'assets/icons/reply_notif.png';
+
+const verifyIcon = 'assets/icons/verify_icon.png';

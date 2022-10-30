@@ -100,6 +100,7 @@ class SignUpScreen extends StatelessWidget {
         ),
         const SizedBox(height: 40),
         AuthTextField(
+          maxLength: 20,
           controller: nameController,
           label: "Name",
           visible: true,
@@ -111,7 +112,9 @@ class SignUpScreen extends StatelessWidget {
             if (val!.isEmpty) return "Name cannot be empty";
           },
         ),
-        space,
+        SizedBox(
+          height: 10,
+        ),
         AuthTextField(
           controller: emailController,
           label: "Email",
@@ -346,7 +349,7 @@ class SignUpScreen extends StatelessWidget {
                       await userController.createUser(user.User(
                           draftArticles: [],
                           blocked: [],
-                          emailVerified: false,
+                          isVerified: false,
                           savedArticles: [],
                           cp: '',
                           name: nameController.text.trim(),

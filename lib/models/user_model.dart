@@ -11,7 +11,7 @@ class User {
   String cp;
   List<dynamic> savedArticles;
   List<dynamic> draftArticles;
-  bool emailVerified;
+  bool isVerified;
 
   User(
       {required this.name,
@@ -24,7 +24,7 @@ class User {
       required this.cp,
       required this.draftArticles,
       required this.savedArticles,
-      required this.emailVerified,
+      required this.isVerified,
       required this.following});
 
   factory User.fromJson(Map<String, dynamic> data) {
@@ -39,7 +39,7 @@ class User {
         email: data['email'],
         followers: data['followers'] ?? [],
         userId: data['userId'],
-        emailVerified: data['emailVerified'],
+        isVerified: data['isVerified'],
         following: data['following'] ?? []);
   }
 
@@ -56,7 +56,7 @@ class User {
       'following': following,
       'draftArticles': [],
       'savedArticles': [],
-      'emailVerified': true,
+      'isVerified': false,
     };
   }
 
