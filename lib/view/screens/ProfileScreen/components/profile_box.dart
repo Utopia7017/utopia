@@ -5,6 +5,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
@@ -313,13 +314,37 @@ class ProfileBox extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  user.name,
-                                  style: TextStyle(
-                                    color: Colors.grey.shade700,
-                                    fontWeight: FontWeight.bold,
-                                    // fontFamily: "Fira",
-                                    fontSize: 18,
+                                Container(
+                                  // color: Colors.red.shade100,
+                                  constraints: BoxConstraints.tightForFinite(
+                                    width: displayWidth(context) * 0.5,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          user.name,
+                                          // "jkshkhkdhdkhkhhdshkfhjkdshfkhdskjhfkjdhkjfhjkhfkjhskfhdkjshfkjdhskfjhdskhfksdhfkshdkfhksdhkfhd",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.grey.shade700,
+                                            fontWeight: FontWeight.bold,
+                                            // fontFamily: "Fira",
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      (user.isVerified)
+                                          ? Image.asset(
+                                              verifyIcon,
+                                              height: 15,
+                                            )
+                                          : const SizedBox(),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(
