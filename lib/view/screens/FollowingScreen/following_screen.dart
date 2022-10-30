@@ -7,6 +7,7 @@ import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
+import 'package:utopia/view/shimmers/follower_shimmer.dart';
 
 class FollowingScreen extends StatelessWidget {
   final User user;
@@ -133,12 +134,9 @@ class FollowingScreen extends StatelessWidget {
                                 )
                               : null,
                         );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text(snapshot.error.toString()),
-                        );
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
+                      
+                      } else { 
+                        return const FollowerShimmer();
                       }
                     },
                     future: controller.getUser(user.following[index]),
