@@ -180,6 +180,7 @@ class MyArticlesController extends DisposableProvider {
             message: "Article published successfully",
             showMessage: true);
         clearForm();
+        publishedArticles.add(article);
       }
     } catch (error) {
       Logger("Publish Article Method").shout(error.toString());
@@ -347,6 +348,10 @@ class MyArticlesController extends DisposableProvider {
             data: {'articleId': articleId},
             message: "Article published successfully",
             showMessage: true);
+        if (fetchingMyArticleStatus == FetchingDraftArticles.nil) {
+          await fetchDraftArticles(userId);
+        }
+        draftArticles.add(article);
         clearForm();
       }
     } catch (error) {
