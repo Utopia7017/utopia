@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:utopia/view/screens/AboutUtopiaScreens/help_screen.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/terms_of_use_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/login_screen.dart';
@@ -111,6 +112,7 @@ class Utopia extends StatelessWidget {
           '/blockedUsers':(context) => BlockedUsersScreen(),
           '/privacyPolicy':(context) => PrivacyPolicyScreen(),
           '/terms':(context) => TermsOfUseScreen(),
+          '/help':(context) => HelpScreen(),
         },
 
         home: const SplashScreen(),
