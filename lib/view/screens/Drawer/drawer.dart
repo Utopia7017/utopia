@@ -327,7 +327,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         () => Navigator.pushNamed(
                                             context, '/terms')),
                                     drawerTile('Help', helpIcon,
-                                        () => _logger.info("Help")),
+                                        () => Navigator.pushNamed(context, '/help')),
                                   ],
                                 ),
                               )
