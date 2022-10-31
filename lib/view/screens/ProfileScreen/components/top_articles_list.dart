@@ -9,6 +9,8 @@ import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/top_articles_box.dart';
+import 'package:utopia/view/screens/Skeletons/rec_article_skeleton.dart';
+import 'package:utopia/view/shimmers/rec_article_shimmer.dart';
 
 class TopArticlesList extends StatelessWidget {
   final User user;
@@ -31,8 +33,36 @@ class TopArticlesList extends StatelessWidget {
                     child: Text("Nil"),
                   );
                 case FetchingMyArticle.fetching:
-                  // TODO: Show shimmer effect
-                  return const Center(child: CircularProgressIndicator());
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Text(
+                          "Recent articles",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black87.withOpacity(0.8),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: displayHeight(context) * 0.35,
+                        width: displayWidth(context),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.zero,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: RecentArticleShimmer());
+                          },
+                        ),
+                      )
+                    ],
+                  );
 
                 case FetchingMyArticle.fetched:
                   if (myArticlesController.publishedArticles.isEmpty) {

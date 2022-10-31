@@ -60,7 +60,7 @@ class MyArticlesController extends DisposableProvider {
     for (BodyComponent bc in bodyComponents) {
       if (bc.type == 'text') {
         if (bc.textEditingController != null &&
-            bc.textEditingController!.text.isNotEmpty) {
+            bc.textEditingController!.text.trim().isNotEmpty) {
           return true;
         }
       }
@@ -137,25 +137,23 @@ class MyArticlesController extends DisposableProvider {
       int imageIndex = 0;
       for (BodyComponent bc in bodyComponents) {
         if (bc.type == "text") {
-          if (bc.textEditingController != null) {
-            print("enter ${bc.textEditingController!.text}");
-          }
-
-          articleBody.add(
-              ArticleBody(type: "text", text: bc.textEditingController!.text));
+          articleBody.add(ArticleBody(
+              type: "text", text: bc.textEditingController!.text.trim()));
         } else {
           if (bc.fileImage != null) {
+            // here we are uploading image to the server and receiving back the image url
             String? url = await getImageUrl(File(bc.fileImage!.path),
                 'articles/$userId/$title/${imageIndex++}');
             articleBody.add(ArticleBody(
                 type: "image",
                 image: url,
-                imageCaption: bc.imageCaption!.text));
+                imageCaption: bc.imageCaption!.text.trim()));
           } else {
+            // we have already stored this image in the server and have the image url
             articleBody.add(ArticleBody(
                 type: "image",
                 image: bc.imageUrl,
-                imageCaption: bc.imageCaption!.text));
+                imageCaption: bc.imageCaption!.text.trim()));
           }
         }
       }
@@ -182,6 +180,7 @@ class MyArticlesController extends DisposableProvider {
             message: "Article published successfully",
             showMessage: true);
         clearForm();
+        publishedArticles.add(article);
       }
     } catch (error) {
       Logger("Publish Article Method").shout(error.toString());
@@ -349,6 +348,10 @@ class MyArticlesController extends DisposableProvider {
             data: {'articleId': articleId},
             message: "Article published successfully",
             showMessage: true);
+        if (fetchingMyArticleStatus == FetchingDraftArticles.nil) {
+          await fetchDraftArticles(userId);
+        }
+        draftArticles.add(article);
         clearForm();
       }
     } catch (error) {
