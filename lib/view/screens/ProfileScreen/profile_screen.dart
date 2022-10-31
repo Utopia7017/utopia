@@ -7,6 +7,7 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/profile_box.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/top_articles_list.dart';
+import 'package:utopia/view/screens/Skeletons/rec_article_skeleton.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -32,6 +33,7 @@ class ProfileScreen extends StatelessWidget {
                   );
                 case ProfileStatus.loading:
                   // TODO: Show shimmer effect
+
                   return const Center(
                     child: CircularProgressIndicator(
                         color: authMaterialButtonColor),
