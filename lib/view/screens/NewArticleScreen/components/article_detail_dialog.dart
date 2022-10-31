@@ -36,7 +36,7 @@ class ArticleDetailDialog extends StatelessWidget {
                   controller: titleController,
                   label: "Tittle of article",
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value!.trim().isEmpty) {
                       return "Title cannot be empty";
                     } else {
                       return null;
@@ -137,7 +137,7 @@ class ArticleDetailDialog extends StatelessWidget {
                 if (_formKey.currentState!.validate()) {
                   controller.publishArticle(
                       userId: FirebaseAuth.instance.currentUser!.uid,
-                      title: titleController.text,
+                      title: titleController.text.trim(),
                       tags: tags);
                   Navigator.pop(context);
                 }
