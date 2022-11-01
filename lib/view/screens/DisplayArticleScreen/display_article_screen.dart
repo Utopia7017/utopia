@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/controller/articles_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart' as usermodel;
 import 'package:utopia/view/common_ui/display_full_image.dart';
@@ -133,8 +135,22 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
             iconTheme: const IconThemeData(color: Colors.black),
             actions: [
               PopupMenuButton(
+                onSelected: (value) {
+                  if (value == 'Report Article') {
+                    Provider.of<ArticlesController>(context, listen: false)
+                        .reportArticle(
+                          
+                            widget.article.authorId,
+                            widget.article.articleId,
+                            myUserId,
+                            'sample test case');
+                  } else {}
+                },
                 itemBuilder: (BuildContext context) => [
                   PopupMenuItem(
+                    value: widget.author.userId == myUserId
+                        ? 'Delete Article'
+                        : 'Report Article',
                     child: Text(widget.author.userId == myUserId
                         ? 'Delete Article'
                         : 'Report Article'),

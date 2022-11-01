@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
+import 'package:utopia/models/article_report_model.dart';
 import 'package:utopia/models/user_model.dart' as userModel;
 import 'package:utopia/services/api/api_services.dart';
 
@@ -13,6 +14,7 @@ class ArticlesController extends DisposableProvider {
   ArticlesStatus articlesStatus = ArticlesStatus.nil;
   String? myUid = FirebaseAuth.instance.currentUser!.uid;
   List<Article> searchedArticles = [];
+  List<Report> articlesReported = [];
   List<userModel.User> searchedAuthors = [];
 
   Map<String, List<Article>> articles = {
@@ -201,6 +203,35 @@ class ArticlesController extends DisposableProvider {
       }
     } catch (error) {}
     return articles;
+  }
+
+  reportArticle(String articleOwnerId, String articleId, String myId,
+      String reason) async {
+    Logger logger = Logger("Report Article Method");
+    try {
+      Report report = Report(
+          articleId: articleId,
+          userToReport: articleOwnerId,
+          reportId: '',
+          reason: reason,
+          type: 'article',
+          reportCreated: DateTime.now(),
+          reporterId: myId);
+      final Response? response = await _apiServices.post(
+          endUrl: 'reports/$myUid.json', data: report.toJson());
+      if (response != null) {
+        final String id = response.data['name'];
+        final Response? updateResponse = await _apiServices
+            .update(endUrl: 'reports/$myUid/$id.json', data: {'reportId': id});
+        if (updateResponse != null) {
+          report.updateReportId(id);
+          articlesReported.add(report);
+        }
+      }
+    } catch (e) {
+      logger.shout(e);
+    }
+    notifyListeners();
   }
 
   @override
