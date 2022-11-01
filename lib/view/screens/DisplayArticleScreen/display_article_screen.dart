@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart' as usermodel;
+import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/display_full_image.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'components/floating_button_for_article_options.dart';
@@ -119,14 +121,28 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                   const SizedBox(
                     width: 8,
                   ),
-                  Text(
-                    widget.author.name,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.5,
-                        fontFamily: "Fira",
-                        fontWeight: FontWeight.normal),
+                  Container(
+                    width: displayWidth(context) * 0.2,
+                    child: Text(
+                      widget.author.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.5,
+                          fontFamily: "Fira",
+                          fontWeight: FontWeight.normal),
+                    ),
                   ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  (widget.author.isVerified)
+                      ? Image.asset(
+                          verifyIcon,
+                          height: 17.5,
+                        )
+                      : const SizedBox(),
                 ],
               ),
             ),
@@ -139,7 +155,6 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                   if (value == 'Report Article') {
                     Provider.of<ArticlesController>(context, listen: false)
                         .reportArticle(
-                          
                             widget.article.authorId,
                             widget.article.articleId,
                             myUserId,
@@ -201,7 +216,8 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DisplayFullImage(
-                                      caption: widget.article.body[index]['imageCaption'],
+                                        caption: widget.article.body[index]
+                                            ['imageCaption'],
                                         imageurl: widget.article.body[index]
                                             ['image']!),
                                   ));

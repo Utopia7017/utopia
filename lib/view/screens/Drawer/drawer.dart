@@ -116,12 +116,35 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           onTap: () {
                             Navigator.pushNamed(context, '/profile');
                           },
-                          child: Text(
-                            '@${controller.user!.name}',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontFamily: "Fira"),
+                          child: Container(
+                            // color: Colors.yellow.shade100,
+                            constraints: BoxConstraints.tightForFinite(
+                              width: displayWidth(context) * 0.6,
+                            ),
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    '@${controller.user!.name}',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontFamily: "Fira"),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                (controller.user!.isVerified)
+                                    ? Image.asset(
+                                        verifyIcon,
+                                        height: 17.5,
+                                      )
+                                    : const SizedBox(),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -326,8 +349,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         termsIcon,
                                         () => Navigator.pushNamed(
                                             context, '/terms')),
-                                    drawerTile('Help', helpIcon,
-                                        () => Navigator.pushNamed(context, '/help')),
+                                    drawerTile(
+                                        'Help',
+                                        helpIcon,
+                                        () => Navigator.pushNamed(
+                                            context, '/help')),
                                   ],
                                 ),
                               )

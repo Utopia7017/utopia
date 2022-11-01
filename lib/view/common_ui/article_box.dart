@@ -149,13 +149,39 @@ class _ArticleBoxState extends State<ArticleBox> {
                                             const SizedBox(
                                               width: 8,
                                             ),
-                                            Text(
-                                              author.name,
-                                              style: const TextStyle(
-                                                  fontFamily: "Open",
-                                                  fontSize: 12.5,
-                                                  fontWeight: FontWeight.w300),
-                                            )
+                                            Container(
+                                              // color: Colors.yellow.shade100,
+                                              constraints:
+                                                  BoxConstraints.tightForFinite(
+                                                width: displayWidth(context) *
+                                                    0.35,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Flexible(
+                                                      child: Text(
+                                                    author.name,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                        fontFamily: "Open",
+                                                        fontSize: 12.5,
+                                                        fontWeight:
+                                                            FontWeight.w300),
+                                                  )),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  (author.isVerified)
+                                                      ? Image.asset(
+                                                          verifyIcon,
+                                                          height: 17.5,
+                                                        )
+                                                      : const SizedBox(),
+                                                ],
+                                              ),
+                                            ),
                                           ],
                                         ),
                                         const SizedBox(height: 10),
