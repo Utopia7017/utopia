@@ -50,7 +50,9 @@ class UserProfileBox extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              DisplayFullImage(imageurl: user.cp),
+                              DisplayFullImage(
+                                caption: user.name,
+                                imageurl: user.cp),
                         ));
                   }
                 },
@@ -106,7 +108,9 @@ class UserProfileBox extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            DisplayFullImage(imageurl: user.dp),
+                                            DisplayFullImage(
+                                              caption: user.name,
+                                              imageurl: user.dp),
                                       ));
                                 }
                               },

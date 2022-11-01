@@ -7,7 +7,8 @@ import 'package:utopia/constants/color_constants.dart';
 class DisplayFullImage extends StatelessWidget {
  
  final String imageurl;
- DisplayFullImage({required this.imageurl});
+ final String caption;
+ DisplayFullImage({required this.imageurl, required this.caption});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class DisplayFullImage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
+        title: Text(caption,style: TextStyle(color: Colors.black,fontSize: caption.length>=35?12:14),),
         elevation: 0,
       ),
       backgroundColor: Colors.white,

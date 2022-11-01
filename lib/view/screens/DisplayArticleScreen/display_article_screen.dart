@@ -185,6 +185,7 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DisplayFullImage(
+                                      caption: widget.article.body[index]['imageCaption'],
                                         imageurl: widget.article.body[index]
                                             ['image']!),
                                   ));

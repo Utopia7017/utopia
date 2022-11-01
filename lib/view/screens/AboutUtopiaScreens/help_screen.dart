@@ -40,13 +40,13 @@ class HelpScreen extends StatelessWidget {
                   backgroundColor: authBackground,
                   child: IconButton(onPressed:  () {
                     
-                  }, icon: const Icon(Icons.call,color: Colors.white,)),
+                  }, icon: const Icon(Icons.discord,color: Colors.white,)),
                 ),
                 CircleAvatar(
                   backgroundColor: authBackground,
                   child: IconButton(onPressed: () {
                     
-                  }, icon: const Icon(Icons.chat,color: Colors.white,)),
+                  }, icon: const Icon(Icons.facebook,color: Colors.white,)),
                 ),
                 CircleAvatar(
                   backgroundColor: authBackground,
@@ -60,8 +60,8 @@ class HelpScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: const [
-                Text('call'),
-                Text('chat'),
+                Text('Discord'),
+                Text('Facebook..'),
                 Text('Email')
               ],
             ),
