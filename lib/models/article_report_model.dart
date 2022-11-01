@@ -1,28 +1,30 @@
 class Report {
-  const Report({
+  Report({
     required this.reportId,
     required this.reason,
     required this.type,
-    required this.articleId,
+    this.articleId,
     required this.reportCreated,
     required this.reporterId,
+    this.userToReport,
   });
-  final String reportId;
+  String reportId;
   final String reason;
-  final String type;
-  final String articleId;
+  final String type; // artcile or profile
+  String? articleId;
   final DateTime reportCreated;
+  String? userToReport;
   final String reporterId;
 
   factory Report.fromJson(Map<String, dynamic> json) {
     return Report(
-      reportId: json['reportId'],
-      reason: json['reason'],
-      type: json['type'],
-      articleId: json['articleId'],
-      reportCreated: json['reportCreated'],
-      reporterId: json['reporterId'],
-    );
+        reportId: json['reportId'],
+        reason: json['reason'],
+        type: json['type'],
+        articleId: json['articleId'] ?? '',
+        reportCreated: DateTime.parse(json['reportCreated']),
+        reporterId: json['reporterId'],
+        userToReport: json['userToReport'] ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -31,19 +33,13 @@ class Report {
       'reason': reason,
       'type': type,
       'articleId': articleId,
-      'reportCreated': reportCreated,
+      'reportCreated': reportCreated.toString(),
       'reporterId': reporterId,
+      'userToReport': userToReport,
     };
   }
 
-  static Report fromDomain(Report domain) {
-    return Report(
-      reportId: domain.reportId,
-      reason: domain.reason,
-      type: domain.type,
-      articleId: domain.articleId,
-      reportCreated: domain.reportCreated,
-      reporterId: domain.reporterId,
-    );
+  updateReportId(rid) {
+    reportId = rid;
   }
 }
