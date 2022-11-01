@@ -32,7 +32,7 @@ class _ArticleBoxState extends State<ArticleBox> {
       builder: (context, userController, child) {
         // To get the current user details -> user 'userController.user!'
         String? imagePreview;
-        for (Map<String, dynamic> body in widget.article!.body) {
+        for (var body in widget.article!.body) {
           if (body['type'] == "image") {
             imagePreview = body['image'];
             break;
