@@ -180,7 +180,7 @@ class MyArticlesController extends DisposableProvider {
             message: "Article published successfully",
             showMessage: true);
         clearForm();
-        publishedArticles.add(article);
+        fetchMyArticles(userId);
       }
     } catch (error) {
       Logger("Publish Article Method").shout(error.toString());
