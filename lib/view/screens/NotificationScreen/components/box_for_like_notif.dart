@@ -175,8 +175,12 @@ class BoxForLikeNotification extends StatelessWidget {
                     .firstWhere((element) => element.articleId == articleId);
                 String? imagePreview;
 
-                imagePreview = thisArticle.body.firstWhere(
-                    (element) => element['type'] == "image")['image'];
+                for (var body in thisArticle.body) {
+                  if (body['type'] == 'image') {
+                    imagePreview = body['image'];
+                    break;
+                  }
+                }
 
                 return (imagePreview != null)
                     ? CachedNetworkImage(

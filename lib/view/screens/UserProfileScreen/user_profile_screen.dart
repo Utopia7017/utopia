@@ -1,16 +1,9 @@
 import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/controller/articles_controller.dart';
 import 'package:utopia/controller/user_controller.dart';
-import 'package:utopia/enums/enums.dart';
-import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/view/screens/ProfileScreen/components/profile_box.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/top_articles_list.dart';
 
 import 'components/user_profile_box.dart';
