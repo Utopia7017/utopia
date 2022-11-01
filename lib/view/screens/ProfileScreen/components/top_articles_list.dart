@@ -224,13 +224,43 @@ class TopArticlesList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Text(
-                        "Recent articles",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black87.withOpacity(0.8),
-                            fontWeight: FontWeight.bold),
+                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Recent articles",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black87.withOpacity(0.8),
+                                fontWeight: FontWeight.bold),
+                          ),
+                          (snapshot.data!.length >= 10)
+                              ? InkWell(
+                                  onTap: () {},
+                                  child: Row(
+                                    children: const [
+                                      Text(
+                                        "View all",
+                                        style: TextStyle(
+                                            letterSpacing: 0.15,
+                                            color: Colors.teal,
+                                            // fontFamily: "Open",
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: 2,
+                                      ),
+                                      Icon(
+                                        Icons.arrow_right_alt_rounded,
+                                        color: Colors.teal,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox()
+                        ],
                       ),
                     ),
                     const SizedBox(height: 10),
