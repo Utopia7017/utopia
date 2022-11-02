@@ -88,7 +88,7 @@ class BoxForLikeNotification extends StatelessWidget {
                             notificationId);
                         Navigator.pop(context);
                       },
-                      child: Text(
+                      child: const Text(
                         'Remove',
                         style: TextStyle(fontSize: 14),
                       ))

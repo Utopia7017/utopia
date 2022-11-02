@@ -218,17 +218,24 @@ class SignUpScreen extends StatelessWidget {
               },
             ),
             Row(
-              children:  [
-                 const Text(
-                  'I accept',
-                  style:
-                      TextStyle(color: Colors.white60, fontWeight: FontWeight.bold),
+              children: [
+                const Text(
+                  'I accept the',
+                  style: TextStyle(
+                      color: Colors.white60, fontWeight: FontWeight.bold),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => TermsOfUseScreen(),));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TermsOfUseScreen(),
+                        ));
                   },
-                  child: const Text('the terms and conditions',style: TextStyle(color: authMaterialButtonColor),),
+                  child: const Text(
+                    'Terms and conditions',
+                    style: TextStyle(color: authMaterialButtonColor),
+                  ),
                 ),
               ],
             )
