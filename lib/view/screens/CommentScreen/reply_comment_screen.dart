@@ -4,11 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart' as firebaseUser;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/controller/articles_controller.dart';
 import 'package:utopia/controller/user_controller.dart';
+import 'package:utopia/enums/enums.dart';
+import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/view/common_ui/comment_container.dart';
 import 'package:utopia/view/screens/CommentScreen/components/list_replies.dart';
+import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
 
 class ReplyCommentScreen extends StatelessWidget {
   final String commentId;
@@ -51,9 +55,57 @@ class ReplyCommentScreen extends StatelessWidget {
           style: const TextStyle(fontFamily: "Open", fontSize: 14),
         ),
         actions: [
-          PopupMenuButton(itemBuilder: (context) => [
-            PopupMenuItem(child: Text('View Article')),
-          ],)
+          Consumer<ArticlesController>(
+            builder: (context, controller, child) {
+              if (controller.articlesStatus == ArticlesStatus.nil) {
+                controller.fetchArticles();
+              }
+              switch (controller.articlesStatus) {
+                case ArticlesStatus.nil:
+                  return const SizedBox();
+                case ArticlesStatus.fetching:
+                  return SizedBox();
+                case ArticlesStatus.fetched:
+                  late Article article;
+                  for (var key in controller.articles.keys) {
+                    List<Article> list = controller.articles[key]!;
+                    int indexOfArticle = list.indexWhere((element) =>
+                        element.articleId == articleId &&
+                        element.authorId == articleOwnerId);
+                    if (indexOfArticle != -1) {
+                      article = list[indexOfArticle];
+                      break;
+                    }
+                  }
+                  return FutureBuilder<User?>(
+                    future: Provider.of<UserController>(context, listen: false)
+                        .getUser(articleOwnerId),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return PopupMenuButton(
+                          onSelected: (value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DisplayArticleScreen(
+                                  article: article,
+                                  author: snapshot.data!,
+                                ),
+                              )),
+                          itemBuilder: (context) => const [
+                            PopupMenuItem(
+                              value: "View Article",
+                              child: Text('View Article'),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    },
+                  );
+              }
+            },
+          ),
         ],
       ),
       body: Consumer<UserController>(
