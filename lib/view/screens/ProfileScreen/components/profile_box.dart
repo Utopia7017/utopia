@@ -151,6 +151,17 @@ class ProfileBox extends StatelessWidget {
                     color: Colors.white,
                     onPressed: () => Navigator.pop(context),
                   )),
+                  Positioned(
+                    top: displayHeight(context) * 0.03,
+                    left: displayWidth(context)*0.9,
+                    child: PopupMenuButton(
+                      icon: const Icon(Icons.more_vert,color: Colors.white,),
+                      itemBuilder: (context) => const [
+                      PopupMenuItem(child: Text('change Password')),
+                      PopupMenuItem(child: Text('Request Verification')),
+                      PopupMenuItem(child: Text('Delete Account')),
+                      PopupMenuItem(child: Text('Logout')),
+                    ],),),
               Positioned(
                 left: displayWidth(context) * 0.05,
                 right: displayWidth(context) * 0.05,

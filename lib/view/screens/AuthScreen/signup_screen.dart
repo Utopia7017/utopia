@@ -11,6 +11,7 @@ import 'package:utopia/services/firebase/auth_services.dart' as firebase;
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/view/screens/AboutUtopiaScreens/terms_of_use_screen.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -216,10 +217,20 @@ class SignUpScreen extends StatelessWidget {
                     ));
               },
             ),
-            const Text(
-              'I accept all the Terms And Conditions ',
-              style:
-                  TextStyle(color: Colors.white60, fontWeight: FontWeight.bold),
+            Row(
+              children:  [
+                 const Text(
+                  'I accept',
+                  style:
+                      TextStyle(color: Colors.white60, fontWeight: FontWeight.bold),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => TermsOfUseScreen(),));
+                  },
+                  child: const Text('the terms and conditions',style: TextStyle(color: authMaterialButtonColor),),
+                ),
+              ],
             )
           ],
         ),
