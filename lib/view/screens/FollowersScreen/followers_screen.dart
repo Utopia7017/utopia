@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
@@ -115,7 +116,19 @@ class FollowersScreen extends StatelessWidget {
                                   backgroundImage: CachedNetworkImageProvider(
                                       followerUser.dp),
                                 ),
-                          title: Text(followerUser.name),
+                          title: Row(
+                            children: [
+                              Text(
+                                 followerUser.name
+                              ),
+                              SizedBox(width: 5,),
+                              followerUser.isVerified?Image.asset(
+                                        verifyIcon,
+                                        height: 17.5,
+                                      ):SizedBox(),
+
+                            ],
+                          ),
                           dense: true,
                           trailing: (currentuserid == user.userId)
                               ? MaterialButton(

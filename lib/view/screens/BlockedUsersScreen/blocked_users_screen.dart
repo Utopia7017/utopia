@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebaseUser;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/user_model.dart';
@@ -132,7 +133,19 @@ class BlockedUsersScreen extends StatelessWidget {
                                             CachedNetworkImageProvider(
                                                 blockedUser.dp),
                                       ),
-                                title: Text(blockedUser.name),
+                                title: Row(
+                            children: [
+                              Text(
+                                 blockedUser.name
+                              ),
+                              SizedBox(width: 5,),
+                              blockedUser.isVerified?Image.asset(
+                                        verifyIcon,
+                                        height: 17.5,
+                                      ):SizedBox(),
+
+                            ],
+                          ),
                                 dense: true,
                                 trailing: MaterialButton(
                                   elevation: 1,
