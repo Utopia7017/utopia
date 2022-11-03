@@ -261,7 +261,7 @@ class SignUpScreen extends StatelessWidget {
                           email: emailController.text,
                           password: passwordController.text,
                         );
-                        controller.stopLogin();
+                        controller.stopSigningUp();
 
                         if (signupResponse.runtimeType == UserCredential) {
                           // successfully created new account
@@ -318,7 +318,7 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  // Email validation page
+  // Email validation page -2
 
   Widget validateEmailPage(BuildContext context) {
     return Column(
