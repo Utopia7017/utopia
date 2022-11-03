@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comment_box/comment/comment.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
@@ -10,6 +11,7 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
+import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
 
@@ -94,52 +96,61 @@ class CommentScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: primaryBackgroundColor,
-      body: Consumer<UserController>(
-        builder: (context, controller, child) {
-          return CommentBox(
-            sendButtonMethod: () async {
-              // add the comment to firestore db
-              await addComment(
-                  articleId: articleId,
-                  comment: commentController.text,
-                  createdAt: DateTime.now().toString(),
-                  userId: myUserId);
-
-              // notify the user
-              notifyUserWhenCommentOnArticle(
-                  myUserId, authorId, articleId, commentController.text);
-              commentController.clear();
-            },
-            withBorder: true,
-            errorText: 'Comment cannot be blank',
-            commentController: commentController,
-            labelText: "Write your comment",
-            sendWidget:
-                const Icon(Icons.send_sharp, size: 30, color: authBackground),
-            backgroundColor: Colors.white,
-            formKey: formKey,
-            textColor: Colors.black87,
-            userImage: controller.user != null && controller.user!.dp.isNotEmpty
-                ? controller.user!.dp
-                : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
-            child: StreamBuilder(
-              stream: commentStream,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  dynamic commentData = snapshot.data.docs;
-                  return ListComments(
-                    articleOwnerId: authorId,
-                    commentData: commentData,
-                  );
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
-          );
+      body: LiquidPullToRefresh(
+         onRefresh: ()async {
+          return await Future.delayed(Duration(seconds: 2));
         },
+        backgroundColor: authBackground,
+        color: Colors.white,
+        height: displayHeight(context)*0.15,
+        showChildOpacityTransition: false,
+        child: Consumer<UserController>(
+          builder: (context, controller, child) {
+            return CommentBox(
+              sendButtonMethod: () async {
+                // add the comment to firestore db
+                await addComment(
+                    articleId: articleId,
+                    comment: commentController.text,
+                    createdAt: DateTime.now().toString(),
+                    userId: myUserId);
+      
+                // notify the user
+                notifyUserWhenCommentOnArticle(
+                    myUserId, authorId, articleId, commentController.text);
+                commentController.clear();
+              },
+              withBorder: true,
+              errorText: 'Comment cannot be blank',
+              commentController: commentController,
+              labelText: "Write your comment",
+              sendWidget:
+                  const Icon(Icons.send_sharp, size: 30, color: authBackground),
+              backgroundColor: Colors.white,
+              formKey: formKey,
+              textColor: Colors.black87,
+              userImage: controller.user != null && controller.user!.dp.isNotEmpty
+                  ? controller.user!.dp
+                  : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
+              child: StreamBuilder(
+                stream: commentStream,
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    dynamic commentData = snapshot.data.docs;
+                    return ListComments(
+                      articleOwnerId: authorId,
+                      commentData: commentData,
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

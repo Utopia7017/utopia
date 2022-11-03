@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
@@ -67,132 +68,141 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                 ),
               ];
             },
-            body: TabBarView(controller: _tabController, children: [
-              Consumer<MyArticlesController>(
-                builder: (context, controller, child) {
-                  if (controller.fetchingMyArticleStatus ==
-                      FetchingMyArticle.nil) {
-                    controller.fetchMyArticles(myUserId);
-                  }
-
-                  switch (controller.fetchingMyArticleStatus) {
-                    case FetchingMyArticle.nil:
-                      return const Center(child: Text('Swipe to refresh'));
-                    case FetchingMyArticle.fetching:
-                      return const ShimmerForArticles();
-
-                    case FetchingMyArticle.fetched:
-                      return Padding(
-                        padding:
-                            EdgeInsets.only(top: displayHeight(context) * 0.07),
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onLongPress: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text('Delete'),
-                                      content:
-                                          const Text('Delete this article'),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('No')),
-                                        TextButton(
-                                            onPressed: () {
-                                              controller.deleteThisArticle(
-                                                  myUid: controller
-                                                      .publishedArticles[index]
-                                                      .authorId,
-                                                  articleId: controller
-                                                      .publishedArticles[index]
-                                                      .articleId);
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Yes')),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: ArticleBox(
-                                  article: controller.publishedArticles[index]),
-                            );
-                          },
-                          itemCount: controller.publishedArticles.length,
-                        ),
-                      );
-                  }
-                },
-              ),
-              Consumer<MyArticlesController>(
-                builder: (context, controller, child) {
-                  if (controller.fetchingDraftArticlesStatus ==
-                      FetchingDraftArticles.nil) {
-                    controller.fetchDraftArticles(myUserId);
-                  }
-
-                  switch (controller.fetchingDraftArticlesStatus) {
-                    case FetchingDraftArticles.nil:
-                      return const Center(child: Text('Swipe to refresh'));
-                    case FetchingDraftArticles.fetching:
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: authMaterialButtonColor,
-                        ),
-                      );
-                    case FetchingDraftArticles.fetched:
-                      return Padding(
-                        padding:
-                            EdgeInsets.only(top: displayHeight(context) * 0.07),
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onLongPress: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text('Delete'),
-                                      content: const Text('Delete this draft'),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('No')),
-                                        TextButton(
-                                            onPressed: () {
-                                              controller.deleteDraftArticle(
-                                                  myUid: controller
-                                                      .draftArticles[index]
-                                                      .authorId,
-                                                  articleId: controller
-                                                      .draftArticles[index]
-                                                      .articleId);
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Yes')),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: DraftArticleBox(
-                                  article: controller.draftArticles[index]),
-                            );
-                          },
-                          itemCount: controller.draftArticles.length,
-                        ),
-                      );
-                  }
-                },
-              ),
-            ]),
+            body: LiquidPullToRefresh(
+               onRefresh: ()async {
+          return await Future.delayed(Duration(seconds: 2));
+        },
+        backgroundColor: authBackground,
+        color: Colors.white,
+        height: displayHeight(context)*0.15,
+        showChildOpacityTransition: false,
+              child: TabBarView(controller: _tabController, children: [
+                Consumer<MyArticlesController>(
+                  builder: (context, controller, child) {
+                    if (controller.fetchingMyArticleStatus ==
+                        FetchingMyArticle.nil) {
+                      controller.fetchMyArticles(myUserId);
+                    }
+            
+                    switch (controller.fetchingMyArticleStatus) {
+                      case FetchingMyArticle.nil:
+                        return const Center(child: Text('Swipe to refresh'));
+                      case FetchingMyArticle.fetching:
+                        return const ShimmerForArticles();
+            
+                      case FetchingMyArticle.fetched:
+                        return Padding(
+                          padding:
+                              EdgeInsets.only(top: displayHeight(context) * 0.07),
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Delete'),
+                                        content:
+                                            const Text('Delete this article'),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('No')),
+                                          TextButton(
+                                              onPressed: () {
+                                                controller.deleteThisArticle(
+                                                    myUid: controller
+                                                        .publishedArticles[index]
+                                                        .authorId,
+                                                    articleId: controller
+                                                        .publishedArticles[index]
+                                                        .articleId);
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Yes')),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: ArticleBox(
+                                    article: controller.publishedArticles[index]),
+                              );
+                            },
+                            itemCount: controller.publishedArticles.length,
+                          ),
+                        );
+                    }
+                  },
+                ),
+                Consumer<MyArticlesController>(
+                  builder: (context, controller, child) {
+                    if (controller.fetchingDraftArticlesStatus ==
+                        FetchingDraftArticles.nil) {
+                      controller.fetchDraftArticles(myUserId);
+                    }
+            
+                    switch (controller.fetchingDraftArticlesStatus) {
+                      case FetchingDraftArticles.nil:
+                        return const Center(child: Text('Swipe to refresh'));
+                      case FetchingDraftArticles.fetching:
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: authMaterialButtonColor,
+                          ),
+                        );
+                      case FetchingDraftArticles.fetched:
+                        return Padding(
+                          padding:
+                              EdgeInsets.only(top: displayHeight(context) * 0.07),
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Delete'),
+                                        content: const Text('Delete this draft'),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('No')),
+                                          TextButton(
+                                              onPressed: () {
+                                                controller.deleteDraftArticle(
+                                                    myUid: controller
+                                                        .draftArticles[index]
+                                                        .authorId,
+                                                    articleId: controller
+                                                        .draftArticles[index]
+                                                        .articleId);
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Yes')),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: DraftArticleBox(
+                                    article: controller.draftArticles[index]),
+                              );
+                            },
+                            itemCount: controller.draftArticles.length,
+                          ),
+                        );
+                    }
+                  },
+                ),
+              ]),
+            ),
           ),
         ));
   }
