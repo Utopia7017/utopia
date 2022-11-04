@@ -21,6 +21,7 @@ import 'package:utopia/view/screens/FollowersScreen/followers_screen.dart';
 import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
+import 'package:utopia/view/screens/ProfileScreen/components/request_verification.dart';
 import 'package:utopia/view/shimmers/my_followers_box_shimmer.dart';
 import '../../../../controller/articles_controller.dart';
 
@@ -181,6 +182,9 @@ class ProfileBox extends StatelessWidget {
                       await changeAccountPassword('alphaisgod1@gmail.com',
                           '123456', '654321', _auth.auth.currentUser!);
                     }
+                    if(value == "Request Verification") {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => RequestVerification(),));
+                    }
                   },
                   icon: const Icon(
                     Icons.more_vert,
@@ -190,7 +194,10 @@ class ProfileBox extends StatelessWidget {
                     PopupMenuItem(
                         child: Text('Update Password'),
                         value: "Update Password"),
-                    PopupMenuItem(child: Text('Request Verification')),
+                    PopupMenuItem(
+                      child: Text('Request Verification'),
+                      value: "Request Verification",
+                      ),
                     PopupMenuItem(child: Text('Delete Account')),
                     PopupMenuItem(child: Text('Logout')),
                   ],
