@@ -35,7 +35,7 @@ class ArticlesController extends DisposableProvider {
     'Technology': [],
   };
 
-  void fetchArticles() async {
+  Future<void> fetchArticles() async {
     Logger logger = Logger("FetchArticles");
     Map<String, List<Article>> fetchedArticles = {
       'For you': [],

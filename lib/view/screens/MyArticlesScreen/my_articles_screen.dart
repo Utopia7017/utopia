@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
@@ -68,14 +67,13 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                 ),
               ];
             },
-            body: LiquidPullToRefresh(
+            body: RefreshIndicator(
                onRefresh: ()async {
           return await Future.delayed(Duration(seconds: 2));
         },
         backgroundColor: authBackground,
         color: Colors.white,
-        height: displayHeight(context)*0.15,
-        showChildOpacityTransition: false,
+
               child: TabBarView(controller: _tabController, children: [
                 Consumer<MyArticlesController>(
                   builder: (context, controller, child) {

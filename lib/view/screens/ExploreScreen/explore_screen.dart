@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+
 import 'package:provider/provider.dart';
+// import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:utopia/constants/article_category_constants.dart';
 import 'package:utopia/constants/color_constants.dart';
@@ -16,6 +17,7 @@ class ExploreScreen extends StatelessWidget {
   ExploreScreen({Key? key}) : super(key: key);
   final PageController articlePageController = PageController();
   final ItemScrollController articleCategoryController = ItemScrollController();
+  // RefreshController refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,85 +32,83 @@ class ExploreScreen extends StatelessWidget {
             color: Colors.white,
             height: 30,
           )),
-      body: LiquidPullToRefresh(
-        onRefresh: ()async {
-          return await Future.delayed(Duration(seconds: 2));
-        },
-        backgroundColor: authBackground,
-        color: Colors.white,
-        height: displayHeight(context)*0.15,
-        showChildOpacityTransition: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SearchBox(),
-            // const SizedBox(height: 10),
-      
-            // ArticleCategoryTab(),
-            SizedBox(
-                // color: Colors.red.shade100,
-                height: displayHeight(context) * 0.06,
-                width: displayWidth(context),
-                child: Consumer<ArticlesController>(
-                  builder: (context, controller, child) {
-                    return ScrollablePositionedList.builder(
-                      itemScrollController: articleCategoryController,
-                      scrollDirection: Axis.horizontal,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: TextButton(
-                            child: Text(
-                              controller.articles.keys.toList()[index],
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: controller.selectedCategory == index
-                                      ? Colors.black87
-                                      : Colors.black54,
-                                  fontWeight: controller.selectedCategory == index
-                                      ? FontWeight.w400
-                                      : FontWeight.normal,
-                                  fontFamily: "Fira"),
-                            ),
-                            onPressed: () {
-                              controller.selectCategory(index);
-                              articleCategoryController.scrollTo(
-                                  duration: const Duration(microseconds: 2),
-                                  index: index,
-                                  alignment: 0.4);
-                              articlePageController.animateToPage(index,
-                                  duration: const Duration(microseconds: 2),
-                                  curve: Curves.bounceInOut);
-                            },
-                          ),
-                        );
-                      },
-                      itemCount: controller.articles.length,
-                    );
-                  },
-                )),
-      
-            const SizedBox(height: 4),
-      
-            // List Body to display articles.
-            Expanded(
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SearchBox(),
+          // const SizedBox(height: 10),
+
+          // ArticleCategoryTab(),
+          SizedBox(
+              // color: Colors.red.shade100,
+              height: displayHeight(context) * 0.06,
+              width: displayWidth(context),
               child: Consumer<ArticlesController>(
                 builder: (context, controller, child) {
-                  return PageView.builder(
-                    controller: articlePageController,
-                    onPageChanged: (index) {
-                      articleCategoryController.scrollTo(
-                          duration: const Duration(microseconds: 5),
-                          index: index,
-                          alignment: 0.5);
-                      controller.selectCategory(index);
-                    },
-                    itemCount: articleCategoriesForDisplaying.length,
+                  return ScrollablePositionedList.builder(
+                    itemScrollController: articleCategoryController,
+                    scrollDirection: Axis.horizontal,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return Consumer<ArticlesController>(
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: TextButton(
+                          child: Text(
+                            controller.articles.keys.toList()[index],
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: controller.selectedCategory == index
+                                    ? Colors.black87
+                                    : Colors.black54,
+                                fontWeight: controller.selectedCategory == index
+                                    ? FontWeight.w400
+                                    : FontWeight.normal,
+                                fontFamily: "Fira"),
+                          ),
+                          onPressed: () {
+                            controller.selectCategory(index);
+                            articleCategoryController.scrollTo(
+                                duration: const Duration(microseconds: 2),
+                                index: index,
+                                alignment: 0.4);
+                            articlePageController.animateToPage(index,
+                                duration: const Duration(microseconds: 2),
+                                curve: Curves.bounceInOut);
+                          },
+                        ),
+                      );
+                    },
+                    itemCount: controller.articles.length,
+                  );
+                },
+              )),
+
+          const SizedBox(height: 4),
+
+          // List Body to display articles.
+          Expanded(
+            child: Consumer<ArticlesController>(
+              builder: (context, controller, child) {
+                return PageView.builder(
+                  controller: articlePageController,
+                  onPageChanged: (index) {
+                    articleCategoryController.scrollTo(
+                        duration: const Duration(microseconds: 5),
+                        index: index,
+                        alignment: 0.5);
+                    controller.selectCategory(index);
+                  },
+                  itemCount: articleCategoriesForDisplaying.length,
+                  itemBuilder: (context, index) {
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        await controller.fetchArticles();
+                      },
+                      strokeWidth: 3,
+                      triggerMode: RefreshIndicatorTriggerMode.anywhere,
+                      child: Consumer<ArticlesController>(
                         builder: (context, controller, child) {
                           if (controller.articlesStatus == ArticlesStatus.nil) {
                             controller.fetchArticles();
@@ -118,7 +118,7 @@ class ExploreScreen extends StatelessWidget {
                               return const Center(
                                 child: Text("Swipe to refresh"),
                               );
-      
+
                             case ArticlesStatus.fetched:
                               if (controller
                                   .articles[articleCategoriesForDisplaying[
@@ -133,34 +133,33 @@ class ExploreScreen extends StatelessWidget {
                                     // return ArticleSkeleton();
                                     return ArticleBox(
                                         article: controller.articles[
-                                            articleCategoriesForDisplaying[
-                                                controller
-                                                    .selectedCategory]]![index]);
+                                                articleCategoriesForDisplaying[
+                                                    controller
+                                                        .selectedCategory]]![
+                                            index]);
                                   },
                                 );
                               } else {
                                 return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        noArticleFoundIcon,
-                                        height: displayHeight(context) * 0.22,
-                                      ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      const Text(
-                                        "No articles present in this category",
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontFamily: "Open"),
-                                      )
-                                    ],
-                                  ),
-                                );
+                                    child: ListView(
+                                  children: [
+                                    Image.asset(
+                                      noArticleFoundIcon,
+                                      height: displayHeight(context) * 0.15,
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    const Text(
+                                      "No articles present in this category",
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontFamily: "Open"),
+                                    )
+                                  ],
+                                ));
                               }
-      
+
                             case ArticlesStatus.fetching:
                               return ListView.builder(
                                 itemCount: 8,
@@ -170,14 +169,14 @@ class ExploreScreen extends StatelessWidget {
                               );
                           }
                         },
-                      );
-                    },
-                  );
-                },
-              ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
