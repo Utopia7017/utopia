@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -9,7 +10,9 @@ import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
+import 'package:utopia/services/firebase/auth_services.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/utils/global_context.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/common_ui/display_full_image.dart';
@@ -29,6 +32,24 @@ class ProfileBox extends StatelessWidget {
   });
 
   final textStyle = const TextStyle(fontFamily: "Open", fontSize: 15);
+  final Authservice _auth = Authservice(firebase.FirebaseAuth.instance);
+
+  Future<void> changeAccountPassword(String emailId, String oldPassword,
+      String newPassword, firebase.User user) async {
+    try {
+      // try matching the current password, if wrong compiler goes to catch part
+      var isOldPasswordCorrect = await firebase.FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: emailId, password: oldPassword);
+
+      // Update password
+      user.updatePassword(newPassword).then((value) =>
+          ScaffoldMessenger.of(GlobalContext.contextKey.currentContext!)
+              .showSnackBar(SnackBar(content: Text("Changed"))));
+    } on firebase.FirebaseAuthException catch (error) {
+      ScaffoldMessenger.of(GlobalContext.contextKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(error.message!)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +89,7 @@ class ProfileBox extends StatelessWidget {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 DisplayFullImage(
-                                                   caption: user.name,
+                                                    caption: user.name,
                                                     imageurl: user.cp),
                                           ));
                                     },
@@ -151,17 +172,30 @@ class ProfileBox extends StatelessWidget {
                     color: Colors.white,
                     onPressed: () => Navigator.pop(context),
                   )),
-                  Positioned(
-                    top: displayHeight(context) * 0.03,
-                    left: displayWidth(context)*0.9,
-                    child: PopupMenuButton(
-                      icon: const Icon(Icons.more_vert,color: Colors.white,),
-                      itemBuilder: (context) => const [
-                      PopupMenuItem(child: Text('change Password')),
-                      PopupMenuItem(child: Text('Request Verification')),
-                      PopupMenuItem(child: Text('Delete Account')),
-                      PopupMenuItem(child: Text('Logout')),
-                    ],),),
+              Positioned(
+                top: displayHeight(context) * 0.03,
+                left: displayWidth(context) * 0.9,
+                child: PopupMenuButton(
+                  onSelected: (value) async {
+                    if (value == "Update Password") {
+                      await changeAccountPassword('alphaisgod1@gmail.com',
+                          '123456', '654321', _auth.auth.currentUser!);
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                  ),
+                  itemBuilder: (context) => const [
+                    PopupMenuItem(
+                        child: Text('Update Password'),
+                        value: "Update Password"),
+                    PopupMenuItem(child: Text('Request Verification')),
+                    PopupMenuItem(child: Text('Delete Account')),
+                    PopupMenuItem(child: Text('Logout')),
+                  ],
+                ),
+              ),
               Positioned(
                 left: displayWidth(context) * 0.05,
                 right: displayWidth(context) * 0.05,
@@ -205,7 +239,8 @@ class ProfileBox extends StatelessWidget {
                                                         MaterialPageRoute(
                                                           builder: (context) =>
                                                               DisplayFullImage(
-                                                                caption: user.name,
+                                                                  caption:
+                                                                      user.name,
                                                                   imageurl:
                                                                       user.dp),
                                                         ));

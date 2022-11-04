@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
@@ -28,14 +27,13 @@ class FollowersScreen extends StatelessWidget {
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: LiquidPullToRefresh(
+      body: RefreshIndicator(
          onRefresh: ()async {
           return await Future.delayed(Duration(seconds: 2));
         },
         backgroundColor: authBackground,
         color: Colors.white,
-        height: displayHeight(context)*0.15,
-        showChildOpacityTransition: false,
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

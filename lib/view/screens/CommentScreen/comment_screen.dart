@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comment_box/comment/comment.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
@@ -96,14 +95,13 @@ class CommentScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: primaryBackgroundColor,
-      body: LiquidPullToRefresh(
+      body: RefreshIndicator(
          onRefresh: ()async {
           return await Future.delayed(Duration(seconds: 2));
         },
         backgroundColor: authBackground,
         color: Colors.white,
-        height: displayHeight(context)*0.15,
-        showChildOpacityTransition: false,
+
         child: Consumer<UserController>(
           builder: (context, controller, child) {
             return CommentBox(
