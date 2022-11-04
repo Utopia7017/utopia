@@ -14,7 +14,6 @@ class ArticlesController extends DisposableProvider {
   ArticlesStatus articlesStatus = ArticlesStatus.nil;
   String? myUid = FirebaseAuth.instance.currentUser!.uid;
   List<Article> searchedArticles = [];
-  List<Report> articlesReported = [];
   List<userModel.User> searchedAuthors = [];
 
   Map<String, List<Article>> articles = {
@@ -70,6 +69,21 @@ class ArticlesController extends DisposableProvider {
         blocked = userModel.User.fromJson(currentUserResponse.data).blocked;
       }
 
+      // get reports
+      
+      final reportResponse = await _apiServices.get(endUrl: 'reports/$myUid.json');
+      List<Report> reportArticles = [];
+      if(reportResponse!=null && reportResponse.data!=null){
+        logger.info(reportResponse.data);
+        Map<String,dynamic> data = reportResponse.data;
+        for(var reportData in data.values) {
+          Report rep = Report.fromJson(reportData);
+          if (rep.type == "article") {
+            reportArticles.add(rep);
+          }
+        }
+      }
+
       for (dynamic followingUid in following) {
         // for every following user id we will check if they have posted any article.
         // If posted then we will traverse all his articles and save it in our local 'for you' category
@@ -80,7 +94,12 @@ class ArticlesController extends DisposableProvider {
         if (articlesResponse != null && articlesResponse.data != null) {
           Map<String, dynamic> articles = articlesResponse.data;
           for (var data in articles.values) {
-            fetchedArticles['For you']!.add(Article.fromJson(data));
+            Article article = Article.fromJson(data);
+            int foundInBlockedReports = reportArticles.indexWhere((element) => element.articleId==article.articleId && element.userToReport==article.authorId);
+            if(foundInBlockedReports==-1){
+              // not reported
+              fetchedArticles['For you']!.add(article);
+            }
           }
         }
       }
@@ -100,7 +119,11 @@ class ArticlesController extends DisposableProvider {
             Map<String, dynamic> arts = articlesByUsers[userId];
             for (var data in arts.values) {
               Article article = Article.fromJson(data);
-              fetchedArticles[article.category]!.add(article);
+              int foundInBlockedReports = reportArticles.indexWhere((element) => element.articleId==article.articleId && element.userToReport==article.authorId);
+              if(foundInBlockedReports == -1){
+                fetchedArticles[article.category]!.add(article);
+              }
+
             }
           }
         }
@@ -225,7 +248,6 @@ class ArticlesController extends DisposableProvider {
             .update(endUrl: 'reports/$myUid/$id.json', data: {'reportId': id});
         if (updateResponse != null) {
           report.updateReportId(id);
-          articlesReported.add(report);
         }
       }
     } catch (e) {
