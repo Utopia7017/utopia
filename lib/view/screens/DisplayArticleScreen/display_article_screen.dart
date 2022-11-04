@@ -2,8 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart' as usermodel;
 import 'package:utopia/utils/device_size.dart';
@@ -159,13 +162,27 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                         articleOwnerId: widget.author.userId,
                       ),
                     );
-                    // Provider.of<ArticlesController>(context, listen: false)
-                    //     .reportArticle(
-                    //         widget.article.authorId,
-                    //         widget.article.articleId,
-                    //         myUserId,
-                    //         'sample test case');
-                  } else {}
+                  } else {
+                    QuickAlert.show(
+                        confirmBtnText: "Yes",
+                        context: context,
+                        barrierDismissible: true,
+                        onCancelBtnTap: () => Navigator.pop(context),
+                        onConfirmBtnTap: () {
+                          Provider.of<MyArticlesController>(context,
+                                  listen: false)
+                              .deleteThisArticle(
+                                  myUid: myUserId,
+                                  articleId: widget.article.articleId);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        cancelBtnText: "No",
+                        showCancelBtn: true,
+                        title: "Are you sure you want to delete this article?",
+                        animType: QuickAlertAnimType.slideInRight,
+                        type: QuickAlertType.warning);
+                  }
                 },
                 itemBuilder: (BuildContext context) => [
                   PopupMenuItem(
