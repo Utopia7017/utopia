@@ -9,6 +9,7 @@ import 'package:quickalert/quickalert.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
@@ -166,35 +167,42 @@ class ProfileBox extends StatelessWidget {
               Positioned(
                 top: displayHeight(context) * 0.03,
                 right: displayWidth(context) * 0.01,
-                child: PopupMenuButton(
-                  onSelected: (value) async {
-                    if (value == "Update Password") {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UpdatePasswordScreen(),
-                          ));
-                    } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RequestVerification(),
-                          ));
-                    }
+                child: Consumer<MyArticlesController>(
+                  builder: (context, controller, child) {
+                    return PopupMenuButton(
+                      onSelected: (value) async {
+                        if (value == "Update Password") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UpdatePasswordScreen(),
+                              ));
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RequestVerification(
+                                    currentUser: user,
+                                    publishedArticles:
+                                        controller.publishedArticles.length),
+                              ));
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                      ),
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(
+                            value: "Update Password",
+                            child: Text('Update Password')),
+                        PopupMenuItem(
+                          value: "Request Verification",
+                          child: Text('Request Verification'),
+                        ),
+                      ],
+                    );
                   },
-                  icon: const Icon(
-                    Icons.more_vert,
-                    color: Colors.white,
-                  ),
-                  itemBuilder: (context) => const [
-                    PopupMenuItem(
-                        value: "Update Password",
-                        child: Text('Update Password')),
-                    PopupMenuItem(
-                      value: "Request Verification",
-                      child: Text('Request Verification'),
-                    ),
-                  ],
                 ),
               ),
               Positioned(
@@ -498,7 +506,10 @@ class ProfileBox extends StatelessWidget {
                                   MaterialStateProperty.all(authBackground),
                             ),
                             onPressed: () {
-                              displayBox(context: context,currentBio: user.bio,currentName: user.name);
+                              displayBox(
+                                  context: context,
+                                  currentBio: user.bio,
+                                  currentName: user.name);
                               // showDialog(
                               //   context: context,
                               //   builder: (context) {
@@ -529,5 +540,3 @@ class ProfileBox extends StatelessWidget {
     );
   }
 }
-
-

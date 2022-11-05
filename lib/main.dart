@@ -114,7 +114,6 @@ class Utopia extends StatelessWidget {
           '/privacyPolicy':(context) => PrivacyPolicyScreen(),
           '/terms':(context) => TermsOfUseScreen(),
           '/help':(context) => HelpScreen(),
-          '/requestVerification':(context) => RequestVerification()
         },
 
         home: const SplashScreen(),
