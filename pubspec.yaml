@@ -53,6 +53,7 @@ dependencies:
   connectivity_plus: ^2.3.9
   image_cropper: ^3.0.0
   device_info_plus: ^8.0.0
+  quickalert: ^1.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
