@@ -140,24 +140,27 @@ class ExploreScreen extends StatelessWidget {
                                   },
                                 );
                               } else {
-                                return Center(
-                                    child: ListView(
+                                return ListView(
                                   children: [
+                                    SizedBox(
+                                      height: displayHeight(context) * 0.2,
+                                    ),
                                     Image.asset(
                                       noArticleFoundIcon,
-                                      height: displayHeight(context) * 0.15,
+                                      height: displayHeight(context) * 0.1,
                                     ),
                                     const SizedBox(
                                       height: 15,
                                     ),
                                     const Text(
-                                      "No articles present in this category",
+                                      "No articles found",
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Colors.black54,
                                           fontFamily: "Open"),
                                     )
                                   ],
-                                ));
+                                );
                               }
 
                             case ArticlesStatus.fetching:
