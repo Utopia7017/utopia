@@ -22,6 +22,7 @@ import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/request_verification.dart';
+import 'package:utopia/view/screens/ProfileScreen/components/update_password.dart';
 import 'package:utopia/view/shimmers/my_followers_box_shimmer.dart';
 import '../../../../controller/articles_controller.dart';
 
@@ -179,8 +180,9 @@ class ProfileBox extends StatelessWidget {
                 child: PopupMenuButton(
                   onSelected: (value) async {
                     if (value == "Update Password") {
-                      await changeAccountPassword('alphaisgod1@gmail.com',
-                          '123456', '654321', _auth.auth.currentUser!);
+                      // await changeAccountPassword('alphaisgod1@gmail.com',
+                      //     '123456', '654321', _auth.auth.currentUser!);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => UpdatePassword(),));
                     }
                     if(value == "Request Verification") {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => RequestVerification(),));
