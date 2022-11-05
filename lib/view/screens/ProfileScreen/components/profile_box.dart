@@ -67,7 +67,7 @@ class ProfileBox extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: displayHeight(context) * 0.56,
+          height: displayHeight(context) * 0.58,
           width: displayWidth(context),
           child: Stack(
             children: [
@@ -176,13 +176,12 @@ class ProfileBox extends StatelessWidget {
                   )),
               Positioned(
                 top: displayHeight(context) * 0.03,
-                left: displayWidth(context) * 0.9,
+                right: displayWidth(context) * 0.01,
                 child: PopupMenuButton(
                   onSelected: (value) async {
                     if (value == "Update Password") {
-                      // await changeAccountPassword('alphaisgod1@gmail.com',
-                      //     '123456', '654321', _auth.auth.currentUser!);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => UpdatePassword(),));
+                      await changeAccountPassword('alphaisgod1@gmail.com',
+                          '123456', '654321', _auth.auth.currentUser!);
                     }
                     if(value == "Request Verification") {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => RequestVerification(),));
@@ -194,12 +193,12 @@ class ProfileBox extends StatelessWidget {
                   ),
                   itemBuilder: (context) => const [
                     PopupMenuItem(
-                        child: Text('Update Password'),
-                        value: "Update Password"),
+                        value: "Update Password",
+                        child: Text('Update Password')),
                     PopupMenuItem(
-                      child: Text('Request Verification'),
                       value: "Request Verification",
-                      ),
+                      child: Text('Request Verification'),
+                    ),
                     PopupMenuItem(child: Text('Delete Account')),
                     PopupMenuItem(child: Text('Logout')),
                   ],
@@ -212,10 +211,10 @@ class ProfileBox extends StatelessWidget {
                 child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15)),
-                  elevation: 1,
+                  elevation: 0.5,
                   child: Container(
                     padding: const EdgeInsets.all(12),
-                    height: displayHeight(context) * 0.3605,
+                    height: displayHeight(context) * 0.38,
                     width: displayWidth(context) * 0.9,
                     decoration: BoxDecoration(
                         color: Colors.white,
