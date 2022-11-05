@@ -143,13 +143,13 @@ class ProfileBox extends StatelessWidget {
                         width: displayWidth(context),
                         fit: BoxFit.fitWidth,
                       )
-                    : CachedNetworkImage(
-                        imageUrl:
-                            'https://i.pinimg.com/564x/21/65/0a/21650a0e6039a967ae95c2e03dfc3361.jpg',
-                        width: displayWidth(context),
-                        height: displayHeight(context) * 0.25,
-                        fit: BoxFit.fitWidth,
-                      ),
+                    : Container(
+                      height: displayHeight(context)*0.25,
+                      color: Colors.black,
+                      child: Image.asset('assets/images/utopia_banner.png',
+                          width: displayWidth(context),
+                          fit: BoxFit.fitWidth,),
+                    ),
               ),
               Positioned(
                   top: displayHeight(context) * 0.03,
