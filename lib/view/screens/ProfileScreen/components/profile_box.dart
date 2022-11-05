@@ -11,6 +11,7 @@ import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/auth_services.dart';
+import 'package:utopia/utils/all_controllers.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/global_context.dart';
 import 'package:utopia/utils/helper_widgets.dart';
@@ -35,23 +36,6 @@ class ProfileBox extends StatelessWidget {
 
   final textStyle = const TextStyle(fontFamily: "Open", fontSize: 15);
   final Authservice _auth = Authservice(firebase.FirebaseAuth.instance);
-
-  Future<void> changeAccountPassword(String emailId, String oldPassword,
-      String newPassword, firebase.User user) async {
-    try {
-      // try matching the current password, if wrong compiler goes to catch part
-      var isOldPasswordCorrect = await firebase.FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: emailId, password: oldPassword);
-
-      // Update password
-      user.updatePassword(newPassword).then((value) =>
-          ScaffoldMessenger.of(GlobalContext.contextKey.currentContext!)
-              .showSnackBar(SnackBar(content: Text("Changed"))));
-    } on firebase.FirebaseAuthException catch (error) {
-      ScaffoldMessenger.of(GlobalContext.contextKey.currentContext!)
-          .showSnackBar(SnackBar(content: Text(error.message!)));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,11 +164,17 @@ class ProfileBox extends StatelessWidget {
                 child: PopupMenuButton(
                   onSelected: (value) async {
                     if (value == "Update Password") {
-                      await changeAccountPassword('alphaisgod1@gmail.com',
-                          '123456', '654321', _auth.auth.currentUser!);
-                    }
-                    if(value == "Request Verification") {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => RequestVerification(),));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdatePasswordScreen(),
+                          ));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RequestVerification(),
+                          ));
                     }
                   },
                   icon: const Icon(
@@ -199,8 +189,6 @@ class ProfileBox extends StatelessWidget {
                       value: "Request Verification",
                       child: Text('Request Verification'),
                     ),
-                    PopupMenuItem(child: Text('Delete Account')),
-                    PopupMenuItem(child: Text('Logout')),
                   ],
                 ),
               ),

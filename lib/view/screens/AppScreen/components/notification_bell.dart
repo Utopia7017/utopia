@@ -2,7 +2,6 @@ import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 
 class NotificationBell extends StatelessWidget {

@@ -21,11 +21,12 @@ class _SplashScreenState extends State<SplashScreen> {
   navigateToHome() async {
     if (mounted) {
       final navigator = Navigator.of(context);
-     bool internetConnection =
-          await InternetConnectionChecker().hasConnection;
-      
-      await Future.delayed(const Duration(seconds: 2));
-      navigator.pushReplacement(MaterialPageRoute(builder: (context) => UtopiaRoot(internetConnected: internetConnection),));
+      bool internetConnection = await InternetConnectionChecker().hasConnection;
+
+      await Future.delayed(const Duration(seconds: 1));
+      navigator.pushReplacement(MaterialPageRoute(
+        builder: (context) => UtopiaRoot(internetConnected: internetConnection),
+      ));
     }
   }
 
