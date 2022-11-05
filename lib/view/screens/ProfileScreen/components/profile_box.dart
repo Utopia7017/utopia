@@ -5,6 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
@@ -144,12 +146,15 @@ class ProfileBox extends StatelessWidget {
                         fit: BoxFit.fitWidth,
                       )
                     : Container(
-                      height: displayHeight(context)*0.25,
-                      color: Colors.black,
-                      child: Image.asset('assets/images/utopia_banner.png',
+                        height: displayHeight(context) * 0.25,
+                        color: const Color.fromARGB(
+                            255, 2, 1, 17), // rgba(2,1,17,255)
+                        child: Image.asset(
+                          'assets/images/utopia_banner.png',
                           width: displayWidth(context),
-                          fit: BoxFit.fitWidth,),
-                    ),
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
               ),
               Positioned(
                   top: displayHeight(context) * 0.03,
@@ -493,14 +498,15 @@ class ProfileBox extends StatelessWidget {
                                   MaterialStateProperty.all(authBackground),
                             ),
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return EditProfileDialogbox(
-                                      currentName: user.name,
-                                      currentBio: user.bio);
-                                },
-                              );
+                              displayBox(context: context,currentBio: user.bio,currentName: user.name);
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (context) {
+                              //     return EditProfileDialogbox(
+                              //         currentName: user.name,
+                              //         currentBio: user.bio);
+                              //   },
+                              // );
                             },
                             child: Text(
                               "Edit Profile",
@@ -523,3 +529,5 @@ class ProfileBox extends StatelessWidget {
     );
   }
 }
+
+

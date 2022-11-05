@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebaseUser;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
@@ -10,7 +9,6 @@ import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/top_articles_box.dart';
-import 'package:utopia/view/screens/Skeletons/rec_article_skeleton.dart';
 import 'package:utopia/view/shimmers/rec_article_shimmer.dart';
 
 class TopArticlesList extends StatelessWidget {
@@ -81,7 +79,7 @@ class TopArticlesList extends StatelessWidget {
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 45),
                         Center(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,13 +87,15 @@ class TopArticlesList extends StatelessWidget {
                             children: [
                               Image.asset(
                                 noArticleFoundIcon,
-                                height: displayHeight(context) * 0.15,
+                                height: displayHeight(context) * 0.08,
                               ),
                               const SizedBox(height: 10),
                               const Text(
                                 "You have not published any article.",
                                 style: TextStyle(
-                                    color: Colors.black54, fontFamily: "Open"),
+                                    color: Colors.black54,
+                                    fontFamily: "Open",
+                                    fontSize: 14),
                               )
                             ],
                           ),
@@ -206,7 +206,7 @@ class TopArticlesList extends StatelessWidget {
                           children: [
                             Image.asset(
                               noArticleFoundIcon,
-                              height: displayHeight(context) * 0.15,
+                              height: displayHeight(context) * 0.08,
                             ),
                             const SizedBox(height: 10),
                             Text(
