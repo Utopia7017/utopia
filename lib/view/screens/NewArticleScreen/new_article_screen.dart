@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
@@ -11,7 +13,6 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/screens/NewArticleScreen/components/article_detail_dialog.dart';
-import 'package:utopia/view/screens/NewArticleScreen/components/save_draft_dialog.dart';
 
 import '../../../utils/article_body_component.dart';
 
@@ -26,13 +27,42 @@ class NewArticleScreen extends StatelessWidget {
       // This widget helps us catching the back button press event from the device's navigator.
       onWillPop: () async {
         bool shouldPop = true;
-        _logger.info("Going back");
-        await showDialog(
-          context: context,
-          builder: (context) {
-            return SaveDraftDialog();
-          },
-        );
+        if (Provider.of<MyArticlesController>(context, listen: false)
+            .validateArticleBody()) {
+          // Some valid article body is present
+          TextEditingController draftTitleController = TextEditingController();
+          _logger.info("Going back");
+          QuickAlert.show(
+              context: context,
+              onCancelBtnTap: () {
+                Provider.of<MyArticlesController>(context, listen: false)
+                    .clearForm();
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              title: "Save this as draft ?",
+              cancelBtnTextStyle: const TextStyle(color: Colors.black54),
+              type: QuickAlertType.custom,
+              onConfirmBtnTap: () {
+                Provider.of<MyArticlesController>(context, listen: false)
+                    .draftMyArticle(
+                        userId: FirebaseAuth.instance.currentUser!.uid,
+                        title: draftTitleController.text,
+                        tags: []);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              showCancelBtn: true,
+              widget: TextFormField(
+                controller: draftTitleController,
+                minLines: 1,
+                style: const TextStyle(fontFamily: "Open"),
+                decoration: const InputDecoration(
+                    hintText: "Draft title",
+                    hintStyle: TextStyle(fontFamily: "Open")),
+              ));
+          return shouldPop;
+        }
         return shouldPop;
       },
       child: Scaffold(
@@ -45,7 +75,7 @@ class NewArticleScreen extends StatelessWidget {
                     CroppedFile? croppedFile =
                         await cropImage(File(imageFile.path));
                     if (croppedFile != null) {
-                      controller.addImageField(croppedFile,null);
+                      controller.addImageField(croppedFile, null);
                     }
                   }
                 },
@@ -64,12 +94,56 @@ class NewArticleScreen extends StatelessWidget {
               style: TextStyle(
                   fontFamily: "Open", fontSize: 14, color: Colors.black),
             ),
-            leading: IconButton(
-              onPressed: () {
-                _logger.info("Going back");
-                Navigator.pop(context);
+            leading: Consumer<MyArticlesController>(
+              builder: (context, controller, child) {
+                switch (controller.uploadingStatus) {
+                  case ArticleUploadingStatus.uploading:
+                    return const SizedBox();
+                  case ArticleUploadingStatus.notUploading:
+                    return IconButton(
+                      onPressed: () {
+                        if (controller.validateArticleBody()) {
+                          // Some valid article body is present
+                          TextEditingController draftTitleController =
+                              TextEditingController();
+                          _logger.info("Going back");
+                          QuickAlert.show(
+                              context: context,
+                              title: "Save this as draft ?",
+                              cancelBtnTextStyle:
+                                  const TextStyle(color: Colors.black54),
+                              type: QuickAlertType.custom,
+                              showCancelBtn: true,
+                              onConfirmBtnTap: () {
+                                controller.draftMyArticle(
+                                    userId:
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                    title: draftTitleController.text,
+                                    tags: []);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              onCancelBtnTap: () {
+                                controller.clearForm();
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              widget: TextFormField(
+                                controller: draftTitleController,
+                                minLines: 1,
+                                style: const TextStyle(fontFamily: "Open"),
+                                decoration: const InputDecoration(
+                                    hintText: "Draft title",
+                                    hintStyle: TextStyle(fontFamily: "Open")),
+                              ));
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                      icon: const Icon(Icons.arrow_back_sharp),
+                    );
+                }
               },
-              icon: const Icon(Icons.arrow_back),
             ),
             elevation: 0,
             iconTheme: const IconThemeData(color: Colors.black54),

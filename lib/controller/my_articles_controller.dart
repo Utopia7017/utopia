@@ -270,7 +270,7 @@ class MyArticlesController extends DisposableProvider {
   }
 
   // Deletes articles
-  deleteThisArticle({required String myUid, required String articleId}) async {
+  Future<void> deleteThisArticle({required String myUid, required String articleId}) async {
     Logger logger = Logger("Delete this article");
     try {
       final Response? response =

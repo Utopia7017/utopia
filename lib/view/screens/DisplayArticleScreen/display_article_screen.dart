@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/controller/articles_controller.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart' as usermodel;
@@ -165,22 +166,34 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                   } else {
                     QuickAlert.show(
                         confirmBtnText: "Yes",
+                        confirmBtnTextStyle:
+                            const TextStyle(fontSize: 16, color: Colors.white),
+                        cancelBtnTextStyle: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w400),
                         context: context,
                         barrierDismissible: true,
                         onCancelBtnTap: () => Navigator.pop(context),
-                        onConfirmBtnTap: () {
-                          Provider.of<MyArticlesController>(context,
-                                  listen: false)
-                              .deleteThisArticle(
-                                  myUid: myUserId,
-                                  articleId: widget.article.articleId);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                        onConfirmBtnTap: () async {
+                          final myArticlesProvider =
+                              Provider.of<MyArticlesController>(context,
+                                  listen: false);
+                          final articlesProvider =
+                              Provider.of<ArticlesController>(context,
+                                  listen: false);
+                          final navigator = Navigator.of(context);
+                          await myArticlesProvider.deleteThisArticle(
+                              myUid: myUserId,
+                              articleId: widget.article.articleId);
+                          await articlesProvider.fetchArticles();
+
+                          navigator.pop();
+                          navigator.pop();
                         },
                         cancelBtnText: "No",
                         showCancelBtn: true,
                         title: "Are you sure you want to delete this article?",
-                        animType: QuickAlertAnimType.slideInRight,
                         type: QuickAlertType.warning);
                   }
                 },
