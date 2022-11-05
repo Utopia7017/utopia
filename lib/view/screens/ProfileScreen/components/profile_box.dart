@@ -22,6 +22,7 @@ import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialogbox.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/request_verification.dart';
+import 'package:utopia/view/screens/ProfileScreen/components/update_password.dart';
 import 'package:utopia/view/shimmers/my_followers_box_shimmer.dart';
 import '../../../../controller/articles_controller.dart';
 
@@ -181,8 +182,9 @@ class ProfileBox extends StatelessWidget {
                     if (value == "Update Password") {
                       await changeAccountPassword('alphaisgod1@gmail.com',
                           '123456', '654321', _auth.auth.currentUser!);
-                    } else if (value == "Request Verification") {
-                      Navigator.pushNamed(context, '/requestVerification');
+                    }
+                    if(value == "Request Verification") {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => RequestVerification(),));
                     }
                   },
                   icon: const Icon(
