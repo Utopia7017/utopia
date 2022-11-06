@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
@@ -118,36 +119,25 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onLongPress: () {
-                                  showDialog(
+                                  QuickAlert.show(
                                     context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: const Text('Delete'),
-                                        content:
-                                            const Text('Delete this article'),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('No')),
-                                          TextButton(
-                                              onPressed: () {
-                                                controller.deleteThisArticle(
-                                                    myUid: controller
-                                                        .publishedArticles[
-                                                            index]
-                                                        .authorId,
-                                                    articleId: controller
-                                                        .publishedArticles[
-                                                            index]
-                                                        .articleId);
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Yes')),
-                                        ],
-                                      );
-                                    },
+                                    type: QuickAlertType.warning,
+                                    title: "Delete this article? ",
+                                    cancelBtnTextStyle:
+                                    const TextStyle(color: Colors.black54),
+                                    showCancelBtn: true,
+                                    onConfirmBtnTap: () {
+                                    controller.deleteThisArticle(
+                                      myUid: controller
+                                      .publishedArticles[index].authorId,
+                                      articleId: controller
+                                      .publishedArticles[index].articleId);
+                                      Navigator.pop(context);
+                                  },
+                                  onCancelBtnTap: () {
+                                controller.clearForm();
+                                Navigator.pop(context);
+                              },
                                   );
                                 },
                                 child: ArticleBox(
@@ -205,22 +195,15 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onLongPress: () {
-                                  showDialog(
+                                  QuickAlert.show(
                                     context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: const Text('Delete'),
-                                        content:
-                                            const Text('Delete this draft'),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('No')),
-                                          TextButton(
-                                              onPressed: () {
-                                                controller.deleteDraftArticle(
+                                    type: QuickAlertType.warning,
+                                    title: "Delete this article? ",
+                                    cancelBtnTextStyle:
+                                    const TextStyle(color: Colors.black54),
+                                    showCancelBtn: true,
+                                    onConfirmBtnTap: () {
+                                    controller.deleteDraftArticle(
                                                     myUid: controller
                                                         .draftArticles[index]
                                                         .authorId,
@@ -228,11 +211,11 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                                         .draftArticles[index]
                                                         .articleId);
                                                 Navigator.pop(context);
-                                              },
-                                              child: const Text('Yes')),
-                                        ],
-                                      );
-                                    },
+                                  },
+                                  onCancelBtnTap: () {
+                                controller.clearForm();
+                                Navigator.pop(context);
+                                   },
                                   );
                                 },
                                 child: DraftArticleBox(
