@@ -171,22 +171,29 @@ class BoxForLikeNotification extends StatelessWidget {
                 return Image.asset(notificationLikeIcon,
                     height: 25, fit: BoxFit.cover);
               case FetchingMyArticle.fetched:
-                Article thisArticle = controller.publishedArticles
-                    .firstWhere((element) => element.articleId == articleId);
-                String? imagePreview;
+                int indexOfArticle = controller.publishedArticles
+                    .indexWhere((element) => element.articleId == articleId);
 
-                for (var body in thisArticle.body) {
-                  if (body['type'] == 'image') {
-                    imagePreview = body['image'];
-                    break;
+                if (indexOfArticle == -1) {
+                  deleteSingleNotification(myUid, notificationId);
+                  return const SizedBox();
+                } else {
+                  String? imagePreview;
+
+                  for (var body
+                      in controller.publishedArticles[indexOfArticle].body) {
+                    if (body['type'] == 'image') {
+                      imagePreview = body['image'];
+                      break;
+                    }
                   }
-                }
 
-                return (imagePreview != null)
-                    ? CachedNetworkImage(
-                        imageUrl: imagePreview, height: 25, fit: BoxFit.cover)
-                    : Image.asset(defaultArticleImage,
-                        height: 25, fit: BoxFit.cover);
+                  return (imagePreview != null)
+                      ? CachedNetworkImage(
+                          imageUrl: imagePreview, height: 25, fit: BoxFit.cover)
+                      : Image.asset(defaultArticleImage,
+                          height: 25, fit: BoxFit.cover);
+                }
             }
           },
         ),
