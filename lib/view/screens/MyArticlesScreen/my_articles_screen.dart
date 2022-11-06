@@ -9,6 +9,8 @@ import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/common_ui/draft_article_box.dart';
 import 'package:utopia/view/shimmers/article_shimmer.dart';
 
+import '../../../constants/image_constants.dart';
+
 class MyArticleScreen extends StatefulWidget {
   @override
   State<MyArticleScreen> createState() => _MyArticleScreenState();
@@ -68,12 +70,11 @@ class _MyArticleScreenState extends State<MyArticleScreen>
               ];
             },
             body: RefreshIndicator(
-               onRefresh: ()async {
-          return await Future.delayed(Duration(seconds: 2));
-        },
-        backgroundColor: authBackground,
-        color: Colors.white,
-
+              onRefresh: () async {
+                return await Future.delayed(Duration(seconds: 2));
+              },
+              backgroundColor: authBackground,
+              color: Colors.white,
               child: TabBarView(controller: _tabController, children: [
                 Consumer<MyArticlesController>(
                   builder: (context, controller, child) {
@@ -81,17 +82,38 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                         FetchingMyArticle.nil) {
                       controller.fetchMyArticles(myUserId);
                     }
-            
+
                     switch (controller.fetchingMyArticleStatus) {
                       case FetchingMyArticle.nil:
                         return const Center(child: Text('Swipe to refresh'));
                       case FetchingMyArticle.fetching:
                         return const ShimmerForArticles();
-            
+
                       case FetchingMyArticle.fetched:
+                        if (controller.publishedArticles.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  noArticleFoundIcon,
+                                  height: displayHeight(context) * 0.1,
+                                ),
+                                const SizedBox(height: 20),
+                                const Text(
+                                  "No article found",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Open"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+
                         return Padding(
-                          padding:
-                              EdgeInsets.only(top: displayHeight(context) * 0.07),
+                          padding: EdgeInsets.only(
+                              top: displayHeight(context) * 0.07),
                           child: ListView.builder(
                             itemBuilder: (context, index) {
                               return InkWell(
@@ -113,10 +135,12 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                               onPressed: () {
                                                 controller.deleteThisArticle(
                                                     myUid: controller
-                                                        .publishedArticles[index]
+                                                        .publishedArticles[
+                                                            index]
                                                         .authorId,
                                                     articleId: controller
-                                                        .publishedArticles[index]
+                                                        .publishedArticles[
+                                                            index]
                                                         .articleId);
                                                 Navigator.pop(context);
                                               },
@@ -127,7 +151,8 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                   );
                                 },
                                 child: ArticleBox(
-                                    article: controller.publishedArticles[index]),
+                                    article:
+                                        controller.publishedArticles[index]),
                               );
                             },
                             itemCount: controller.publishedArticles.length,
@@ -142,7 +167,7 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                         FetchingDraftArticles.nil) {
                       controller.fetchDraftArticles(myUserId);
                     }
-            
+
                     switch (controller.fetchingDraftArticlesStatus) {
                       case FetchingDraftArticles.nil:
                         return const Center(child: Text('Swipe to refresh'));
@@ -153,9 +178,29 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                           ),
                         );
                       case FetchingDraftArticles.fetched:
+                        if (controller.draftArticles.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  noArticleFoundIcon,
+                                  height: displayHeight(context) * 0.1,
+                                ),
+                                const SizedBox(height: 20),
+                                const Text(
+                                  "No article found",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Open"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                         return Padding(
-                          padding:
-                              EdgeInsets.only(top: displayHeight(context) * 0.07),
+                          padding: EdgeInsets.only(
+                              top: displayHeight(context) * 0.07),
                           child: ListView.builder(
                             itemBuilder: (context, index) {
                               return InkWell(
@@ -165,7 +210,8 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                     builder: (context) {
                                       return AlertDialog(
                                         title: const Text('Delete'),
-                                        content: const Text('Delete this draft'),
+                                        content:
+                                            const Text('Delete this draft'),
                                         actions: [
                                           TextButton(
                                               onPressed: () {

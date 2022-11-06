@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 
 class SavedArticlesScreen extends StatelessWidget {
@@ -49,6 +51,26 @@ class SavedArticlesScreen extends StatelessWidget {
                     case FetchingSavedArticles.fetching:
                       return const Center(child: CircularProgressIndicator());
                     case FetchingSavedArticles.fetched:
+                      if (myArticleController.savedArticles.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                noArticleFoundIcon,
+                                height: displayHeight(context) * 0.1,
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                "No article found",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Open"),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                       return ListView.builder(
                         // padding: const EdgeInsets.all(16),
                         itemBuilder: (context, index) {
