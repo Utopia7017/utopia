@@ -106,6 +106,8 @@ class ExploreScreen extends StatelessWidget {
                       onRefresh: () async {
                         await controller.fetchArticles();
                       },
+                      backgroundColor: authBackground,
+                      color: Colors.white,
                       strokeWidth: 3,
                       triggerMode: RefreshIndicatorTriggerMode.anywhere,
                       child: Consumer<ArticlesController>(

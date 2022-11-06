@@ -85,7 +85,7 @@ class LoginScreen extends StatelessWidget {
                                 color: Colors.white60),
                       ),
                       prefixIcon: const Icon(
-                        Icons.email,
+                        Icons.key,
                         color: Colors.white60,
                       ),
                       validator: (val) {
