@@ -375,7 +375,7 @@ class SignUpScreen extends StatelessWidget {
                           email: emailController.text,
                           followers: [],
                           userId: FirebaseAuth.instance.currentUser!.uid,
-                          bio: '',
+                          bio: 'I am new to Utopia',
                           following: []));
                       controller.stopSigningUp();
                       navigator.pushReplacement(MaterialPageRoute(
