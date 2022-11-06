@@ -87,7 +87,7 @@ class ProfileBox extends StatelessWidget {
                             ListTile(
                               visualDensity: const VisualDensity(vertical: -2),
                               onTap: () async {
-                                final sms = ScaffoldMessenger.of(context);
+                                final navigator = Navigator.of(context);
                                 final userController =
                                     Provider.of<UserController>(context,
                                         listen: false);
@@ -99,12 +99,14 @@ class ProfileBox extends StatelessWidget {
                                   if (croppedFile != null) {
                                     userController
                                         .changeCoverPhoto(croppedFile);
+                                    navigator.pop();
                                   } else {
                                     // nothing to be done
                                   }
                                 } else {
-                                  sms.showSnackBar(const SnackBar(
-                                      content: Text("No image picked")));
+                                  showCustomSnackBar(
+                                      context: context,
+                                      text: "No image picked");
                                 }
                               },
                               title: Text(
@@ -260,8 +262,8 @@ class ProfileBox extends StatelessWidget {
                                             visualDensity: const VisualDensity(
                                                 vertical: -2),
                                             onTap: () async {
-                                              final sms =
-                                                  ScaffoldMessenger.of(context);
+                                              final navigator =
+                                                  Navigator.of(context);
                                               final userController =
                                                   Provider.of<UserController>(
                                                       context,
@@ -276,13 +278,14 @@ class ProfileBox extends StatelessWidget {
                                                   userController
                                                       .changeDisplayPhoto(
                                                           croppedFile);
+                                                  navigator.pop();
                                                 } else {
                                                   // nothing to be done
                                                 }
                                               } else {
-                                                sms.showSnackBar(const SnackBar(
-                                                    content: Text(
-                                                        "No image picked")));
+                                                showCustomSnackBar(
+                                                    context: context,
+                                                    text: "No image picked");
                                               }
                                             },
                                             title: Text(

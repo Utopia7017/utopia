@@ -28,12 +28,11 @@ class FollowersScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: RefreshIndicator(
-         onRefresh: ()async {
-          return await Future.delayed(Duration(seconds: 2));
+        onRefresh: () async {
+          return await Future.delayed(const Duration(seconds: 2));
         },
         backgroundColor: authBackground,
         color: Colors.white,
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -78,7 +77,7 @@ class FollowersScreen extends StatelessWidget {
                           User followerUser = snapshot.data!;
                           List<String> initials = followerUser.name.split(" ");
                           String firstLetter = "", lastLetter = "";
-      
+
                           if (initials.length == 1) {
                             firstLetter = initials[0].characters.first;
                           } else {
@@ -86,7 +85,7 @@ class FollowersScreen extends StatelessWidget {
                             lastLetter = initials[1].characters.first;
                           }
                           return ListTile(
-                            visualDensity: VisualDensity(vertical: 2.5),
+                            visualDensity: const VisualDensity(vertical: 2.5),
                             onTap: () {
                               if (currentuserid != followerUser.userId) {
                                 Navigator.push(
@@ -106,14 +105,14 @@ class FollowersScreen extends StatelessWidget {
                                               "$firstLetter.$lastLetter"
                                                   .toUpperCase(),
                                               style: const TextStyle(
-                                                  fontSize: 30,
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.w500,
                                                   color: Colors.white),
                                             )
                                           : Text(
                                               firstLetter.toUpperCase(),
                                               style: const TextStyle(
-                                                  fontSize: 30,
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.w500,
                                                   color: Colors.white),
                                             ),
@@ -125,21 +124,25 @@ class FollowersScreen extends StatelessWidget {
                                   ),
                             title: Row(
                               children: [
-                                Text(
-                                   followerUser.name
+                                Text(followerUser.name),
+                                const SizedBox(
+                                  width: 5,
                                 ),
-                                SizedBox(width: 5,),
-                                followerUser.isVerified?Image.asset(
-                                          verifyIcon,
-                                          height: 17.5,
-                                        ):SizedBox(),
-      
+                                followerUser.isVerified
+                                    ? Image.asset(
+                                        verifyIcon,
+                                        height: 17.5,
+                                      )
+                                    : const SizedBox(),
                               ],
                             ),
                             dense: true,
                             trailing: (currentuserid == user.userId)
                                 ? MaterialButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      controller.unFollowUser(
+                                          userId: user.userId);
+                                    },
                                     height: 30,
                                     color: authMaterialButtonColor,
                                     shape: RoundedRectangleBorder(
@@ -155,9 +158,7 @@ class FollowersScreen extends StatelessWidget {
                                   )
                                 : null,
                           );
-                        
                         } else {
-                          
                           return const FollowerShimmer();
                         }
                       },

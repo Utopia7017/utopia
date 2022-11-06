@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
@@ -271,36 +270,29 @@ class UserController extends DisposableProvider {
   }
 
   void removeDp() async {
-    try{
-      final Response? response= await _apiServices.update(endUrl: 'users/${user!.userId}.json', data: {
-        'dp':''
-      });
-      if(response!=null){
+    try {
+      final Response? response = await _apiServices
+          .update(endUrl: 'users/${user!.userId}.json', data: {'dp': ''});
+      if (response != null) {
         user!.removeDp();
       }
-
-    }
-    catch(errror){
+    } catch (errror) {
       print(errror);
     }
     notifyListeners();
-    
   }
-   void removeCp() async {
-    try{
-      final Response? response= await _apiServices.update(endUrl: 'users/${user!.userId}.json', data: {
-        'cp':''
-      });
-      if(response!=null){
+
+  void removeCp() async {
+    try {
+      final Response? response = await _apiServices
+          .update(endUrl: 'users/${user!.userId}.json', data: {'cp': ''});
+      if (response != null) {
         user!.removeCp();
       }
-
-    }
-    catch(errror){
+    } catch (errror) {
       print(errror);
     }
     notifyListeners();
-    
   }
 
   // Dispose this provider
@@ -311,5 +303,4 @@ class UserController extends DisposableProvider {
     followingUserStatus = FollowingUserStatus.no;
     user = null;
   }
-
 }
