@@ -8,6 +8,7 @@ import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/services/firebase/auth_services.dart';
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 
@@ -125,21 +126,13 @@ class LoginScreen extends StatelessWidget {
                                     builder: (context) => AppScreen(true),
                                   ));
                                 } else {
-                                  sms.showSnackBar(const SnackBar(
-                                      content: Text(
-                                          "Please verify your email first")));
+                                  showCustomSnackBar(
+                                      context: context,
+                                      text: "Please verify your email first");
                                 }
                               } else {
-                                sms.showSnackBar(
-                                  SnackBar(
-                                      content: Text(
-                                        loginResponse!,
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 13.5),
-                                      ),
-                                      backgroundColor: authMaterialButtonColor),
-                                );
+                                showCustomSnackBar(
+                                    context: context, text: loginResponse!);
                               }
                             }
                           },
