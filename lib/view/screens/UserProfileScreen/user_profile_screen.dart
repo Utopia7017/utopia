@@ -5,6 +5,8 @@ import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/top_articles_list.dart';
+import 'package:utopia/view/screens/Skeletons/profile_screen_skeleton.dart';
+import 'package:utopia/view/shimmers/profile_screen_shimmer.dart';
 
 import 'components/user_profile_box.dart';
 
@@ -55,9 +57,8 @@ class UserProfileScreen extends StatelessWidget {
                 // if user is not fetched
                 else {
                   // TODO : return shimmer effect for whole screen
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+
+                  return const ProfileScreenShimmer();
                 }
               },
             ),
