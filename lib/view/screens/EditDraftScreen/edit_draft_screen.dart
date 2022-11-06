@@ -73,14 +73,9 @@ class EditDraftScreen extends StatelessWidget {
                             useSafeArea: true,
                           );
                         } else {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text(
-                              'Article cannot be empty',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: authBackground,
-                          ));
+                          showCustomSnackBar(
+                              context: context,
+                              text: "Article cannot be empty");
                         }
                       },
                     );
