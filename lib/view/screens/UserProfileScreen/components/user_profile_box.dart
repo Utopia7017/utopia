@@ -39,7 +39,7 @@ class UserProfileBox extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: displayHeight(context) * 0.56,
+          height: displayHeight(context) * 0.58,
           width: displayWidth(context),
           child: Stack(
             children: [
@@ -49,10 +49,8 @@ class UserProfileBox extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              DisplayFullImage(
-                                caption: user.name,
-                                imageurl: user.cp),
+                          builder: (context) => DisplayFullImage(
+                              caption: user.name, imageurl: user.cp),
                         ));
                   }
                 },
@@ -63,12 +61,15 @@ class UserProfileBox extends StatelessWidget {
                         width: displayWidth(context),
                         fit: BoxFit.fitWidth,
                       )
-                    : CachedNetworkImage(
-                        imageUrl:
-                            'https://i.pinimg.com/564x/21/65/0a/21650a0e6039a967ae95c2e03dfc3361.jpg',
-                        width: displayWidth(context),
+                    : Container(
                         height: displayHeight(context) * 0.25,
-                        fit: BoxFit.fitWidth,
+                        color: const Color.fromARGB(
+                            255, 2, 1, 17), // rgba(2,1,17,255)
+                        child: Image.asset(
+                          'assets/images/utopia_banner.png',
+                          width: displayWidth(context),
+                          fit: BoxFit.fitWidth,
+                        ),
                       ),
               ),
               Positioned(
@@ -88,7 +89,7 @@ class UserProfileBox extends StatelessWidget {
                   elevation: 1,
                   child: Container(
                     padding: const EdgeInsets.all(12),
-                    height: displayHeight(context) * 0.3605,
+                    height: displayHeight(context) * 0.38,
                     width: displayWidth(context) * 0.9,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -107,10 +108,9 @@ class UserProfileBox extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            DisplayFullImage(
-                                              caption: user.name,
-                                              imageurl: user.dp),
+                                        builder: (context) => DisplayFullImage(
+                                            caption: user.name,
+                                            imageurl: user.dp),
                                       ));
                                 }
                               },

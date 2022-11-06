@@ -59,3 +59,5 @@ const termsIcon = 'assets/icons/terms_icon.png';
 const replyNotificationIcon = 'assets/icons/reply_notif.png';
 
 const verifyIcon = 'assets/icons/verify_icon.png';
+
+const playStoreIcon = 'assets/icons/play_store.png';

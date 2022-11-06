@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
-import 'package:utopia/models/article_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
@@ -63,38 +63,18 @@ class BoxForLikeNotification extends StatelessWidget {
       onTap: () => readThisNotification(
           FirebaseAuth.instance.currentUser!.uid, notificationId),
       onLongPress: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Remove '),
-                content: Text(
-                  'Are you sure you want to remove  this notification?',
-                  style: TextStyle(fontSize: 14),
-                ),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(fontSize: 14),
-                      )),
-                  TextButton(
-                      onPressed: () {
-                        deleteSingleNotification(
-                            FirebaseAuth.instance.currentUser!.uid,
-                            notificationId);
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Remove',
-                        style: TextStyle(fontSize: 14),
-                      ))
-                ],
-              );
-            });
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.confirm,
+          confirmBtnText: "Delete",
+          title: "Delete notification?",
+          text: "Are you sure you want to delete this notification",
+          onConfirmBtnTap: () {
+            deleteSingleNotification(
+                FirebaseAuth.instance.currentUser!.uid, notificationId);
+            Navigator.pop(context);
+          },
+        );
       },
       leading: InkWell(
         onTap: () => Navigator.push(
@@ -171,22 +151,29 @@ class BoxForLikeNotification extends StatelessWidget {
                 return Image.asset(notificationLikeIcon,
                     height: 25, fit: BoxFit.cover);
               case FetchingMyArticle.fetched:
-                Article thisArticle = controller.publishedArticles
-                    .firstWhere((element) => element.articleId == articleId);
-                String? imagePreview;
+                int indexOfArticle = controller.publishedArticles
+                    .indexWhere((element) => element.articleId == articleId);
 
-                for (var body in thisArticle.body) {
-                  if (body['type'] == 'image') {
-                    imagePreview = body['image'];
-                    break;
+                if (indexOfArticle == -1) {
+                  deleteSingleNotification(myUid, notificationId);
+                  return const SizedBox();
+                } else {
+                  String? imagePreview;
+
+                  for (var body
+                      in controller.publishedArticles[indexOfArticle].body) {
+                    if (body['type'] == 'image') {
+                      imagePreview = body['image'];
+                      break;
+                    }
                   }
-                }
 
-                return (imagePreview != null)
-                    ? CachedNetworkImage(
-                        imageUrl: imagePreview, height: 25, fit: BoxFit.cover)
-                    : Image.asset(defaultArticleImage,
-                        height: 25, fit: BoxFit.cover);
+                  return (imagePreview != null)
+                      ? CachedNetworkImage(
+                          imageUrl: imagePreview, height: 25, fit: BoxFit.cover)
+                      : Image.asset(defaultArticleImage,
+                          height: 25, fit: BoxFit.cover);
+                }
             }
           },
         ),

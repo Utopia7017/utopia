@@ -39,7 +39,6 @@ class NotificationScreen extends StatelessWidget {
                 if (value == 'Mark all as read') {
                   await readAllNotifications(currentUserId);
                 } else {
-                  print("tap");
                   await deleteAllNotifications(currentUserId);
                 }
               },
@@ -65,17 +64,21 @@ class NotificationScreen extends StatelessWidget {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            return await Future.delayed(Duration(seconds: 2));
+            return await Future.delayed(const Duration(seconds: 2));
           },
           backgroundColor: authBackground,
           color: Colors.white,
           child: Consumer<UserController>(
             builder: (context, userController, child) {
+              DateTime timeBefore =
+                  DateTime.now().subtract(const Duration(days: 14));
               return StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('notifications')
                     .doc(userController.user!.userId)
                     .collection('notification')
+                    .where('createdOn',
+                        isGreaterThan: Timestamp.fromDate(timeBefore))
                     .orderBy('createdOn', descending: true)
                     .snapshots(),
                 builder: (context, AsyncSnapshot notificationSnapshot) {

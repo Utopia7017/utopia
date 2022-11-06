@@ -7,13 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/auth_services.dart';
-import 'package:utopia/utils/all_controllers.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/utils/global_context.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/common_ui/display_full_image.dart';
@@ -144,12 +143,15 @@ class ProfileBox extends StatelessWidget {
                         fit: BoxFit.fitWidth,
                       )
                     : Container(
-                      height: displayHeight(context)*0.25,
-                      color: Colors.black,
-                      child: Image.asset('assets/images/utopia_banner.png',
+                        height: displayHeight(context) * 0.25,
+                        color: const Color.fromARGB(
+                            255, 2, 1, 17), // rgba(2,1,17,255)
+                        child: Image.asset(
+                          'assets/images/utopia_banner.png',
                           width: displayWidth(context),
-                          fit: BoxFit.fitWidth,),
-                    ),
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
               ),
               Positioned(
                   top: displayHeight(context) * 0.03,
@@ -161,35 +163,42 @@ class ProfileBox extends StatelessWidget {
               Positioned(
                 top: displayHeight(context) * 0.03,
                 right: displayWidth(context) * 0.01,
-                child: PopupMenuButton(
-                  onSelected: (value) async {
-                    if (value == "Update Password") {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UpdatePasswordScreen(),
-                          ));
-                    } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RequestVerification(),
-                          ));
-                    }
+                child: Consumer<MyArticlesController>(
+                  builder: (context, controller, child) {
+                    return PopupMenuButton(
+                      onSelected: (value) async {
+                        if (value == "Update Password") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UpdatePasswordScreen(),
+                              ));
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RequestVerification(
+                                    currentUser: user,
+                                    publishedArticles:
+                                        controller.publishedArticles.length),
+                              ));
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                      ),
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(
+                            value: "Update Password",
+                            child: Text('Update Password')),
+                        PopupMenuItem(
+                          value: "Request Verification",
+                          child: Text('Request Verification'),
+                        ),
+                      ],
+                    );
                   },
-                  icon: const Icon(
-                    Icons.more_vert,
-                    color: Colors.white,
-                  ),
-                  itemBuilder: (context) => const [
-                    PopupMenuItem(
-                        value: "Update Password",
-                        child: Text('Update Password')),
-                    PopupMenuItem(
-                      value: "Request Verification",
-                      child: Text('Request Verification'),
-                    ),
-                  ],
                 ),
               ),
               Positioned(
@@ -493,14 +502,18 @@ class ProfileBox extends StatelessWidget {
                                   MaterialStateProperty.all(authBackground),
                             ),
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return EditProfileDialogbox(
-                                      currentName: user.name,
-                                      currentBio: user.bio);
-                                },
-                              );
+                              displayBox(
+                                  context: context,
+                                  currentBio: user.bio,
+                                  currentName: user.name);
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (context) {
+                              //     return EditProfileDialogbox(
+                              //         currentName: user.name,
+                              //         currentBio: user.bio);
+                              //   },
+                              // );
                             },
                             child: Text(
                               "Edit Profile",

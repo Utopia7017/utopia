@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:utopia/constants/color_constants.dart';
 
 drawerTile(String title, String icon, Function() callbackAction) {
   return ListTile(
@@ -12,7 +13,7 @@ drawerTile(String title, String icon, Function() callbackAction) {
       height: 20,
       color: Colors.grey,
     ),
-    visualDensity: const VisualDensity(vertical: -3),
+    visualDensity: const VisualDensity(vertical: -3.5),
     minLeadingWidth: 1,
     title: Text(
       title,
@@ -59,5 +60,17 @@ Future<CroppedFile?> cropImage(File pickedFile) async {
   } else {
     return null;
   }
-  
+}
+
+// Show custom snackbar
+showCustomSnackBar({
+  required BuildContext context,
+  required String text,
+}) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: authMaterialButtonColor,
+      content: Text(
+        text,
+        style: const TextStyle(color: Colors.black, fontFamily: "Open"),
+      )));
 }
