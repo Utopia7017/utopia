@@ -13,7 +13,7 @@ drawerTile(String title, String icon, Function() callbackAction) {
       height: 20,
       color: Colors.grey,
     ),
-    visualDensity: const VisualDensity(vertical: -3),
+    visualDensity: const VisualDensity(vertical: -3.5),
     minLeadingWidth: 1,
     title: Text(
       title,

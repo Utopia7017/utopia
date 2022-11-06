@@ -67,46 +67,55 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     firstLetter = initials[0].characters.first;
                     lastLetter = initials[1].characters.first;
                   }
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: ListView(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
                           onTap: () {
                             Navigator.pushNamed(context, '/profile');
                           },
-                          child: CircleAvatar(
-                            radius: displayWidth(context) * 0.12,
-                            backgroundColor: Colors.white,
-                            child: (controller.user!.dp.isEmpty)
-                                ? CircleAvatar(
-                                    backgroundColor: authMaterialButtonColor,
-                                    radius: displayWidth(context) * 0.115,
-                                    child: Center(
-                                      child: initials.length > 1
-                                          ? Text(
-                                              "$firstLetter.$lastLetter"
-                                                  .toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white),
-                                            )
-                                          : Text(
-                                              firstLetter.toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white),
-                                            ),
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    radius: displayWidth(context) * 0.115,
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        controller.user!.dp),
-                                  ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                radius: displayWidth(context) * 0.12,
+                                backgroundColor: Colors.white,
+                                child: (controller.user!.dp.isEmpty)
+                                    ? CircleAvatar(
+                                        backgroundColor:
+                                            authMaterialButtonColor,
+                                        radius: displayWidth(context) * 0.115,
+                                        child: Center(
+                                          child: initials.length > 1
+                                              ? Text(
+                                                  "$firstLetter.$lastLetter"
+                                                      .toUpperCase(),
+                                                  style: const TextStyle(
+                                                      fontSize: 30,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white),
+                                                )
+                                              : Text(
+                                                  firstLetter.toUpperCase(),
+                                                  style: const TextStyle(
+                                                      fontSize: 30,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white),
+                                                ),
+                                        ),
+                                      )
+                                    : CircleAvatar(
+                                        radius: displayWidth(context) * 0.115,
+                                        backgroundImage:
+                                            CachedNetworkImageProvider(
+                                                controller.user!.dp),
+                                      ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(
@@ -147,11 +156,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 10),
 
                         // Follower detail box
                         Container(
-                          height: displayHeight(context) * 0.08,
+                          // color: Colors.red.shade100,
+                          height: displayHeight(context) * 0.06,
                           alignment: Alignment.center,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -240,7 +250,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             height: 20,
                             color: Colors.grey,
                           ),
-                          visualDensity: const VisualDensity(vertical: -2),
+                          visualDensity: const VisualDensity(vertical: -3.5),
                           minLeadingWidth: 1,
                           title: const Text(
                             'Notifications',
@@ -358,7 +368,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                               )
                             : const SizedBox(),
-                        drawerTile('Rate us on Play store', aboutUsIcon,
+                        drawerTile('Rate us on Play store', playStoreIcon,
                             () => _logger.info("Help")),
                         drawerTile('Logout', logoutIcon, () async {
                           final navigator = Navigator.of(context);
@@ -398,7 +408,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ),
                   );
                 } else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
             }
           },

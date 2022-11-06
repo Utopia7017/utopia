@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseUser;
 import 'package:flutter/material.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
@@ -84,40 +85,19 @@ class BoxForReplyNotification extends StatelessWidget {
                     articleId: articleId)));
       },
       onLongPress: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Remove '),
-                content: const Text(
-                  'Are you sure you want to remove  this notification?',
-                  style: TextStyle(fontSize: 14),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      deleteSingleNotification(
-                          firebaseUser.FirebaseAuth.instance.currentUser!.uid,
-                          notificationId);
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Remove',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  )
-                ],
-              );
-            });
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.confirm,
+          title: "Delete notification?",
+          text: "Are you sure you want to delete this notification",
+          confirmBtnText: "Delete",
+          onConfirmBtnTap: () {
+            deleteSingleNotification(
+                firebaseUser.FirebaseAuth.instance.currentUser!.uid,
+                notificationId);
+            Navigator.pop(context);
+          },
+        );
       },
       leading: InkWell(
         onTap: () => Navigator.push(
