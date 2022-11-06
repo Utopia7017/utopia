@@ -9,6 +9,7 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/user_model.dart' as user;
 import 'package:utopia/services/firebase/auth_services.dart' as firebase;
 import 'package:utopia/utils/device_size.dart';
+import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/terms_of_use_screen.dart';
@@ -267,21 +268,13 @@ class SignUpScreen extends StatelessWidget {
                           // successfully created new account
                           controller.increaseRegistrationPageIndex();
                         } else {
-                          sms.showSnackBar(
-                            SnackBar(
-                                content: Text(
-                                  signupResponse!,
-                                  style: const TextStyle(
-                                      color: Colors.black, fontSize: 13.5),
-                                ),
-                                backgroundColor: authMaterialButtonColor),
-                          );
+                          showCustomSnackBar(
+                              context: context, text: signupResponse);
                         }
                       } else {
-                        sms.showSnackBar(const SnackBar(
-                          content:
-                              Text('Please accept the Terms And Conditions '),
-                        ));
+                        showCustomSnackBar(
+                            context: context,
+                            text: 'Please accept the Terms And Conditions ');
                       }
                     }
                   },
@@ -383,12 +376,10 @@ class SignUpScreen extends StatelessWidget {
                       ));
                     } else {
                       controller.stopSigningUp();
-                      sms.showSnackBar(const SnackBar(
-                          backgroundColor: authMaterialButtonColor,
-                          content: Text(
-                            "Please verify your email and try again !",
-                            style: TextStyle(color: Colors.black),
-                          )));
+
+                      showCustomSnackBar(
+                          context: context,
+                          text: "Please verify your email and try again !");
                     }
                   },
                   height: displayHeight(context) * 0.055,
