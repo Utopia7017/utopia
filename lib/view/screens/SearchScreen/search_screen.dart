@@ -7,14 +7,16 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   //final usermodel.User searchedAuthors;
-  const SearchScreen({super.key, });
- 
+  const SearchScreen({
+    super.key,
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -26,7 +28,7 @@ class _SearchScreenState extends State<SearchScreen>
 
   final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   final String myUserId = FirebaseAuth.instance.currentUser!.uid;
-
+  TextEditingController queryController = TextEditingController();
   Timer? _debounce;
 
   @override
@@ -58,6 +60,7 @@ class _SearchScreenState extends State<SearchScreen>
                   child: Consumer<ArticlesController>(
                     builder: (context, controller, child) {
                       return TextFormField(
+                        controller: queryController,
                         onChanged: (query) {
                           if (_debounce?.isActive ?? false) _debounce!.cancel();
                           _debounce =
@@ -165,7 +168,7 @@ class _SearchScreenState extends State<SearchScreen>
                       )
                     : ListView.builder(
                         padding:
-                            EdgeInsets.only(top: displayHeight(context) * 0.07),
+                            EdgeInsets.only(top: displayHeight(context) * 0.08),
                         itemCount: controller.searchedAuthors.length,
                         itemBuilder: (context, index) {
                           List<String> initials =
@@ -180,14 +183,15 @@ class _SearchScreenState extends State<SearchScreen>
                           }
                           return ListTile(
                             onTap: () {
-                              if(controller.searchedAuthors[index].userId != myUserId) {
+                              if (controller.searchedAuthors[index].userId !=
+                                  myUserId) {
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => UserProfileScreen(
-                                        userId: controller
-                                            .searchedAuthors[index].userId),
-                                  ));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UserProfileScreen(
+                                          userId: controller
+                                              .searchedAuthors[index].userId),
+                                    ));
                               }
                             },
                             leading: (controller
@@ -200,14 +204,14 @@ class _SearchScreenState extends State<SearchScreen>
                                               "$firstLetter.$lastLetter"
                                                   .toUpperCase(),
                                               style: const TextStyle(
-                                                  fontSize: 30,
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.w500,
                                                   color: Colors.white),
                                             )
                                           : Text(
                                               firstLetter.toUpperCase(),
                                               style: const TextStyle(
-                                                  fontSize: 30,
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.w500,
                                                   color: Colors.white),
                                             ),
@@ -219,25 +223,42 @@ class _SearchScreenState extends State<SearchScreen>
                                   ),
                             title: Text(controller.searchedAuthors[index].name),
                             dense: true,
-                            trailing: MaterialButton(
-                              onPressed: () {},
-                              height: 30,
-                              color: authBackground,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                (controller.searchedAuthors[index].followers
-                                        .contains(currentUserId))
-                                    ? 'Following'
-                                    : 'Follow',
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ),
+                            // trailing: MaterialButton(
+                            //   onPressed: () {
+                            //     var searchedUser =
+                            //         controller.searchedAuthors[index];
+                            //     final userProvider =
+                            //         Provider.of<UserController>(context,
+                            //             listen: false);
+                            //     if (userProvider.user!.following
+                            //         .contains(searchedUser.userId)) {
+                            //       // user is already following the searched user
+                            //       // try to unfollow
+                            //       userProvider.unFollowUser(
+                            //           userId: searchedUser.userId);
+                            //     } else {
+                            //       userProvider.followUser(
+                            //           userId: searchedUser.userId);
+                            //     }
+                            //     controller.search(queryController.text);
+                            //   },
+                            //   height: 30,
+                            //   color: authBackground,
+                            //   shape: RoundedRectangleBorder(
+                            //     borderRadius: BorderRadius.circular(4),
+                            //   ),
+                            //   child: Text(
+                            //     (controller.searchedAuthors[index].followers
+                            //             .contains(currentUserId))
+                            //         ? 'Following'
+                            //         : 'Follow',
+                            //     style: const TextStyle(
+                            //       fontSize: 13,
+                            //       color: Colors.white,
+                            //       fontWeight: FontWeight.normal,
+                            //     ),
+                            //   ),
+                            // ),
                           );
                         },
                       )
