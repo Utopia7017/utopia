@@ -264,8 +264,8 @@ class UserController extends DisposableProvider {
         List<dynamic> currentBlockedUsers = user!.blocked;
         currentBlockedUsers.add(uid);
         final Response? response = await _apiServices.update(
-            message: "Blocked", // TODO: display something more alluring
-            showMessage: true,
+            message: "Blocked",
+            showMessage: false,
             endUrl: 'users/${user!.userId}.json',
             data: {'blocked': currentBlockedUsers});
         if (response != null) {
@@ -287,7 +287,7 @@ class UserController extends DisposableProvider {
         currentBlockedUsers.remove(uid);
         final Response? response = await _apiServices.update(
             message: "Unblocked", // TODO: display something more alluring
-            showMessage: true,
+            showMessage: false,
             endUrl: 'users/${user!.userId}.json',
             data: {'blocked': currentBlockedUsers});
         if (response != null) {

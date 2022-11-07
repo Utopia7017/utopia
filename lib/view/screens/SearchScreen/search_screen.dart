@@ -6,9 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
+import 'package:utopia/controller/user_controller.dart';
+import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
+import 'package:utopia/view/shimmers/follower_shimmer.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({
@@ -179,84 +182,81 @@ class _SearchScreenState extends State<SearchScreen>
                             firstLetter = initials[0].characters.first;
                             lastLetter = initials[1].characters.first;
                           }
-                          return ListTile(
-                            onTap: () {
-                              if (controller.searchedAuthors[index].userId !=
-                                  myUserId) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UserProfileScreen(
-                                          userId: controller
-                                              .searchedAuthors[index].userId),
-                                    ));
+                          return Consumer<UserController>(
+                            builder: (context, userController, child) {
+                              if (userController.profileStatus ==
+                                  ProfileStatus.nil) {
+                                userController.setUser(myUserId);
+                              }
+
+                              switch (userController.profileStatus) {
+                                case ProfileStatus.nil:
+                                  return const Center(
+                                    child: Text("Something is wrong!!"),
+                                  );
+                                case ProfileStatus.loading:
+                                  return const FollowerShimmer();
+                                case ProfileStatus.fetched:
+                                  return ListTile(
+                                    onTap: () {
+                                      if (controller.searchedAuthors[index]
+                                                  .userId !=
+                                              myUserId &&
+                                          !userController.user!.blocked
+                                              .contains(controller
+                                                  .searchedAuthors[index]
+                                                  .userId)) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UserProfileScreen(
+                                                      userId: controller
+                                                          .searchedAuthors[
+                                                              index]
+                                                          .userId),
+                                            ));
+                                      }
+                                    },
+                                    leading: (controller
+                                            .searchedAuthors[index].dp.isEmpty)
+                                        ? CircleAvatar(
+                                            backgroundColor:
+                                                authMaterialButtonColor,
+                                            child: Center(
+                                              child: initials.length > 1
+                                                  ? Text(
+                                                      "$firstLetter.$lastLetter"
+                                                          .toUpperCase(),
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colors.white),
+                                                    )
+                                                  : Text(
+                                                      firstLetter.toUpperCase(),
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colors.white),
+                                                    ),
+                                            ),
+                                          )
+                                        : CircleAvatar(
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                    controller
+                                                        .searchedAuthors[index]
+                                                        .dp),
+                                          ),
+                                    title: Text(
+                                        controller.searchedAuthors[index].name),
+                                    dense: true,
+                                  );
                               }
                             },
-                            leading: (controller
-                                    .searchedAuthors[index].dp.isEmpty)
-                                ? CircleAvatar(
-                                    backgroundColor: authMaterialButtonColor,
-                                    child: Center(
-                                      child: initials.length > 1
-                                          ? Text(
-                                              "$firstLetter.$lastLetter"
-                                                  .toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white),
-                                            )
-                                          : Text(
-                                              firstLetter.toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white),
-                                            ),
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        controller.searchedAuthors[index].dp),
-                                  ),
-                            title: Text(controller.searchedAuthors[index].name),
-                            dense: true,
-                            // trailing: MaterialButton(
-                            //   onPressed: () {
-                            //     var searchedUser =
-                            //         controller.searchedAuthors[index];
-                            //     final userProvider =
-                            //         Provider.of<UserController>(context,
-                            //             listen: false);
-                            //     if (userProvider.user!.following
-                            //         .contains(searchedUser.userId)) {
-                            //       // user is already following the searched user
-                            //       // try to unfollow
-                            //       userProvider.unFollowUser(
-                            //           userId: searchedUser.userId);
-                            //     } else {
-                            //       userProvider.followUser(
-                            //           userId: searchedUser.userId);
-                            //     }
-                            //     controller.search(queryController.text);
-                            //   },
-                            //   height: 30,
-                            //   color: authBackground,
-                            //   shape: RoundedRectangleBorder(
-                            //     borderRadius: BorderRadius.circular(4),
-                            //   ),
-                            //   child: Text(
-                            //     (controller.searchedAuthors[index].followers
-                            //             .contains(currentUserId))
-                            //         ? 'Following'
-                            //         : 'Follow',
-                            //     style: const TextStyle(
-                            //       fontSize: 13,
-                            //       color: Colors.white,
-                            //       fontWeight: FontWeight.normal,
-                            //     ),
-                            //   ),
-                            // ),
                           );
                         },
                       )

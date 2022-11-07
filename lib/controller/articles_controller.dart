@@ -73,6 +73,8 @@ class ArticlesController extends DisposableProvider {
 
       final reportResponse =
           await _apiServices.get(endUrl: 'reports/$myUid.json');
+
+
       List<Report> reportArticles = [];
       if (reportResponse != null && reportResponse.data != null) {
         logger.info(reportResponse.data);
@@ -88,6 +90,8 @@ class ArticlesController extends DisposableProvider {
       for (dynamic followingUid in following) {
         // for every following user id we will check if they have posted any article.
         // If posted then we will traverse all his articles and save it in our local 'for you' category
+
+
 
         final Response? articlesResponse =
             await _apiServices.get(endUrl: 'articles/$followingUid.json');

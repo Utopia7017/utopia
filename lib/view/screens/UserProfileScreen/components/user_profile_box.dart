@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebaseuser;
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
@@ -311,17 +312,43 @@ class UserProfileBox extends StatelessWidget {
                                                                   0.8)),
                                                 ),
                                                 onPressed: () {
-                                                  if (userController
-                                                      .user!.blocked
-                                                      .contains(user.userId)) {
-                                                    userController
-                                                        .unBlockThisUser(
-                                                            user.userId);
-                                                  } else {
-                                                    userController
-                                                        .blockThisUser(
-                                                            user.userId);
-                                                  }
+                                                  QuickAlert.show(
+                                                    context: context,
+                                                    type:
+                                                        QuickAlertType.confirm,
+                                                    confirmBtnText: "Yes",
+                                                    text: userController
+                                                            .user!.blocked
+                                                            .contains(
+                                                                user.userId)
+                                                        ? "Are you sure you want to unblock this user?"
+                                                        : "Are you sure you want to block this user?",
+                                                    title: userController
+                                                            .user!.blocked
+                                                            .contains(
+                                                                user.userId)
+                                                        ? "Confirm unblocking"
+                                                        : "Confirm blocking",
+                                                    onConfirmBtnTap: () {
+                                                      if (userController
+                                                          .user!.blocked
+                                                          .contains(
+                                                              user.userId)) {
+                                                        userController
+                                                            .unBlockThisUser(
+                                                                user.userId);
+                                                      } else {
+                                                        userController
+                                                            .blockThisUser(
+                                                                user.userId);
+                                                        userController
+                                                            .unFollowUser(
+                                                                userId: user
+                                                                    .userId);
+                                                      }
+                                                      Navigator.pop(context);
+                                                    },
+                                                  );
                                                 },
                                                 child: Text(
                                                   userController.user!.blocked
