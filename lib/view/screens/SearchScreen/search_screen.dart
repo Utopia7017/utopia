@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  //final usermodel.User searchedAuthors;
   const SearchScreen({
     super.key,
   });
@@ -60,11 +57,12 @@ class _SearchScreenState extends State<SearchScreen>
                   child: Consumer<ArticlesController>(
                     builder: (context, controller, child) {
                       return TextFormField(
-                        controller: queryController,
+                        // controller: queryController,
                         onChanged: (query) {
                           if (_debounce?.isActive ?? false) _debounce!.cancel();
                           _debounce =
                               Timer(const Duration(milliseconds: 500), () {
+                            print(query);
                             controller.search(query);
                           });
                         },

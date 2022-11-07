@@ -70,13 +70,14 @@ class ArticlesController extends DisposableProvider {
       }
 
       // get reports
-      
-      final reportResponse = await _apiServices.get(endUrl: 'reports/$myUid.json');
+
+      final reportResponse =
+          await _apiServices.get(endUrl: 'reports/$myUid.json');
       List<Report> reportArticles = [];
-      if(reportResponse!=null && reportResponse.data!=null){
+      if (reportResponse != null && reportResponse.data != null) {
         logger.info(reportResponse.data);
-        Map<String,dynamic> data = reportResponse.data;
-        for(var reportData in data.values) {
+        Map<String, dynamic> data = reportResponse.data;
+        for (var reportData in data.values) {
           Report rep = Report.fromJson(reportData);
           if (rep.type == "article") {
             reportArticles.add(rep);
@@ -95,8 +96,10 @@ class ArticlesController extends DisposableProvider {
           Map<String, dynamic> articles = articlesResponse.data;
           for (var data in articles.values) {
             Article article = Article.fromJson(data);
-            int foundInBlockedReports = reportArticles.indexWhere((element) => element.articleId==article.articleId && element.userToReport==article.authorId);
-            if(foundInBlockedReports==-1){
+            int foundInBlockedReports = reportArticles.indexWhere((element) =>
+                element.articleId == article.articleId &&
+                element.userToReport == article.authorId);
+            if (foundInBlockedReports == -1) {
               // not reported
               fetchedArticles['For you']!.add(article);
             }
@@ -119,11 +122,12 @@ class ArticlesController extends DisposableProvider {
             Map<String, dynamic> arts = articlesByUsers[userId];
             for (var data in arts.values) {
               Article article = Article.fromJson(data);
-              int foundInBlockedReports = reportArticles.indexWhere((element) => element.articleId==article.articleId && element.userToReport==article.authorId);
-              if(foundInBlockedReports == -1){
+              int foundInBlockedReports = reportArticles.indexWhere((element) =>
+                  element.articleId == article.articleId &&
+                  element.userToReport == article.authorId);
+              if (foundInBlockedReports == -1) {
                 fetchedArticles[article.category]!.add(article);
               }
-
             }
           }
         }

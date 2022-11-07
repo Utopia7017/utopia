@@ -28,8 +28,16 @@ class ProfileScreen extends StatelessWidget {
 
               switch (userController.profileStatus) {
                 case ProfileStatus.nil:
-                  return const Center(
-                    child: Text('Swipe to fetch profile'),
+                  return RefreshIndicator(
+                    onRefresh: () => userController
+                        .setUser(FirebaseAuth.instance.currentUser!.uid),
+                    child: ListView(
+                      children: const [
+                        Center(
+                          child: Text('Swipe to fetch profile'),
+                        ),
+                      ],
+                    ),
                   );
                 case ProfileStatus.loading:
                   // TODO: Show shimmer effect
@@ -59,10 +67,13 @@ class ProfileScreen extends StatelessWidget {
                       );
                     // user is not not uploading image
                     case UserUploadingImage.notLoading:
-                      return SingleChildScrollView(
-                        padding: EdgeInsets.zero,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      return RefreshIndicator(
+                        color: authBackground,
+                        onRefresh: () => userController
+                            .setUser(FirebaseAuth.instance.currentUser!.uid),
+                        child: ListView(
+                          padding: EdgeInsets.zero,
+                          // crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Profile box
                             ProfileBox(user: userController.user!),

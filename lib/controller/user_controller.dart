@@ -134,9 +134,40 @@ class UserController extends DisposableProvider {
     notifyListeners();
   }
 
+  void removeFollower(String followerId, String myUid) async {
+    followingUserStatus = FollowingUserStatus.yes;
+    await Future.delayed(const Duration(microseconds: 1));
+    notifyListeners();
+    try {
+      User? userToRemoveFromFollowers =
+          await getUser(followerId); // get user by user id
+      if (userToRemoveFromFollowers != null) {
+        List<dynamic> following =
+            userToRemoveFromFollowers.following; // get their following
+        following
+            .remove(myUid); // remove my user id from their followers locally.
+        // update their profile to the server.
+        await _apiServices.update(
+            endUrl: 'users/$followerId.json', data: {'following': following});
+        // update currently signed in user's profile (increase following list first)
+        List<dynamic> myFollowers = user!.followers;
+        // increase my following locally.
+        myFollowers.remove(followerId);
+        // update following list to my profile (server)
+        await _apiServices.update(
+            endUrl: 'users/${user!.userId}.json',
+            data: {'followers': myFollowers});
+        user!.followers = myFollowers;
+      }
+    } catch (error) {
+      rethrow;
+    }
+    followingUserStatus = FollowingUserStatus.no;
+    notifyListeners();
+  }
+
   // By calling this method currently signed in user can unfollow the user with the passed user id.
-  void unFollowUser({required userId}) async {
-    Logger logger = Logger("FollowAuthor");
+  void unFollowUser({required String userId}) async {
     followingUserStatus = FollowingUserStatus.yes;
     await Future.delayed(const Duration(microseconds: 1));
     notifyListeners();
@@ -160,7 +191,7 @@ class UserController extends DisposableProvider {
         user!.following = myFollowings;
       }
     } catch (error) {
-      logger.shout(error.toString());
+      rethrow;
     }
     followingUserStatus = FollowingUserStatus.no;
     notifyListeners();
