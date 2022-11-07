@@ -105,16 +105,18 @@ class CommentScreen extends StatelessWidget {
             return CommentBox(
               sendButtonMethod: () async {
                 // add the comment to firestore db
-                await addComment(
-                    articleId: articleId,
-                    comment: commentController.text,
-                    createdAt: DateTime.now().toString(),
-                    userId: myUserId);
+                if (commentController.text.trim().isNotEmpty) {
+                  await addComment(
+                      articleId: articleId,
+                      comment: commentController.text,
+                      createdAt: DateTime.now().toString(),
+                      userId: myUserId);
 
-                // notify the user
-                notifyUserWhenCommentOnArticle(
-                    myUserId, authorId, articleId, commentController.text);
-                commentController.clear();
+                  // notify the user
+                  await notifyUserWhenCommentOnArticle(
+                      myUserId, authorId, articleId, commentController.text);
+                  commentController.clear();
+                }
               },
               withBorder: true,
               errorText: 'Comment cannot be blank',
