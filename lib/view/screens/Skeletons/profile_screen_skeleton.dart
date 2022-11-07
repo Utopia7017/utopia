@@ -9,7 +9,7 @@ class ProfileScreenSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
         Stack(
           children: [
@@ -25,7 +25,7 @@ class ProfileScreenSkeleton extends StatelessWidget {
                     width: displayWidth(context) * 0.9)),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 25,
         ),
         SizedBox(

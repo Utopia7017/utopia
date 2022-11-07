@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseUser;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
@@ -35,147 +36,131 @@ class BlockedUsersScreen extends StatelessWidget {
             }
             switch (userController.profileStatus) {
               case ProfileStatus.nil:
-                return Text("Pull to refresh");
+                return const Text("Pull to refresh");
               case ProfileStatus.loading:
                 // Todo : add shimmer effect for this screen
-                return const Center(child: CircularProgressIndicator());
+                return const FollowerShimmer();
 
               case ProfileStatus.fetched:
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    Center(
-                      child: Card(
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: displayHeight(context) * 0.068,
-                            width: displayWidth(context) * 0.95,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: Colors.white,
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                hintText: "Search...",
-                                hintStyle: TextStyle(fontSize: 13.5),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Colors.black54,
-                                  size: 18,
-                                ),
-                                border: InputBorder.none,
-                              ),
-                              cursorColor: Colors.black45,
-                            ),
-                          )),
+                if (userController.user!.blocked.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          noArticleFoundIcon,
+                          height: displayHeight(context) * 0.1,
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "No users found",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400, fontFamily: "Open"),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    Expanded(
-                        child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return FutureBuilder(
-                          future: userController
-                              .getUser(userController.user!.blocked[index]),
-                          builder: (context, AsyncSnapshot<User?> snapshot) {
-                            if (snapshot.hasData) {
-                              User blockedUser = snapshot.data!;
-                              List<String> initials =
-                                  blockedUser.name.split(" ");
-                              String firstLetter = "", lastLetter = "";
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.only(top: 6),
+                  itemBuilder: (context, index) {
+                    return FutureBuilder(
+                      future: userController
+                          .getUser(userController.user!.blocked[index]),
+                      builder: (context, AsyncSnapshot<User?> snapshot) {
+                        if (snapshot.hasData) {
+                          User blockedUser = snapshot.data!;
+                          List<String> initials = blockedUser.name.split(" ");
+                          String firstLetter = "", lastLetter = "";
 
-                              if (initials.length == 1) {
-                                firstLetter = initials[0].characters.first;
-                              } else {
-                                firstLetter = initials[0].characters.first;
-                                lastLetter = initials[1].characters.first;
-                              }
-                              return ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => UserProfileScreen(
-                                            userId: blockedUser.userId),
-                                      ));
-                                },
-                                leading: (blockedUser.dp.isEmpty)
-                                    ? CircleAvatar(
-                                        backgroundColor:
-                                            authMaterialButtonColor,
-                                        child: Center(
-                                          child: initials.length > 1
-                                              ? Text(
-                                                  "$firstLetter.$lastLetter"
-                                                      .toUpperCase(),
-                                                  style: const TextStyle(
-                                                      fontSize: 30,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Colors.white),
-                                                )
-                                              : Text(
-                                                  firstLetter.toUpperCase(),
-                                                  style: const TextStyle(
-                                                      fontSize: 30,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Colors.white),
-                                                ),
-                                        ),
-                                      )
-                                    : CircleAvatar(
-                                        backgroundImage:
-                                            CachedNetworkImageProvider(
-                                                blockedUser.dp),
-                                      ),
-                                title: Row(
-                            children: [
-                              Text(
-                                 blockedUser.name
-                              ),
-                              SizedBox(width: 5,),
-                              blockedUser.isVerified?Image.asset(
+                          if (initials.length == 1) {
+                            firstLetter = initials[0].characters.first;
+                          } else {
+                            firstLetter = initials[0].characters.first;
+                            lastLetter = initials[1].characters.first;
+                          }
+                          return ListTile(
+                            onTap: () {},
+                            leading: (blockedUser.dp.isEmpty)
+                                ? CircleAvatar(
+                                    backgroundColor: authMaterialButtonColor,
+                                    child: Center(
+                                      child: initials.length > 1
+                                          ? Text(
+                                              "$firstLetter.$lastLetter"
+                                                  .toUpperCase(),
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            )
+                                          : Text(
+                                              firstLetter.toUpperCase(),
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            ),
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        blockedUser.dp),
+                                  ),
+                            title: Row(
+                              children: [
+                                Text(blockedUser.name),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                blockedUser.isVerified
+                                    ? Image.asset(
                                         verifyIcon,
                                         height: 17.5,
-                                      ):SizedBox(),
-
-                            ],
-                          ),
-                                dense: true,
-                                trailing: MaterialButton(
-                                  elevation: 1,
-                                  onPressed: () {
+                                      )
+                                    : const SizedBox(),
+                              ],
+                            ),
+                            dense: true,
+                            trailing: MaterialButton(
+                              elevation: 1,
+                              onPressed: () {
+                                QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.confirm,
+                                  confirmBtnText: "Yes",
+                                  text:
+                                      "Are you sure you want to unblock this user?",
+                                  title: "Confirm unblocking",
+                                  onConfirmBtnTap: () {
                                     userController
                                         .unBlockThisUser(blockedUser.userId);
+
+                                    Navigator.pop(context);
                                   },
-                                  height: 30,
-                                  color: authMaterialButtonColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: const Text(
-                                    'Unblock',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
+                                );
+                              },
+                              height: 30,
+                              color: authMaterialButtonColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: const Text(
+                                'Unblock',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal,
                                 ),
-                              );
-                            }  else { 
-                                 return const FollowerShimmer();
-                            }
-                          },
-                        );
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const FollowerShimmer();
+                        }
                       },
-                      itemCount: userController.user!.blocked.length,
-                    ))
-                  ],
+                    );
+                  },
+                  itemCount: userController.user!.blocked.length,
                 );
             }
           },

@@ -104,14 +104,14 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                                 ? Text(
                                     "$firstLetter.$lastLetter".toUpperCase(),
                                     style: const TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white),
                                   )
                                 : Text(
                                     firstLetter.toUpperCase(),
                                     style: const TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white),
                                   ),
@@ -124,7 +124,7 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                   const SizedBox(
                     width: 8,
                   ),
-                  Container(
+                  SizedBox(
                     width: displayWidth(context) * 0.2,
                     child: Text(
                       widget.author.name,

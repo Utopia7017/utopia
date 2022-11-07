@@ -27,150 +27,113 @@ class FollowingScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          return await Future.delayed(const Duration(seconds: 2));
-        },
-        backgroundColor: authBackground,
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            Center(
-              child: Card(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: displayHeight(context) * 0.068,
-                    width: displayWidth(context) * 0.95,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      color: Colors.white,
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                        hintText: "Search...",
-                        hintStyle: TextStyle(fontSize: 13.5),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.black54,
-                          size: 18,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                      cursorColor: Colors.black45,
-                    ),
-                  )),
-            ),
-            const SizedBox(height: 10),
-            Expanded(child: Consumer<UserController>(
-              builder: (context, controller, child) {
-                return ListView.builder(
-                  itemBuilder: (context, index) {
-                    return FutureBuilder(
-                      builder: (context, AsyncSnapshot<User?> snapshot) {
-                        if (snapshot.hasData) {
-                          User followingUser = snapshot.data!;
-                          List<String> initials = followingUser.name.split(" ");
-                          String firstLetter = "", lastLetter = "";
+          onRefresh: () async {
+            return await Future.delayed(const Duration(seconds: 2));
+          },
+          backgroundColor: authBackground,
+          color: Colors.white,
+          child: Consumer<UserController>(
+            builder: (context, controller, child) {
+              return ListView.builder(
+                itemBuilder: (context, index) {
+                  return FutureBuilder(
+                    builder: (context, AsyncSnapshot<User?> snapshot) {
+                      if (snapshot.hasData) {
+                        User followingUser = snapshot.data!;
+                        List<String> initials = followingUser.name.split(" ");
+                        String firstLetter = "", lastLetter = "";
 
-                          if (initials.length == 1) {
-                            firstLetter = initials[0].characters.first;
-                          } else {
-                            firstLetter = initials[0].characters.first;
-                            lastLetter = initials[1].characters.first;
-                          }
-                          return ListTile(
-                            visualDensity: const VisualDensity(vertical: 2.5),
-                            onTap: () {
-                              if (currentuserid != followingUser.userId) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UserProfileScreen(
-                                          userId: followingUser.userId),
-                                    ));
-                              }
-                            },
-                            leading: (followingUser.dp.isEmpty)
-                                ? CircleAvatar(
-                                    backgroundColor: authMaterialButtonColor,
-                                    child: Center(
-                                      child: initials.length > 1
-                                          ? Text(
-                                              "$firstLetter.$lastLetter"
-                                                  .toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white),
-                                            )
-                                          : Text(
-                                              firstLetter.toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white),
-                                            ),
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        followingUser.dp),
-                                  ),
-                            title: Row(
-                              children: [
-                                Text(followingUser.name),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                followingUser.isVerified
-                                    ? Image.asset(
-                                        verifyIcon,
-                                        height: 17.5,
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            ),
-                            dense: true,
-                            trailing: (currentuserid == user.userId)
-                                ? MaterialButton(
-                                    onPressed: () {
-                                      controller.unFollowUser(
-                                          userId: followingUser.userId);
-                                    },
-                                    height: 30,
-                                    color: authMaterialButtonColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: const Text(
-                                      'Unfollow',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ),
-                                  )
-                                : null,
-                          );
+                        if (initials.length == 1) {
+                          firstLetter = initials[0].characters.first;
                         } else {
-                          return const FollowerShimmer();
+                          firstLetter = initials[0].characters.first;
+                          lastLetter = initials[1].characters.first;
                         }
-                      },
-                      future: controller.getUser(user.following[index]),
-                    );
-                  },
-                  itemCount: user.following.length,
-                );
-              },
-            ))
-          ],
-        ),
-      ),
+                        return ListTile(
+                          visualDensity: const VisualDensity(vertical: 2.5),
+                          onTap: () {
+                            if (currentuserid != followingUser.userId) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UserProfileScreen(
+                                        userId: followingUser.userId),
+                                  ));
+                            }
+                          },
+                          leading: (followingUser.dp.isEmpty)
+                              ? CircleAvatar(
+                                  backgroundColor: authMaterialButtonColor,
+                                  child: Center(
+                                    child: initials.length > 1
+                                        ? Text(
+                                            "$firstLetter.$lastLetter"
+                                                .toUpperCase(),
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white),
+                                          )
+                                        : Text(
+                                            firstLetter.toUpperCase(),
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white),
+                                          ),
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: CachedNetworkImageProvider(
+                                      followingUser.dp),
+                                ),
+                          title: Row(
+                            children: [
+                              Text(followingUser.name),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              followingUser.isVerified
+                                  ? Image.asset(
+                                      verifyIcon,
+                                      height: 17.5,
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          ),
+                          dense: true,
+                          trailing: (currentuserid == user.userId)
+                              ? MaterialButton(
+                                  onPressed: () {
+                                    controller.unFollowUser(
+                                        userId: followingUser.userId);
+                                  },
+                                  height: 30,
+                                  color: authMaterialButtonColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text(
+                                    'Unfollow',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                )
+                              : null,
+                        );
+                      } else {
+                        return const FollowerShimmer();
+                      }
+                    },
+                    future: controller.getUser(user.following[index]),
+                  );
+                },
+                itemCount: user.following.length,
+              );
+            },
+          )),
     );
   }
 }
