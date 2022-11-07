@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:utopia/controller/articles_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/skeleton.dart';
@@ -47,9 +48,13 @@ class ReportModalSheet extends StatelessWidget {
             height: 15,
           ),
           ListTile(
-            onTap: () => report(
+            onTap: () {
+              report(
               "I don't like it",
-            ),
+            );
+            Navigator.pop(context);
+            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
+            },
             visualDensity: const VisualDensity(vertical: -4),
             title: const Text(
               "I don't like it",
@@ -59,9 +64,13 @@ class ReportModalSheet extends StatelessWidget {
             ),
           ),
           ListTile(
-            onTap: () => report(
+            onTap: () {
+              report(
               "Hate Speech",
-            ),
+            );
+            Navigator.pop(context);
+            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
+            },
             visualDensity: const VisualDensity(vertical: -4),
             title: const Text(
               "Hate Speech",
@@ -71,9 +80,13 @@ class ReportModalSheet extends StatelessWidget {
             ),
           ),
           ListTile(
-            onTap: () => report(
+            onTap: () {
+              report(
               "Violence or dangerous",
-            ),
+            );
+            Navigator.pop(context);
+            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
+            },
             visualDensity: const VisualDensity(vertical: -4),
             title: const Text(
               "Violence or dangerous",
@@ -83,9 +96,13 @@ class ReportModalSheet extends StatelessWidget {
             ),
           ),
           ListTile(
-            onTap: () => report(
+            onTap: () {
+              report(
               "Nudity or sexual activity",
-            ),
+            );
+            Navigator.pop(context);
+            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
+            },
             visualDensity: const VisualDensity(vertical: -4),
             title: const Text(
               "Nudity or sexual activity",
@@ -95,7 +112,11 @@ class ReportModalSheet extends StatelessWidget {
             ),
           ),
           ListTile(
-            onTap: () => report("Scam or fraud"),
+            onTap: () {
+              report("Scam or fraud");
+              Navigator.pop(context);
+              QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
+            },
             visualDensity: const VisualDensity(vertical: -4),
             title: const Text(
               "Scam or fraud",
@@ -105,7 +126,11 @@ class ReportModalSheet extends StatelessWidget {
             ),
           ),
           ListTile(
-            onTap: () => report("False information"),
+            onTap: () {
+              report("False information");
+              Navigator.pop(context);
+              QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
+            },
             visualDensity: const VisualDensity(vertical: -4),
             title: const Text(
               "False information",
@@ -115,9 +140,13 @@ class ReportModalSheet extends StatelessWidget {
             ),
           ),
           ListTile(
-            onTap: () => report(
+            onTap: () {
+              report(
               "This is spam",
-            ),
+            );
+            Navigator.pop(context);
+            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
+            },
             visualDensity: const VisualDensity(vertical: -4),
             title: const Text(
               "This is spam",
