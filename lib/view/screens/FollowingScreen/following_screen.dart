@@ -34,6 +34,25 @@ class FollowingScreen extends StatelessWidget {
           color: Colors.white,
           child: Consumer<UserController>(
             builder: (context, controller, child) {
+              if (user.following.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        noArticleFoundIcon,
+                        height: displayHeight(context) * 0.1,
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "No followings",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontFamily: "Open"),
+                      ),
+                    ],
+                  ),
+                );
+              }
               return ListView.builder(
                 itemBuilder: (context, index) {
                   return FutureBuilder(

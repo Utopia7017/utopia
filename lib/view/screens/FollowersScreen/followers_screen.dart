@@ -10,6 +10,8 @@ import 'package:utopia/models/user_model.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'package:utopia/view/shimmers/follower_shimmer.dart';
 
+import '../../../utils/device_size.dart';
+
 class FollowersScreen extends StatelessWidget {
   final User user;
   FollowersScreen({Key? key, required this.user}) : super(key: key);
@@ -38,6 +40,25 @@ class FollowersScreen extends StatelessWidget {
               if (controller.followingUserStatus == FollowingUserStatus.yes) {
                 return const FollowerShimmer();
               } else {
+                if (user.followers.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          noArticleFoundIcon,
+                          height: displayHeight(context) * 0.1,
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "No followers found",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontFamily: "Open"),
+                        ),
+                      ],
+                    ),
+                  );
+                }
                 return ListView.builder(
                   itemBuilder: (context, index) {
                     return FutureBuilder(
