@@ -130,7 +130,7 @@ class CommentScreen extends StatelessWidget {
               userImage: controller.user != null &&
                       controller.user!.dp.isNotEmpty
                   ? controller.user!.dp
-                  : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
+                  : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d',
               child: StreamBuilder(
                 stream: commentStream,
                 builder: (context, AsyncSnapshot snapshot) {
