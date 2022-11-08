@@ -128,7 +128,7 @@ class UserProfileBox extends StatelessWidget {
                                               end: Alignment.topRight),
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      height: displayHeight(context) * 0.13,
+                                      height: displayHeight(context) * 0.12,
                                       width: displayWidth(context) * 0.22,
                                       alignment: Alignment.center,
                                       child: initials.length > 1
@@ -152,7 +152,7 @@ class UserProfileBox extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10),
                                       child: CachedNetworkImage(
                                         imageUrl: user.dp,
-                                        height: displayHeight(context) * 0.13,
+                                        height: displayHeight(context) * 0.12,
                                         width: displayWidth(context) * 0.22,
                                         fit: BoxFit.cover,
                                       ),
