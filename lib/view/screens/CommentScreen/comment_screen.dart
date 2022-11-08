@@ -10,7 +10,6 @@ import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
-import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
 
@@ -96,27 +95,28 @@ class CommentScreen extends StatelessWidget {
       ),
       backgroundColor: primaryBackgroundColor,
       body: RefreshIndicator(
-         onRefresh: ()async {
-          return await Future.delayed(Duration(seconds: 2));
+        onRefresh: () async {
+          return await Future.delayed(const Duration(seconds: 2));
         },
         backgroundColor: authBackground,
         color: Colors.white,
-
         child: Consumer<UserController>(
           builder: (context, controller, child) {
             return CommentBox(
               sendButtonMethod: () async {
                 // add the comment to firestore db
-                await addComment(
-                    articleId: articleId,
-                    comment: commentController.text,
-                    createdAt: DateTime.now().toString(),
-                    userId: myUserId);
-      
-                // notify the user
-                notifyUserWhenCommentOnArticle(
-                    myUserId, authorId, articleId, commentController.text);
-                commentController.clear();
+                if (commentController.text.trim().isNotEmpty) {
+                  await addComment(
+                      articleId: articleId,
+                      comment: commentController.text,
+                      createdAt: DateTime.now().toString(),
+                      userId: myUserId);
+
+                  // notify the user
+                  await notifyUserWhenCommentOnArticle(
+                      myUserId, authorId, articleId, commentController.text);
+                  commentController.clear();
+                }
               },
               withBorder: true,
               errorText: 'Comment cannot be blank',
@@ -127,13 +127,16 @@ class CommentScreen extends StatelessWidget {
               backgroundColor: Colors.white,
               formKey: formKey,
               textColor: Colors.black87,
-              userImage: controller.user != null && controller.user!.dp.isNotEmpty
+              userImage: controller.user != null &&
+                      controller.user!.dp.isNotEmpty
                   ? controller.user!.dp
-                  : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
+                  : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d',
               child: StreamBuilder(
                 stream: commentStream,
                 builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData &&
+                      (snapshot.connectionState == ConnectionState.active ||
+                          snapshot.connectionState == ConnectionState.done)) {
                     dynamic commentData = snapshot.data.docs;
                     return ListComments(
                       articleOwnerId: authorId,

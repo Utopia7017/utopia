@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:utopia/constants/color_constants.dart';
 
 class HelpScreen extends StatefulWidget {
@@ -16,6 +17,21 @@ class _HelpScreenState extends State<HelpScreen> {
   TextEditingController messageController = TextEditingController();
 
   String type = "Feedback";
+
+  openUrl(String link) async {
+    if (await launchUrl(
+      Uri.parse(link),
+      mode: LaunchMode.externalApplication,
+    )) {}
+  }
+
+  mailTo() {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'starcoding7@gmail.com',
+    );
+    launchUrl(emailLaunchUri);
+  }
 
   suggestFeebback(
     String emailId,
@@ -88,7 +104,10 @@ class _HelpScreenState extends State<HelpScreen> {
                     CircleAvatar(
                       backgroundColor: authBackground,
                       child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            openUrl(
+                                'https://discord.com/channels/1038326964471205928/1038327572435583007');
+                          },
                           icon: const Icon(
                             Icons.discord,
                             color: Colors.white,
@@ -106,7 +125,12 @@ class _HelpScreenState extends State<HelpScreen> {
                     CircleAvatar(
                       backgroundColor: authBackground,
                       child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.info,
+                                title: "Will be live soon");
+                          },
                           icon: const Icon(
                             Icons.facebook,
                             color: Colors.white,
@@ -124,7 +148,9 @@ class _HelpScreenState extends State<HelpScreen> {
                     CircleAvatar(
                       backgroundColor: authBackground,
                       child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            mailTo();
+                          },
                           icon: const Icon(
                             Icons.email,
                             color: Colors.white,
@@ -142,7 +168,9 @@ class _HelpScreenState extends State<HelpScreen> {
                     CircleAvatar(
                       backgroundColor: authBackground,
                       child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            openUrl('https://github.com/Utopia7017/utopia');
+                          },
                           icon: const Icon(
                             FontAwesomeIcons.github,
                             color: Colors.white,
