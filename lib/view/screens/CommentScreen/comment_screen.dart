@@ -49,7 +49,7 @@ class CommentScreen extends StatelessWidget {
                 case ArticlesStatus.nil:
                   return const SizedBox();
                 case ArticlesStatus.fetching:
-                  return SizedBox();
+                  return const SizedBox();
                 case ArticlesStatus.fetched:
                   late Article article;
                   for (var key in controller.articles.keys) {
@@ -84,7 +84,7 @@ class CommentScreen extends StatelessWidget {
                           ],
                         );
                       } else {
-                        return SizedBox();
+                        return const SizedBox();
                       }
                     },
                   );
