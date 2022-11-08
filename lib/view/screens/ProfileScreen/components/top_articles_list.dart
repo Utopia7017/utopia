@@ -9,6 +9,7 @@ import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/top_articles_box.dart';
+import 'package:utopia/view/screens/ProfileScreen/components/view_all_articles.dart';
 import 'package:utopia/view/shimmers/rec_article_shimmer.dart';
 
 class TopArticlesList extends StatelessWidget {
@@ -122,7 +123,9 @@ class TopArticlesList extends StatelessWidget {
                               (myArticlesController.publishedArticles.length >=
                                       10)
                                   ? InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => ViewAllArticles(),));
+                                      },
                                       child: Row(
                                         children: const [
                                           Text(
@@ -237,7 +240,9 @@ class TopArticlesList extends StatelessWidget {
                           ),
                           (snapshot.data!.length >= 10)
                               ? InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => ViewAllArticles(),));
+                                  },
                                   child: Row(
                                     children: const [
                                       Text(
