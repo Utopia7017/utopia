@@ -31,7 +31,7 @@ class NewArticleScreen extends StatelessWidget {
             .validateArticleBody()) {
           // Some valid article body is present
           TextEditingController draftTitleController = TextEditingController();
-          _logger.info("Going back");
+
           QuickAlert.show(
               context: context,
               onCancelBtnTap: () {

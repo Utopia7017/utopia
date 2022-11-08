@@ -8,6 +8,7 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/profile_box.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/top_articles_list.dart';
 import 'package:utopia/view/screens/Skeletons/rec_article_skeleton.dart';
+import 'package:utopia/view/shimmers/profile_screen_shimmer.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -40,31 +41,13 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   );
                 case ProfileStatus.loading:
-                  // TODO: Show shimmer effect
-
-                  return const Center(
-                    child: CircularProgressIndicator(
-                        color: authMaterialButtonColor),
-                  );
+                  return const ProfileScreenShimmer();
                 case ProfileStatus.fetched:
                   // Profile is fetched
                   switch (userController.userUploadingImage) {
                     // user is uploading image
                     case UserUploadingImage.loading:
-                      // todo : display good message while user is uploading image
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Center(
-                              child: CircularProgressIndicator(
-                                  color: authMaterialButtonColor),
-                            ),
-                            SizedBox(height: 10),
-                            Text('Uploading image')
-                          ],
-                        ),
-                      );
+                      return const ProfileScreenShimmer();
                     // user is not not uploading image
                     case UserUploadingImage.notLoading:
                       return RefreshIndicator(

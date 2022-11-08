@@ -72,7 +72,7 @@ class _MyArticleScreenState extends State<MyArticleScreen>
             },
             body: RefreshIndicator(
               onRefresh: () async {
-                return await Future.delayed(Duration(seconds: 2));
+                return await Future.delayed(const Duration(seconds: 2));
               },
               backgroundColor: authBackground,
               color: Colors.white,
@@ -104,7 +104,7 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                 const Text(
                                   "No article found",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w400,
                                       fontFamily: "Open"),
                                 ),
                               ],
@@ -124,20 +124,22 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                     type: QuickAlertType.warning,
                                     title: "Delete this article? ",
                                     cancelBtnTextStyle:
-                                    const TextStyle(color: Colors.black54),
+                                        const TextStyle(color: Colors.black54),
                                     showCancelBtn: true,
                                     onConfirmBtnTap: () {
-                                    controller.deleteThisArticle(
-                                      myUid: controller
-                                      .publishedArticles[index].authorId,
-                                      articleId: controller
-                                      .publishedArticles[index].articleId);
+                                      controller.deleteThisArticle(
+                                          myUid: controller
+                                              .publishedArticles[index]
+                                              .authorId,
+                                          articleId: controller
+                                              .publishedArticles[index]
+                                              .articleId);
                                       Navigator.pop(context);
-                                  },
-                                  onCancelBtnTap: () {
-                                controller.clearForm();
-                                Navigator.pop(context);
-                              },
+                                    },
+                                    onCancelBtnTap: () {
+                                      controller.clearForm();
+                                      Navigator.pop(context);
+                                    },
                                   );
                                 },
                                 child: ArticleBox(
@@ -179,9 +181,9 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                 ),
                                 const SizedBox(height: 20),
                                 const Text(
-                                  "No article found",
+                                  "No drafts found",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w400,
                                       fontFamily: "Open"),
                                 ),
                               ],
@@ -198,24 +200,22 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                   QuickAlert.show(
                                     context: context,
                                     type: QuickAlertType.warning,
-                                    title: "Delete this article? ",
+                                    title: "Delete this draft? ",
                                     cancelBtnTextStyle:
-                                    const TextStyle(color: Colors.black54),
+                                        const TextStyle(color: Colors.black54),
                                     showCancelBtn: true,
                                     onConfirmBtnTap: () {
-                                    controller.deleteDraftArticle(
-                                                    myUid: controller
-                                                        .draftArticles[index]
-                                                        .authorId,
-                                                    articleId: controller
-                                                        .draftArticles[index]
-                                                        .articleId);
-                                                Navigator.pop(context);
-                                  },
-                                  onCancelBtnTap: () {
-                                controller.clearForm();
-                                Navigator.pop(context);
-                                   },
+                                      controller.deleteDraftArticle(
+                                          myUid: controller
+                                              .draftArticles[index].authorId,
+                                          articleId: controller
+                                              .draftArticles[index].articleId);
+                                      Navigator.pop(context);
+                                    },
+                                    onCancelBtnTap: () {
+                                      controller.clearForm();
+                                      Navigator.pop(context);
+                                    },
                                   );
                                 },
                                 child: DraftArticleBox(

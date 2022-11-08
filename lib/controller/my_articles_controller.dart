@@ -199,7 +199,7 @@ class MyArticlesController extends DisposableProvider {
       List<Article> tempPublished = [];
       final Response? response =
           await _apiServices.get(endUrl: 'articles/$myUid.json');
-      if (response != null) {
+      if (response != null && response.data != null) {
         final Map<String, dynamic> responseData = response.data;
         for (var article in responseData.values) {
           Article art = Article.fromJson(article);
@@ -210,7 +210,7 @@ class MyArticlesController extends DisposableProvider {
             .sort((a, b) => b.articleCreated.compareTo(a.articleCreated));
       }
     } catch (error) {
-      _logger.shout(error.toString());
+      logger.shout(error.toString());
     }
     fetchingMyArticleStatus = FetchingMyArticle.fetched;
     notifyListeners();
@@ -270,7 +270,8 @@ class MyArticlesController extends DisposableProvider {
   }
 
   // Deletes articles
-  Future<void> deleteThisArticle({required String myUid, required String articleId}) async {
+  Future<void> deleteThisArticle(
+      {required String myUid, required String articleId}) async {
     Logger logger = Logger("Delete this article");
     try {
       final Response? response =
@@ -347,11 +348,10 @@ class MyArticlesController extends DisposableProvider {
             endUrl: 'draft-articles/$userId/$articleId.json',
             data: {'articleId': articleId},
             message: "Article published successfully",
-            showMessage: true);
-        if (fetchingMyArticleStatus == FetchingDraftArticles.nil) {
-          await fetchDraftArticles(userId);
-        }
-        draftArticles.add(article);
+            showMessage: false);
+
+        await fetchDraftArticles(userId);
+        // draftArticles.add(article);
         clearForm();
       }
     } catch (error) {
