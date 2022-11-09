@@ -253,6 +253,7 @@ class ArticlesController extends DisposableProvider {
         }
       }
     } catch (error) {}
+     articles.sort((a, b) => b.articleCreated.compareTo(a.articleCreated) ,);
     return articles;
   }
 
