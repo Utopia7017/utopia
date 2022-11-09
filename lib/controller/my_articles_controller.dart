@@ -347,8 +347,8 @@ class MyArticlesController extends DisposableProvider {
         await _apiServices.update(
             endUrl: 'draft-articles/$userId/$articleId.json',
             data: {'articleId': articleId},
-            message: "Article published successfully",
-            showMessage: false);
+            message: "Article saved as draft ",
+            showMessage: true);
 
         await fetchDraftArticles(userId);
         // draftArticles.add(article);
