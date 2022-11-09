@@ -74,7 +74,6 @@ class ArticlesController extends DisposableProvider {
       final reportResponse =
           await _apiServices.get(endUrl: 'reports/$myUid.json');
 
-
       List<Report> reportArticles = [];
       if (reportResponse != null && reportResponse.data != null) {
         logger.info(reportResponse.data);
@@ -90,8 +89,6 @@ class ArticlesController extends DisposableProvider {
       for (dynamic followingUid in following) {
         // for every following user id we will check if they have posted any article.
         // If posted then we will traverse all his articles and save it in our local 'for you' category
-
-
 
         final Response? articlesResponse =
             await _apiServices.get(endUrl: 'articles/$followingUid.json');
@@ -218,17 +215,40 @@ class ArticlesController extends DisposableProvider {
     notifyListeners();
   }
 
-  Future<List<Article>> fetchThisUsersArticles(String uid) async {
+  Future<List<Article>> fetchThisUsersArticles(String myUid, String uid) async {
     Logger logger = Logger('FetchThisUserArticle');
+
     List<Article> articles = [];
     try {
+      // get reports
+      final Response? reportResponse =
+          await _apiServices.get(endUrl: 'reports/$myUid.json');
+
+      List<Report> reportArticles = [];
+      if (reportResponse != null && reportResponse.data != null) {
+        logger.info(reportResponse.data);
+        Map<String, dynamic> data = reportResponse.data;
+        for (var reportData in data.values) {
+          Report rep = Report.fromJson(reportData);
+          if (rep.type == "article") {
+            reportArticles.add(rep);
+          }
+        }
+      }
       final Response? response =
           await _apiServices.get(endUrl: 'articles/$uid.json');
+
       if (response != null && response.data != null) {
         Map<String, dynamic> articleData = response.data;
         if (articleData.isNotEmpty) {
           for (var art in articleData.values) {
-            articles.add(Article.fromJson(art));
+            int foundInReports = reportArticles.indexWhere((element) =>
+                element.articleId == Article.fromJson(art).articleId &&
+                element.userToReport == Article.fromJson(art).authorId);
+            if (foundInReports == -1) {
+              // if current user has not reported this article
+              articles.add(Article.fromJson(art));
+            }
           }
         }
       }
@@ -257,6 +277,7 @@ class ArticlesController extends DisposableProvider {
         if (updateResponse != null) {
           report.updateReportId(id);
         }
+        // final postReportResponse = await _apiServices.post(endUrl: 'articles/', data: data)
       }
     } catch (e) {
       logger.shout(e);

@@ -6,7 +6,7 @@ class Article {
   final String authorId;
   final List<dynamic> body;
   final DateTime articleCreated;
-  final List<Report> reports;
+  final List<dynamic> reports;
   final List<dynamic> tags;
   final String title;
   final String category;

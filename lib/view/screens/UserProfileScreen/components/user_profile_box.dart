@@ -230,7 +230,7 @@ class UserProfileBox extends StatelessWidget {
                                 FollowingUserStatus.no) {
                               return FutureBuilder(
                                 future: Provider.of<ArticlesController>(context)
-                                    .fetchThisUsersArticles(user.userId),
+                                    .fetchThisUsersArticles(myUid,user.userId),
                                 builder: (context,
                                     AsyncSnapshot<List<Article>> snapshot) {
                                   if (snapshot.hasData) {
