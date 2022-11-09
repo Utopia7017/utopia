@@ -9,6 +9,7 @@ import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/top_articles_box.dart';
+import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/view_all_articles.dart';
 import 'package:utopia/view/shimmers/rec_article_shimmer.dart';
 
@@ -124,7 +125,12 @@ class TopArticlesList extends StatelessWidget {
                                       10)
                                   ? InkWell(
                                       onTap: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => ViewAllArticles(),));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MyArticleScreen(),
+                                            ));
                                       },
                                       child: Row(
                                         children: const [
@@ -183,7 +189,7 @@ class TopArticlesList extends StatelessWidget {
           ) //
         : FutureBuilder(
             future: Provider.of<ArticlesController>(context)
-                .fetchThisUsersArticles(user.userId),
+                .fetchThisUsersArticles(myUid,user.userId),
             builder: (context, AsyncSnapshot<List<Article>> snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data!.isEmpty) {
@@ -241,7 +247,12 @@ class TopArticlesList extends StatelessWidget {
                           (snapshot.data!.length >= 10)
                               ? InkWell(
                                   onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => ViewAllArticles(),));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ViewAllArticles(
+                                              articles: snapshot.data!),
+                                        ));
                                   },
                                   child: Row(
                                     children: const [

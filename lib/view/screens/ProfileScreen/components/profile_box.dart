@@ -434,7 +434,7 @@ class ProfileBox extends StatelessWidget {
                           builder: (context, value, child) {
                             return FutureBuilder(
                               future: Provider.of<ArticlesController>(context)
-                                  .fetchThisUsersArticles(user.userId),
+                                  .fetchThisUsersArticles(_auth.auth.currentUser!.uid,user.userId),
                               builder: (context,
                                   AsyncSnapshot<List<Article>> snapshot) {
                                 if (snapshot.hasData) {
