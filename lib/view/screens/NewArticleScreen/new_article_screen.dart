@@ -26,6 +26,7 @@ class NewArticleScreen extends StatelessWidget {
     return WillPopScope(
       // This widget helps us catching the back button press event from the device's navigator.
       onWillPop: () async {
+        final formkey= GlobalKey<FormState>();
         bool shouldPop = true;
         if (Provider.of<MyArticlesController>(context, listen: false)
             .validateArticleBody()) {
@@ -44,22 +45,34 @@ class NewArticleScreen extends StatelessWidget {
               cancelBtnTextStyle: const TextStyle(color: Colors.black54),
               type: QuickAlertType.custom,
               onConfirmBtnTap: () {
-                Provider.of<MyArticlesController>(context, listen: false)
+                if(formkey.currentState!.validate()) {
+                  Provider.of<MyArticlesController>(context, listen: false)
                     .draftMyArticle(
                         userId: FirebaseAuth.instance.currentUser!.uid,
                         title: draftTitleController.text,
                         tags: []);
                 Navigator.pop(context);
                 Navigator.pop(context);
+                }  
               },
               showCancelBtn: true,
-              widget: TextFormField(
-                controller: draftTitleController,
-                minLines: 1,
-                style: const TextStyle(fontFamily: "Open"),
-                decoration: const InputDecoration(
-                    hintText: "Draft title",
-                    hintStyle: TextStyle(fontFamily: "Open")),
+              widget: Form(
+                key: formkey,
+                child: TextFormField(
+                  controller: draftTitleController,
+                  minLines: 1,
+                  style: const TextStyle(fontFamily: "Open"),
+                  decoration: const InputDecoration(
+                      hintText: "Draft title",
+                      hintStyle: TextStyle(fontFamily: "Open")),
+                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return "Title cannot be empty";
+                                        } else {
+                                           return null;
+                                        }
+                                      },
+                ),
               ));
           return shouldPop;
         }
@@ -102,6 +115,7 @@ class NewArticleScreen extends StatelessWidget {
                   case ArticleUploadingStatus.notUploading:
                     return IconButton(
                       onPressed: () {
+                        final formkey= GlobalKey<FormState>();
                         if (controller.validateArticleBody()) {
                           // Some valid article body is present
                           TextEditingController draftTitleController =
@@ -115,26 +129,38 @@ class NewArticleScreen extends StatelessWidget {
                               type: QuickAlertType.custom,
                               showCancelBtn: true,
                               onConfirmBtnTap: () {
-                                controller.draftMyArticle(
+                                if(formkey.currentState!.validate()) {
+                                  controller.draftMyArticle(
                                     userId:
                                         FirebaseAuth.instance.currentUser!.uid,
                                     title: draftTitleController.text,
                                     tags: []);
                                 Navigator.pop(context);
                                 Navigator.pop(context);
+                                }
                               },
                               onCancelBtnTap: () {
                                 controller.clearForm();
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                               },
-                              widget: TextFormField(
-                                controller: draftTitleController,
-                                minLines: 1,
-                                style: const TextStyle(fontFamily: "Open"),
-                                decoration: const InputDecoration(
-                                    hintText: "Draft title",
-                                    hintStyle: TextStyle(fontFamily: "Open")),
+                              widget: Form(
+                                key: formkey,
+                                child: TextFormField(
+                                  controller: draftTitleController,
+                                  minLines: 1,
+                                  style: const TextStyle(fontFamily: "Open"),
+                                  decoration: const InputDecoration(
+                                      hintText: "Draft title",
+                                      hintStyle: TextStyle(fontFamily: "Open")),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return "Title cannot be empty";
+                                        } else {
+                                           return null;
+                                        }
+                                      },
+                                ),
                               ));
                         } else {
                           Navigator.pop(context);
