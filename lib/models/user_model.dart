@@ -1,4 +1,3 @@
-
 class User {
   String name;
   String userId;
@@ -11,12 +10,14 @@ class User {
   String cp;
   List<dynamic> savedArticles;
   List<dynamic> draftArticles;
+  List<dynamic> blockedBy;
   bool isVerified;
 
   User(
       {required this.name,
       required this.dp,
       required this.email,
+      required this.blockedBy,
       required this.blocked,
       required this.followers,
       required this.userId,
@@ -30,6 +31,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> data) {
     return User(
         name: data['name'] ?? '',
+        blockedBy: data['blockedBy'] ?? '',
         cp: data['cp'] ?? '',
         bio: data['bio'] ?? '',
         dp: data['dp'],
@@ -57,6 +59,7 @@ class User {
       'draftArticles': [],
       'savedArticles': [],
       'isVerified': false,
+      'blockedBy': [],
     };
   }
 
@@ -89,13 +92,19 @@ class User {
     }
   }
 
-  removeDp(){
-    dp='';
+  blockedByMe(String uid) {
+    blockedBy.add(uid);
   }
 
-  removeCp(){
-    cp='';
+  unblockedByMe(String uid) {
+    blockedBy.remove(uid);
   }
 
+  removeDp() {
+    dp = '';
+  }
 
+  removeCp() {
+    cp = '';
+  }
 }

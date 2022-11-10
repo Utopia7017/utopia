@@ -230,7 +230,7 @@ class UserProfileBox extends StatelessWidget {
                                 FollowingUserStatus.no) {
                               return FutureBuilder(
                                 future: Provider.of<ArticlesController>(context)
-                                    .fetchThisUsersArticles(myUid,user.userId),
+                                    .fetchThisUsersArticles(myUid, user.userId),
                                 builder: (context,
                                     AsyncSnapshot<List<Article>> snapshot) {
                                   if (snapshot.hasData) {
@@ -334,10 +334,17 @@ class UserProfileBox extends StatelessWidget {
                                                           .user!.blocked
                                                           .contains(
                                                               user.userId)) {
+                                                        // unblock user
                                                         userController
                                                             .unBlockThisUser(
                                                                 user.userId);
+                                                        Provider.of<ArticlesController>(
+                                                                context,
+                                                                listen: false)
+                                                            .fetchArticles();
+                                                        Navigator.pop(context);
                                                       } else {
+                                                        // block user
                                                         userController
                                                             .blockThisUser(
                                                                 user.userId);
@@ -345,8 +352,13 @@ class UserProfileBox extends StatelessWidget {
                                                             .unFollowUser(
                                                                 userId: user
                                                                     .userId);
+                                                        Provider.of<ArticlesController>(
+                                                                context,
+                                                                listen: false)
+                                                            .fetchArticles();
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context);
                                                       }
-                                                      Navigator.pop(context);
                                                     },
                                                   );
                                                 },
