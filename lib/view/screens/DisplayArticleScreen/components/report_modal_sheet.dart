@@ -13,6 +13,15 @@ class ReportModalSheet extends StatelessWidget {
       {super.key, required this.articleId, required this.articleOwnerId});
 
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
+  final List<String> reasons = [
+    "I don't like it",
+    "Hate Speech",
+    "Violence or dangerous",
+    "Nudity or sexual activity",
+    "Scam or fraud",
+    "False information",
+    "This is spam",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,113 +56,37 @@ class ReportModalSheet extends StatelessWidget {
           const SizedBox(
             height: 15,
           ),
-          ListTile(
-            onTap: () {
-              report(
-              "I don't like it",
-            );
-            Navigator.pop(context);
-            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
-            },
-            visualDensity: const VisualDensity(vertical: -4),
-            title: const Text(
-              "I don't like it",
-              style: TextStyle(
-                fontSize: 14.5,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              report(
-              "Hate Speech",
-            );
-            Navigator.pop(context);
-            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
-            },
-            visualDensity: const VisualDensity(vertical: -4),
-            title: const Text(
-              "Hate Speech",
-              style: TextStyle(
-                fontSize: 14.5,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              report(
-              "Violence or dangerous",
-            );
-            Navigator.pop(context);
-            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
-            },
-            visualDensity: const VisualDensity(vertical: -4),
-            title: const Text(
-              "Violence or dangerous",
-              style: TextStyle(
-                fontSize: 14.5,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              report(
-              "Nudity or sexual activity",
-            );
-            Navigator.pop(context);
-            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
-            },
-            visualDensity: const VisualDensity(vertical: -4),
-            title: const Text(
-              "Nudity or sexual activity",
-              style: TextStyle(
-                fontSize: 14.5,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              report("Scam or fraud");
-              Navigator.pop(context);
-              QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
-            },
-            visualDensity: const VisualDensity(vertical: -4),
-            title: const Text(
-              "Scam or fraud",
-              style: TextStyle(
-                fontSize: 14.5,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              report("False information");
-              Navigator.pop(context);
-              QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
-            },
-            visualDensity: const VisualDensity(vertical: -4),
-            title: const Text(
-              "False information",
-              style: TextStyle(
-                fontSize: 14.5,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              report(
-              "This is spam",
-            );
-            Navigator.pop(context);
-            QuickAlert.show(context: context, type: QuickAlertType.success, title: "Successfully Reported");
-            },
-            visualDensity: const VisualDensity(vertical: -4),
-            title: const Text(
-              "This is spam",
-              style: TextStyle(
-                fontSize: 14.5,
-              ),
-            ),
+          Column(
+            children: [
+              for (String reason in reasons)
+                ListTile(
+                  onTap: () {
+                    report(
+                      reason,
+                    );
+
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.success,
+                        onConfirmBtnTap: () {
+                          Provider.of<ArticlesController>(context,
+                                  listen: false)
+                              .fetchArticles();
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        title: "Successfully Reported");
+                  },
+                  visualDensity: const VisualDensity(vertical: -4),
+                  title: Text(
+                    reason,
+                    style: const TextStyle(
+                      fontSize: 14.5,
+                    ),
+                  ),
+                )
+            ],
           ),
           const SizedBox(
             height: 15,
