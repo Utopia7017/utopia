@@ -15,7 +15,15 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/terms_of_use_screen.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
+  final String? alreadyProvidedEmail;
+  SignUpScreen({this.alreadyProvidedEmail});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
   final Logger _logger = Logger("SignUpScreen");
 
   TextEditingController emailController = TextEditingController();
@@ -27,10 +35,22 @@ class SignUpScreen extends StatelessWidget {
   TextEditingController confirmPasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
   final firebase.Authservice _auth =
       firebase.Authservice(FirebaseAuth.instance);
+
   final space = const SizedBox(height: 30);
+
   bool ischecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.alreadyProvidedEmail != null) {
+      emailController =
+          TextEditingController(text: widget.alreadyProvidedEmail);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +106,6 @@ class SignUpScreen extends StatelessWidget {
   }
 
   // Form page - 1
-
   Widget formPage(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,10 +133,11 @@ class SignUpScreen extends StatelessWidget {
             if (val!.isEmpty) return "Name cannot be empty";
           },
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         AuthTextField(
+          readOnly: widget.alreadyProvidedEmail != null ? true : false,
           controller: emailController,
           label: "Email",
           visible: true,
@@ -312,7 +332,6 @@ class SignUpScreen extends StatelessWidget {
   }
 
   // Email validation page -2
-
   Widget validateEmailPage(BuildContext context) {
     return Column(
       children: [
@@ -358,6 +377,7 @@ class SignUpScreen extends StatelessWidget {
                     await FirebaseAuth.instance.currentUser!.reload();
                     if (FirebaseAuth.instance.currentUser!.emailVerified) {
                       await userController.createUser(user.User(
+                          blockedBy: [],
                           draftArticles: [],
                           blocked: [],
                           isVerified: false,

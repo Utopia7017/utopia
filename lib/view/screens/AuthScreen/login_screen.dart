@@ -11,6 +11,8 @@ import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
+import 'package:utopia/view/screens/AuthScreen/continue_registering_screen.dart';
+import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final Logger _logger = Logger("LoginScreen");
@@ -114,7 +116,7 @@ class LoginScreen extends StatelessWidget {
                               final sms = ScaffoldMessenger.of(context);
 
                               controller.startLogin();
-                              final dynamic loginResponse = await _auth.signIn(
+                              var loginResponse = await _auth.signIn(
                                   email: emailController.text,
                                   password: passwordController.text);
                               controller.stopLogin();
@@ -126,9 +128,15 @@ class LoginScreen extends StatelessWidget {
                                     builder: (context) => AppScreen(true),
                                   ));
                                 } else {
-                                  showCustomSnackBar(
-                                      context: context,
-                                      text: "Please verify your email first");
+                                  navigator.push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        ContinueRegisteringScreen(
+                                            emailProvided:
+                                                loginResponse.user!.email!),
+                                  ));
+                                  // showCustomSnackBar(
+                                  //     context: context,
+                                  //     text: "Please verify your email first");
                                 }
                               } else {
                                 showCustomSnackBar(
