@@ -110,7 +110,7 @@ class RequestVerification extends StatelessWidget {
                       type: QuickAlertType.error,
                       showCancelBtn: false,
                       title:
-                          "It seems you currently do not meet the coditions for gettong verified.");
+                          "You do not meet the conditions for getting verified.");
                 }
               }
             },

@@ -31,7 +31,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> data) {
     return User(
         name: data['name'] ?? '',
-        blockedBy: data['blockedBy'] ?? '',
+        blockedBy: data['blockedBy'] ?? [],
         cp: data['cp'] ?? '',
         bio: data['bio'] ?? '',
         dp: data['dp'],

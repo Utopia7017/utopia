@@ -59,6 +59,7 @@ class UserController extends DisposableProvider {
     } catch (error) {
       return null;
     }
+    return null;
   }
 
   // Change cover picture , user needs to pass an XFile
@@ -134,7 +135,7 @@ class UserController extends DisposableProvider {
     notifyListeners();
   }
 
-  void removeFollower(String followerId, String myUid) async {
+  removeFollower(String followerId, String myUid) async {
     followingUserStatus = FollowingUserStatus.yes;
     await Future.delayed(const Duration(microseconds: 1));
     notifyListeners();
@@ -271,6 +272,19 @@ class UserController extends DisposableProvider {
         if (response != null) {
           user!.blockUser(uid);
         }
+        User? thatUser = await getUser(uid);
+        List<dynamic> currentBlockedByList = thatUser!.blockedBy;
+        currentBlockedByList.add(user!.userId);
+        final Response? thatUserResponse = await _apiServices.update(
+            endUrl: 'users/$uid.json',
+            data: {'blockedBy': currentBlockedByList});
+        if (thatUserResponse != null) {
+          thatUser.blockedByMe(user!.userId);
+          if (thatUser.following.contains(user!.userId)) {
+            await removeFollower(uid, user!.userId);
+            
+          }
+        }
       }
     } catch (error) {
       logger.shout(error.toString());
@@ -286,7 +300,7 @@ class UserController extends DisposableProvider {
         List<dynamic> currentBlockedUsers = user!.blocked;
         currentBlockedUsers.remove(uid);
         final Response? response = await _apiServices.update(
-            message: "Unblocked", // TODO: display something more alluring
+            message: "Unblocked",
             showMessage: false,
             endUrl: 'users/${user!.userId}.json',
             data: {'blocked': currentBlockedUsers});

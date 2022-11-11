@@ -60,6 +60,7 @@ class ArticlesController extends DisposableProvider {
       await Future.delayed(const Duration(microseconds: 1));
       List<dynamic> following = [];
       List<dynamic> blocked = [];
+      List<dynamic> blockedBy = [];
       notifyListeners();
       // Firstly fetch the current user details ( specifically followings)
       final currentUserResponse =
@@ -67,6 +68,7 @@ class ArticlesController extends DisposableProvider {
       if (currentUserResponse != null) {
         following = userModel.User.fromJson(currentUserResponse.data).following;
         blocked = userModel.User.fromJson(currentUserResponse.data).blocked;
+        blockedBy = userModel.User.fromJson(currentUserResponse.data).blockedBy;
       }
 
       // get reports
@@ -117,7 +119,7 @@ class ArticlesController extends DisposableProvider {
         // fetched articles by user id ( for every user as key we will get a list of articles as value)
 
         for (var userId in articlesByUsers.keys) {
-          if (blocked.contains(userId)) {
+          if (blocked.contains(userId) || blockedBy.contains(userId)) {
             continue;
           } else {
             Map<String, dynamic> arts = articlesByUsers[userId];
@@ -253,7 +255,9 @@ class ArticlesController extends DisposableProvider {
         }
       }
     } catch (error) {}
-     articles.sort((a, b) => b.articleCreated.compareTo(a.articleCreated) ,);
+    articles.sort(
+      (a, b) => b.articleCreated.compareTo(a.articleCreated),
+    );
     return articles;
   }
 
