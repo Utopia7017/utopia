@@ -170,7 +170,7 @@ class MyArticlesController extends DisposableProvider {
       final Response? response = await _apiServices.post(
           endUrl: 'articles/$userId.json', data: article.toJson());
 
-      if (response != null) {
+      if (response != null && response.data != null) {
         final String articleId = response.data[
             'name']; // we do not need to decode as dio already does it for us.
 
@@ -292,7 +292,7 @@ class MyArticlesController extends DisposableProvider {
     try {
       final Response? response = await _apiServices.delete(
           endUrl: 'draft-articles/$myUid/$articleId.json');
-      if (response != null) {
+      if (response != null && response.data!=null) {
         draftArticles.removeWhere((element) => element.articleId == articleId);
       }
     } catch (error) {

@@ -2,10 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
@@ -26,7 +28,6 @@ class BoxForFollowNotification extends StatelessWidget {
       required this.read,
       required this.notifierId,
       required this.time});
-
   @override
   Widget build(BuildContext context) {
     RichText title = RichText(
@@ -52,84 +53,93 @@ class BoxForFollowNotification extends StatelessWidget {
       firstLetter = initials[0].characters.first;
       lastLetter = initials[1].characters.first;
     }
-    return ListTile(
-      onTap: () {
-        readThisNotification(
-            FirebaseAuth.instance.currentUser!.uid, notificationId);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserProfileScreen(userId: notifierId),
-            ));
-      },
-      onLongPress: () {
-        QuickAlert.show(
-          context: context,
-          type: QuickAlertType.confirm,
-          confirmBtnText: "Delete",
-          title: "Delete notification?",
-          text: "Are you sure you want to delete this notification",
-          onConfirmBtnTap: () {
-            deleteSingleNotification(
+    return Consumer<UserController>(
+      builder: (context, controller, child) {
+        return ListTile(
+          onTap: () {
+            readThisNotification(
                 FirebaseAuth.instance.currentUser!.uid, notificationId);
-            Navigator.pop(context);
+            if (controller.user!.blocked.contains(notifierId)) {
+              // do nothing
+            } else {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserProfileScreen(userId: notifierId),
+                  ));
+            }
           },
+          onLongPress: () {
+            QuickAlert.show(
+              context: context,
+              type: QuickAlertType.confirm,
+              confirmBtnText: "Delete",
+              title: "Delete notification?",
+              text: "Are you sure you want to delete this notification",
+              onConfirmBtnTap: () {
+                deleteSingleNotification(
+                    FirebaseAuth.instance.currentUser!.uid, notificationId);
+                Navigator.pop(context);
+              },
+            );
+          },
+          leading: (notifierDp.isEmpty)
+              ? Container(
+                  height: 40,
+                  width: 35,
+                  color: authMaterialButtonColor,
+                  child: Center(
+                    child: initials.length > 1
+                        ? Text(
+                            "$firstLetter.$lastLetter".toUpperCase(),
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          )
+                        : Text(
+                            firstLetter.toUpperCase(),
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          ),
+                  ),
+                )
+              : CachedNetworkImage(
+                  imageUrl: notifierDp,
+                  fit: BoxFit.fitWidth,
+                  height: 45,
+                  width: 40,
+                ),
+          title: Padding(
+              padding: const EdgeInsets.only(bottom: 4.0, top: 4),
+              child: title),
+          subtitle: Row(
+            children: [
+              Text(
+                createdOn,
+                style: const TextStyle(
+                    fontSize: 11.5,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Open"),
+              ),
+              SizedBox(
+                width: displayWidth(context) * 0.05,
+              ),
+              (!read)
+                  ? Image.asset(
+                      newNotification,
+                      height: 20,
+                    )
+                  : const SizedBox(),
+            ],
+          ),
+          trailing: Image.asset(notificationFollowIcon,
+              height: 25, fit: BoxFit.cover),
         );
       },
-      leading: (notifierDp.isEmpty)
-          ? Container(
-              height: 40,
-              width: 35,
-              color: authMaterialButtonColor,
-              child: Center(
-                child: initials.length > 1
-                    ? Text(
-                        "$firstLetter.$lastLetter".toUpperCase(),
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white),
-                      )
-                    : Text(
-                        firstLetter.toUpperCase(),
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white),
-                      ),
-              ),
-            )
-          : CachedNetworkImage(
-              imageUrl: notifierDp,
-              fit: BoxFit.fitWidth,
-              height: 45,
-              width: 40,
-            ),
-      title: Padding(
-          padding: const EdgeInsets.only(bottom: 4.0, top: 4), child: title),
-      subtitle: Row(
-        children: [
-          Text(
-            createdOn,
-            style: const TextStyle(
-                fontSize: 11.5,
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Open"),
-          ),
-          SizedBox(
-            width: displayWidth(context) * 0.05,
-          ),
-          (!read)
-              ? Image.asset(
-                  newNotification,
-                  height: 20,
-                )
-              : const SizedBox(),
-        ],
-      ),
-      trailing:
-          Image.asset(notificationFollowIcon, height: 25, fit: BoxFit.cover),
     );
   }
 }

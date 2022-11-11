@@ -199,7 +199,10 @@ class _SearchScreenState extends State<SearchScreen>
                                 case ProfileStatus.fetched:
                                   return ListTile(
                                     onTap: () {
-                                      if (controller.searchedAuthors[index]
+                                      if (!controller
+                                              .searchedAuthors[index].blocked
+                                              .contains(myUserId) &&
+                                          controller.searchedAuthors[index]
                                                   .userId !=
                                               myUserId &&
                                           !userController.user!.blocked
