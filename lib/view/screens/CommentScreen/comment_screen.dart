@@ -108,13 +108,13 @@ class CommentScreen extends StatelessWidget {
                 if (commentController.text.trim().isNotEmpty) {
                   await addComment(
                       articleId: articleId,
-                      comment: commentController.text,
+                      comment: commentController.text.trim(),
                       createdAt: DateTime.now().toString(),
                       userId: myUserId);
 
                   // notify the user
-                  await notifyUserWhenCommentOnArticle(
-                      myUserId, authorId, articleId, commentController.text);
+                  await notifyUserWhenCommentOnArticle(myUserId, authorId,
+                      articleId, commentController.text.trim());
                   commentController.clear();
                 }
               },
