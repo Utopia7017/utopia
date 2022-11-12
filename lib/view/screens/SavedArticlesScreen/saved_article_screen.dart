@@ -51,7 +51,7 @@ class SavedArticlesScreen extends StatelessWidget {
                     case FetchingSavedArticles.fetching:
                       return const Center(child: CircularProgressIndicator());
                     case FetchingSavedArticles.fetched:
-                      if (myArticleController.savedArticles.isEmpty) {
+                      if (myArticleController.savedArticlesDetails.isEmpty) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -70,17 +70,18 @@ class SavedArticlesScreen extends StatelessWidget {
                             ],
                           ),
                         );
+                      } else {
+                        return ListView.builder(
+                          // padding: const EdgeInsets.all(16),
+                          itemBuilder: (context, index) {
+                            return ArticleBox(
+                                article: myArticleController
+                                    .savedArticlesDetails[index]);
+                          },
+                          itemCount:
+                              myArticleController.savedArticlesDetails.length,
+                        );
                       }
-                      return ListView.builder(
-                        // padding: const EdgeInsets.all(16),
-                        itemBuilder: (context, index) {
-                          return ArticleBox(
-                              article: myArticleController
-                                  .savedArticlesDetails[index]);
-                        },
-                        itemCount:
-                            myArticleController.savedArticlesDetails.length,
-                      );
                   }
                 },
               );
