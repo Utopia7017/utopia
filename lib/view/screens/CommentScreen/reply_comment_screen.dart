@@ -100,7 +100,7 @@ class ReplyCommentScreen extends StatelessWidget {
                           ],
                         );
                       } else {
-                        return SizedBox();
+                        return const SizedBox();
                       }
                     },
                   );
@@ -110,36 +110,38 @@ class ReplyCommentScreen extends StatelessWidget {
         ],
       ),
       body: RefreshIndicator(
-         onRefresh: ()async {
-          return await Future.delayed(Duration(seconds: 2));
+        onRefresh: () async {
+          return await Future.delayed(const Duration(seconds: 2));
         },
         backgroundColor: authBackground,
         color: Colors.white,
-
         child: Consumer<UserController>(
           builder: (context, userController, child) {
             return CommentBox(
               sendButtonMethod: () async {
-                // add reply to the previous comment
-                await replyToThisComment(
-                    reply: replyCommentController.text,
-                    myUId: myUserId,
-                    articleId: articleId,
-                    commentId: commentId,
-                    createdAt: DateTime.now().toString());
-      
-                // notify the user owner
-                await notifyUserWhenRepliedOnMyComment(
-                    currentUserId: myUserId,
-                    userId: commentOwner.userId,
-                    reply: replyCommentController.text,
-                    articleId: articleId,
-                    articleOwnerId: articleOwnerId,
-                    comment: originalComment,
-                    commentId: commentId,
-                    commentOwnerId: commentOwner.userId);
-      
-                replyCommentController.clear();
+                if (replyCommentController.text.trim().isNotEmpty) {
+                  // add reply to the previous comment
+
+                  await replyToThisComment(
+                      reply: replyCommentController.text.trim(),
+                      myUId: myUserId,
+                      articleId: articleId,
+                      commentId: commentId,
+                      createdAt: DateTime.now().toString());
+
+                  // notify the user owner
+                  await notifyUserWhenRepliedOnMyComment(
+                      currentUserId: myUserId,
+                      userId: commentOwner.userId,
+                      reply: replyCommentController.text.trim(),
+                      articleId: articleId,
+                      articleOwnerId: articleOwnerId,
+                      comment: originalComment,
+                      commentId: commentId,
+                      commentOwnerId: commentOwner.userId);
+
+                  replyCommentController.clear();
+                }
               },
               withBorder: true,
               errorText: 'Comment cannot be blank',
@@ -153,16 +155,17 @@ class ReplyCommentScreen extends StatelessWidget {
               userImage: userController.user != null &&
                       userController.user!.dp.isNotEmpty
                   ? userController.user!.dp
-                  : 'https://play-lh.googleusercontent.com/nCVVCbeSI14qEvNnvvgkkbvfBJximn04qoPRw8GZjC7zeoKxOgEtjqsID_DDtNfkjyo',
+                  : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d',
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
                 child: Column(
                   children: [
                     // Display the original comment
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: CommentContainer(
-                          articleOwnerId: '',
+                          articleOwnerId: articleOwnerId,
                           shouldNavigate: false,
                           commentId: commentId,
                           user: commentOwner,
