@@ -36,6 +36,7 @@ addComment(
       .collection('comments')
       .add({
     'comment': comment,
+    'commentId':'',
     'createdAt': createdAt,
     'articleId': articleId,
     'userId': userId,
@@ -63,6 +64,7 @@ replyToThisComment({
       .collection('replies')
       .add({
     'reply': reply,
+    'replyId':'',
     'createdAt': createdAt,
     'articleId': articleId,
     'myUid': myUId,
