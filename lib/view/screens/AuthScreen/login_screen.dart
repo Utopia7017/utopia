@@ -1,18 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/auth_screen_controller.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/services/api/api_services.dart';
 import 'package:utopia/services/firebase/auth_services.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/continue_registering_screen.dart';
-import 'package:utopia/view/screens/AuthScreen/signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final Logger _logger = Logger("LoginScreen");
@@ -124,9 +124,23 @@ class LoginScreen extends StatelessWidget {
                                 if ((loginResponse as UserCredential)
                                     .user!
                                     .emailVerified) {
-                                  navigator.pushReplacement(MaterialPageRoute(
-                                    builder: (context) => AppScreen(true),
-                                  ));
+                                  final Response? response = await ApiServices()
+                                      .get(
+                                          endUrl:
+                                              'users/${loginResponse.user!.uid}.json');
+                                  if (response != null &&
+                                      response.data != null) {
+                                    navigator.pushReplacement(MaterialPageRoute(
+                                      builder: (context) => AppScreen(true),
+                                    ));
+                                  } else {
+                                    navigator.push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          ContinueRegisteringScreen(
+                                              emailProvided:
+                                                  loginResponse.user!.email!),
+                                    ));
+                                  }
                                 } else {
                                   navigator.push(MaterialPageRoute(
                                     builder: (context) =>
