@@ -33,6 +33,7 @@ migrate_working_dir/
 .pub/
 /build/
 android/app/google-services.json
+android/key.properties
 
 # Web related
 lib/generated_plugin_registrant.dart
