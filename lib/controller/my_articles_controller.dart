@@ -292,7 +292,7 @@ class MyArticlesController extends DisposableProvider {
     try {
       final Response? response = await _apiServices.delete(
           endUrl: 'draft-articles/$myUid/$articleId.json');
-      if (response != null && response.data!=null) {
+      if (response != null && response.data != null) {
         draftArticles.removeWhere((element) => element.articleId == articleId);
       }
     } catch (error) {
@@ -370,7 +370,7 @@ class MyArticlesController extends DisposableProvider {
       List<Article> tempDrafts = [];
       final Response? response =
           await _apiServices.get(endUrl: 'draft-articles/$myUid.json');
-      if (response != null) {
+      if (response != null && response.data != null) {
         final Map<String, dynamic> responseData = response.data;
         for (var article in responseData.values) {
           Article art = Article.fromJson(article);
