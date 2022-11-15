@@ -368,8 +368,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                               )
                             : const SizedBox(),
-                        drawerTile('Rate us on Play store', playStoreIcon,
-                            () => _logger.info("Help")),
+                        drawerTile(
+                            'Rate us on Play store',
+                            playStoreIcon,
+                            () => openUrl(
+                                'https://play.google.com/store/apps/details?id=com.starcoding.utopia')),
                         drawerTile('Logout', logoutIcon, () async {
                           final navigator = Navigator.of(context);
                           AppProviders.disposeAllDisposableProviders(context);

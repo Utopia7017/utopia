@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:utopia/constants/color_constants.dart';
 
 drawerTile(String title, String icon, Function() callbackAction) {
@@ -74,3 +75,19 @@ showCustomSnackBar({
         style: const TextStyle(color: Colors.black, fontFamily: "Open"),
       )));
 }
+
+
+openUrl(String link) async {
+    if (await launchUrl(
+      Uri.parse(link),
+      mode: LaunchMode.externalApplication,
+    )) {}
+  }
+
+  mailTo() {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'starcoding7@gmail.com',
+    );
+    launchUrl(emailLaunchUri);
+  }

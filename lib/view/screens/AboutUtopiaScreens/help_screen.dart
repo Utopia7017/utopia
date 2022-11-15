@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/utils/helper_widgets.dart';
 
 class HelpScreen extends StatefulWidget {
   HelpScreen({super.key});
@@ -17,21 +18,6 @@ class _HelpScreenState extends State<HelpScreen> {
   TextEditingController messageController = TextEditingController();
 
   String type = "Feedback";
-
-  openUrl(String link) async {
-    if (await launchUrl(
-      Uri.parse(link),
-      mode: LaunchMode.externalApplication,
-    )) {}
-  }
-
-  mailTo() {
-    final Uri emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: 'starcoding7@gmail.com',
-    );
-    launchUrl(emailLaunchUri);
-  }
 
   suggestFeebback(
     String emailId,
