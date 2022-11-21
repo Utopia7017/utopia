@@ -234,7 +234,7 @@ class MyArticlesController extends DisposableProvider {
     fetchingSavedArticlesStatus = FetchingSavedArticles.fetching;
     await Future.delayed(const Duration(microseconds: 1));
     notifyListeners();
-    Logger logger = Logger("GetArticleDetail");
+    Logger logger = Logger("FetchSavedArticle");
     List<Article> temp = [];
     try {
       List<dynamic> savedArticles = currentUser.savedArticles;
@@ -291,7 +291,7 @@ class MyArticlesController extends DisposableProvider {
     try {
       final Response? response = await _apiServices.delete(
           endUrl: 'draft-articles/$myUid/$articleId.json');
-      if (response != null && response.data != null) {
+      if (response != null) {
         draftArticles.removeWhere((element) => element.articleId == articleId);
       }
     } catch (error) {
@@ -313,9 +313,7 @@ class MyArticlesController extends DisposableProvider {
       int imageIndex = 0;
       for (BodyComponent bc in bodyComponents) {
         if (bc.type == "text") {
-          if (bc.textEditingController != null) {
-            print("enter ${bc.textEditingController!.text}");
-          }
+          if (bc.textEditingController != null) {}
 
           articleBody.add(
               ArticleBody(type: "text", text: bc.textEditingController!.text));
