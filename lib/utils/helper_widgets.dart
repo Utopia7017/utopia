@@ -21,7 +21,7 @@ drawerTile(String title, String icon, Function() callbackAction) {
       style: const TextStyle(
           fontSize: 13.5,
           color: Colors.white,
-          fontFamily: "Fira",
+          fontFamily: "Open",
           letterSpacing: 0.6),
     ),
   );
@@ -76,18 +76,17 @@ showCustomSnackBar({
       )));
 }
 
-
 openUrl(String link) async {
-    if (await launchUrl(
-      Uri.parse(link),
-      mode: LaunchMode.externalApplication,
-    )) {}
-  }
+  if (await launchUrl(
+    Uri.parse(link),
+    mode: LaunchMode.externalApplication,
+  )) {}
+}
 
-  mailTo() {
-    final Uri emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: 'starcoding7@gmail.com',
-    );
-    launchUrl(emailLaunchUri);
-  }
+mailTo() {
+  final Uri emailLaunchUri = Uri(
+    scheme: 'mailto',
+    path: 'starcoding7@gmail.com',
+  );
+  launchUrl(emailLaunchUri);
+}

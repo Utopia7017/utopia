@@ -195,6 +195,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       'Followers',
                                       style: TextStyle(
                                         fontSize: 14,
+                                        fontFamily: "Open",
                                         color: Colors.white,
                                       ),
                                     ),
@@ -228,6 +229,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     const Text(
                                       'Following',
                                       style: TextStyle(
+                                        fontFamily: "Open",
                                         fontSize: 14,
                                         color: Colors.white,
                                       ),
