@@ -103,7 +103,9 @@ class ExploreScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return RefreshIndicator(
                       onRefresh: () async {
-                        await articleController.fetchArticles();
+                        articleController.fetchArticles();
+                        Provider.of<UserController>(context, listen: false)
+                            .getPopularAuthors();
                       },
                       backgroundColor: authBackground,
                       color: Colors.white,
@@ -177,7 +179,7 @@ class ExploreScreen extends StatelessWidget {
                                         height: 5,
                                       ),
                                       SizedBox(
-                                        height: displayHeight(context) * 0.45,
+                                        height: displayHeight(context) * 0.47,
                                         width: displayWidth(context),
                                         child: Consumer<UserController>(
                                           builder:
@@ -208,6 +210,7 @@ class ExploreScreen extends StatelessWidget {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: AuthorCard(
+                                                          mainScreen: false,
                                                           user: userController
                                                                   .popularAuthors[
                                                               index]),
