@@ -19,7 +19,7 @@ class UserController extends DisposableProvider {
   List<User> popularAuthors = [];
   User? user;
 
-   getPopularAuthors() async {
+  getPopularAuthors() async {
     fetchingPopularAuthors = FetchingPopularAuthors.fetching;
     await Future.delayed(const Duration(milliseconds: 1));
     notifyListeners();
@@ -49,7 +49,6 @@ class UserController extends DisposableProvider {
     popularAuthors = temp;
     fetchingPopularAuthors = FetchingPopularAuthors.fetched;
     notifyListeners();
-    
   }
 
   // set current user
@@ -161,6 +160,9 @@ class UserController extends DisposableProvider {
             endUrl: 'users/${user!.userId}.json',
             data: {'following': myFollowings});
         user!.following = myFollowings;
+        popularAuthors.removeWhere(
+          (element) => element.userId == userId,
+        );
         notifyUserWhenFollowedUser(user!.userId, userId);
       }
     } catch (error) {

@@ -14,6 +14,7 @@ import 'package:utopia/view/screens/MyArticlesScreen/my_articles_screen.dart';
 import 'package:utopia/view/screens/NewArticleScreen/new_article_screen.dart';
 import 'package:utopia/view/screens/NotificationScreen/notification_screen.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/privacy_policy_screen.dart';
+import 'package:utopia/view/screens/PopularAuthors/popular_authors.dart';
 import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import 'package:utopia/view/screens/SavedArticlesScreen/saved_article_screen.dart';
 import 'package:utopia/view/screens/SearchScreen/search_screen.dart';
@@ -113,6 +114,7 @@ class Utopia extends StatelessWidget {
           '/profile': (context) => const ProfileScreen(),
           '/newArticle': (context) => NewArticleScreen(),
           '/myArticles': (context) => MyArticleScreen(),
+          '/popAuthors':(context) => PopularAuthors(),
           '/savedArticles': (context) => SavedArticlesScreen(),
           '/search': (context) => SearchScreen(),
           '/notifications': (context) => NotificationScreen(),

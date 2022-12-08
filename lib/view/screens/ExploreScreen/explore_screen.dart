@@ -17,7 +17,6 @@ class ExploreScreen extends StatelessWidget {
   ExploreScreen({Key? key}) : super(key: key);
   final PageController articlePageController = PageController();
   final ItemScrollController articleCategoryController = ItemScrollController();
-  // RefreshController refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {

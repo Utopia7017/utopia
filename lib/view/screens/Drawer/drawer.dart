@@ -293,6 +293,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             },
                           ),
                         ),
+                        drawerTile(
+                          'Popular Authors',
+                          popularAuthorIcon,
+                          () => Navigator.pushNamed(context, '/popAuthors'),
+                        ),
                         drawerTile('Write new article', newArticleIcon,
                             () => Navigator.pushNamed(context, '/newArticle')),
                         drawerTile('My articles', myArticlesIcon,
