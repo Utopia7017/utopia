@@ -13,9 +13,44 @@ class UserController extends DisposableProvider {
   final Logger _logger = Logger("UserController");
   final ApiServices _apiServices = ApiServices();
   ProfileStatus profileStatus = ProfileStatus.nil;
+  FetchingPopularAuthors fetchingPopularAuthors = FetchingPopularAuthors.nil;
   UserUploadingImage userUploadingImage = UserUploadingImage.notLoading;
   FollowingUserStatus followingUserStatus = FollowingUserStatus.no;
+  List<User> popularAuthors = [];
   User? user;
+
+   getPopularAuthors() async {
+    fetchingPopularAuthors = FetchingPopularAuthors.fetching;
+    await Future.delayed(const Duration(milliseconds: 1));
+    notifyListeners();
+    List<User> temp = [];
+    try {
+      final Response? response = await _apiServices.get(endUrl: 'users.json');
+      if (response != null) {
+        var data = response.data as Map<String, dynamic>;
+        for (var userData in data.values) {
+          User thisUser = User.fromJson(userData);
+          if (user!.userId != thisUser.userId &&
+              !user!.following.contains(thisUser.userId)) {
+            temp.add(thisUser);
+          }
+        }
+        temp.sort(
+          (a, b) {
+            return a.isVerified && a.followers.length > b.followers.length
+                ? 0
+                : 1;
+          },
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    popularAuthors = temp;
+    fetchingPopularAuthors = FetchingPopularAuthors.fetched;
+    notifyListeners();
+    
+  }
 
   // set current user
   setUser(String userId) async {
@@ -282,7 +317,6 @@ class UserController extends DisposableProvider {
           thatUser.blockedByMe(user!.userId);
           if (thatUser.following.contains(user!.userId)) {
             await removeFollower(uid, user!.userId);
-            
           }
         }
       }
