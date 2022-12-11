@@ -5,6 +5,7 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/view/common_ui/author_card.dart';
+import 'package:utopia/view/shimmers/author_card_shimmer.dart';
 
 class PopularAuthors extends StatelessWidget {
   const PopularAuthors({super.key});
@@ -44,8 +45,24 @@ class PopularAuthors extends StatelessWidget {
                   ],
                 );
               case FetchingPopularAuthors.fetching:
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: 0.62, crossAxisCount: 2),
+                  itemBuilder: (context, index) {
+                    return AnimationConfiguration.staggeredGrid(
+                        position: index,
+                        columnCount: 2,
+                        child: const SlideAnimation(
+                          verticalOffset: 50.0,
+                          curve: Curves.bounceIn,
+                          child: ScaleAnimation(
+                            child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: ShimmerForAuthorCard()),
+                          ),
+                        ));
+                  },
+                  itemCount: 10,
                 );
 
               case FetchingPopularAuthors.fetched:

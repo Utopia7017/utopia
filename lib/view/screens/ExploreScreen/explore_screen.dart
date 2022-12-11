@@ -12,6 +12,8 @@ import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/common_ui/author_card.dart';
 import 'package:utopia/view/screens/ExploreScreen/components/search_box.dart';
 import 'package:utopia/view/shimmers/article_shimmer.dart';
+import 'package:utopia/view/shimmers/author_card_shimmer.dart';
+import 'dart:math';
 
 class ExploreScreen extends StatelessWidget {
   ExploreScreen({Key? key}) : super(key: key);
@@ -166,7 +168,10 @@ class ExploreScreen extends StatelessWidget {
                                                   fontFamily: "Open"),
                                             ),
                                             TextButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.pushNamed(
+                                                      context, '/popAuthors');
+                                                },
                                                 child: const Text(
                                                   "Show more",
                                                   style:
@@ -197,7 +202,19 @@ class ExploreScreen extends StatelessWidget {
 
                                               case FetchingPopularAuthors
                                                   .fetching:
-                                                return Text("Loading");
+                                                return ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return const Padding(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child:
+                                                            ShimmerForAuthorCard());
+                                                  },
+                                                  itemCount: 10,
+                                                );
                                               case FetchingPopularAuthors
                                                   .fetched:
                                                 return ListView.builder(
@@ -216,8 +233,11 @@ class ExploreScreen extends StatelessWidget {
                                                               index]),
                                                     );
                                                   },
-                                                  itemCount: userController
-                                                      .popularAuthors.length,
+                                                  itemCount: min(
+                                                      userController
+                                                          .popularAuthors
+                                                          .length,
+                                                      10),
                                                 );
                                             }
                                           },

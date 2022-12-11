@@ -231,6 +231,7 @@ class UserController extends DisposableProvider {
     } catch (error) {
       rethrow;
     }
+    getPopularAuthors();
     followingUserStatus = FollowingUserStatus.no;
     notifyListeners();
   }
