@@ -17,3 +17,5 @@ enum FollowingUserStatus {yes,no}
 enum FetchingSavedArticles {nil,fetching,fetched}
 
 enum FetchingDraftArticles {nil,fetching,fetched}
+
+enum FetchingPopularAuthors {nil,fetching,fetched}

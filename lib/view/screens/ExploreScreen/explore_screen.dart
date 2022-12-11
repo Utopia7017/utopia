@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-// import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:utopia/constants/article_category_constants.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/articles_controller.dart';
+import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
+import 'package:utopia/view/common_ui/author_card.dart';
 import 'package:utopia/view/screens/ExploreScreen/components/search_box.dart';
 import 'package:utopia/view/shimmers/article_shimmer.dart';
+import 'package:utopia/view/shimmers/author_card_shimmer.dart';
+import 'dart:math';
 
 class ExploreScreen extends StatelessWidget {
   ExploreScreen({Key? key}) : super(key: key);
   final PageController articlePageController = PageController();
   final ItemScrollController articleCategoryController = ItemScrollController();
-  // RefreshController refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +91,7 @@ class ExploreScreen extends StatelessWidget {
           // List Body to display articles.
           Expanded(
             child: Consumer<ArticlesController>(
-              builder: (context, controller, child) {
+              builder: (context, articleController, child) {
                 return PageView.builder(
                   controller: articlePageController,
                   onPageChanged: (index) {
@@ -98,13 +99,15 @@ class ExploreScreen extends StatelessWidget {
                         duration: const Duration(microseconds: 5),
                         index: index,
                         alignment: 0.5);
-                    controller.selectCategory(index);
+                    articleController.selectCategory(index);
                   },
                   itemCount: articleCategoriesForDisplaying.length,
                   itemBuilder: (context, index) {
                     return RefreshIndicator(
                       onRefresh: () async {
-                        await controller.fetchArticles();
+                        articleController.fetchArticles();
+                        Provider.of<UserController>(context, listen: false)
+                            .getPopularAuthors();
                       },
                       backgroundColor: authBackground,
                       color: Colors.white,
@@ -142,27 +145,129 @@ class ExploreScreen extends StatelessWidget {
                                   },
                                 );
                               } else {
-                                return ListView(
-                                  children: [
-                                    SizedBox(
-                                      height: displayHeight(context) * 0.2,
-                                    ),
-                                    Image.asset(
-                                      noArticleFoundIcon,
-                                      height: displayHeight(context) * 0.1,
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    const Text(
-                                      "No articles found",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontFamily: "Open"),
-                                    )
-                                  ],
-                                );
+                                if (articleController.selectedCategory == 0) {
+                                  return ListView(
+                                    children: [
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.1,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, right: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text(
+                                              "Popular Authors",
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16.5,
+                                                  fontFamily: "Open"),
+                                            ),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pushNamed(
+                                                      context, '/popAuthors');
+                                                },
+                                                child: const Text(
+                                                  "Show more",
+                                                  style:
+                                                      TextStyle(fontSize: 12),
+                                                ))
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.47,
+                                        width: displayWidth(context),
+                                        child: Consumer<UserController>(
+                                          builder:
+                                              (context, userController, child) {
+                                            if (userController
+                                                    .fetchingPopularAuthors ==
+                                                FetchingPopularAuthors.nil) {
+                                              userController
+                                                  .getPopularAuthors();
+                                            }
+                                            switch (userController
+                                                .fetchingPopularAuthors) {
+                                              case FetchingPopularAuthors.nil:
+                                                return const Text("Some error");
+
+                                              case FetchingPopularAuthors
+                                                  .fetching:
+                                                return ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return const Padding(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child:
+                                                            ShimmerForAuthorCard());
+                                                  },
+                                                  itemCount: 10,
+                                                );
+                                              case FetchingPopularAuthors
+                                                  .fetched:
+                                                return ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: AuthorCard(
+                                                          mainScreen: false,
+                                                          user: userController
+                                                                  .popularAuthors[
+                                                              index]),
+                                                    );
+                                                  },
+                                                  itemCount: min(
+                                                      userController
+                                                          .popularAuthors
+                                                          .length,
+                                                      10),
+                                                );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return ListView(
+                                    children: [
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.2,
+                                      ),
+                                      Image.asset(
+                                        noArticleFoundIcon,
+                                        height: displayHeight(context) * 0.1,
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      const Text(
+                                        "No articles found",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontFamily: "Open"),
+                                      )
+                                    ],
+                                  );
+                                }
                               }
 
                             case ArticlesStatus.fetching:

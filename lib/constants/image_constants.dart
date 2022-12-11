@@ -61,3 +61,5 @@ const replyNotificationIcon = 'assets/icons/reply_notif.png';
 const verifyIcon = 'assets/icons/verify_icon.png';
 
 const playStoreIcon = 'assets/icons/play_store.png';
+
+const popularAuthorIcon = 'assets/icons/pop_authors.png';
