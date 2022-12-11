@@ -254,8 +254,24 @@ class _SearchScreenState extends State<SearchScreen>
                                                         .searchedAuthors[index]
                                                         .dp),
                                           ),
-                                    title: Text(
-                                        controller.searchedAuthors[index].name),
+                                    title: Row(
+                                      children: [
+                                        Text(controller
+                                            .searchedAuthors[index].name),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Visibility(
+                                          visible: controller
+                                              .searchedAuthors[index]
+                                              .isVerified,
+                                          child: Image.asset(
+                                            verifyIcon,
+                                            height: 17.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     dense: true,
                                   );
                               }
