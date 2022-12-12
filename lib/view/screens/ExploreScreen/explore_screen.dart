@@ -183,9 +183,17 @@ class ExploreScreen extends StatelessWidget {
                                       const SizedBox(
                                         height: 5,
                                       ),
-                                      SizedBox(
-                                        height: displayHeight(context) * 0.47,
-                                        width: displayWidth(context),
+                                      ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxHeight:
+                                              displayHeight(context) * 0.5,
+                                          minHeight:
+                                              displayHeight(context) * 0.3,
+                                          maxWidth: double.infinity,
+                                          minWidth: double.infinity,
+                                        ),
+                                        // height: displayHeight(context) * 0.5,
+
                                         child: Consumer<UserController>(
                                           builder:
                                               (context, userController, child) {
@@ -218,6 +226,7 @@ class ExploreScreen extends StatelessWidget {
                                               case FetchingPopularAuthors
                                                   .fetched:
                                                 return ListView.builder(
+                                                  // shrinkWrap: true,
                                                   scrollDirection:
                                                       Axis.horizontal,
                                                   itemBuilder:
