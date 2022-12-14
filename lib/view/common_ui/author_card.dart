@@ -38,14 +38,13 @@ class AuthorCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           width: displayWidth(context) * 0.6,
-          height: displayHeight(context) * 0.47,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             // color: Colors.pink.shade100,
           ),
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 height: mainScreen
                     ? displayHeight(context) * 0.2
                     : displayHeight(context) * 0.26,
@@ -185,7 +184,7 @@ class AuthorCard extends StatelessWidget {
                   return SizedBox(
                     width: displayWidth(context) * 0.32,
                     child: MaterialButton(
-                      height: displayHeight(context) * 0.035,
+                      height: displayHeight(context) * 0.038,
                       onPressed: () {
                         if (userController.followingUserStatus ==
                             FollowingUserStatus.no) {

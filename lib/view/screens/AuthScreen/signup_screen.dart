@@ -352,7 +352,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 20.0, right: 20),
           child: Text(
-            "Almost there! We have sent a verification mail to ${emailController.text}. You need to verify your email address and then try to register.",
+            "Almost there! We have sent a verification mail to ${emailController.text}. You need to verify your email address and then try to register.\n\n (Do check your spam folders as well)",
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.white70,
