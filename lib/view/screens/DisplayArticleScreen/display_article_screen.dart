@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -248,15 +249,37 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                         children: [
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DisplayFullImage(
-                                        caption: widget.article.body[index]
-                                            ['imageCaption'],
-                                        imageurl: widget.article.body[index]
-                                            ['image']!),
-                                  ));
+
+                              showImageViewer(
+                                    context,
+                                    CachedNetworkImageProvider(
+                              widget.article.body[index]['image']!,
+                              // placeholder: (context, url) {
+                              //   return const Center(
+                              //     child: CircularProgressIndicator(
+                              //       color: authMaterialButtonColor,
+                              //     ),
+                              //   );
+                              // },
+                              // errorWidget: (context, url, error) {
+                              //   return const Text(
+                              //     "Could not load image",
+                              //     style: TextStyle(
+                              //         color: Colors.black87, fontSize: 10),
+                              //   );
+                              // },
+                            ),
+                                    swipeDismissible: true,
+                                    doubleTapZoomable: true);
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => DisplayFullImage(
+                              //           caption: widget.article.body[index]
+                              //               ['imageCaption'],
+                              //           imageurl: widget.article.body[index]
+                              //               ['image']!),
+                              //     ));
                             },
                             child: CachedNetworkImage(
                               imageUrl: widget.article.body[index]['image']!,
