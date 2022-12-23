@@ -197,6 +197,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.6"
+  easy_image_viewer:
+    dependency: "direct main"
+    description:
+      name: easy_image_viewer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   fake_async:
     dependency: transitive
     description:
@@ -422,6 +429,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.2"
+  in_app_update:
+    dependency: "direct main"
+    description:
+      name: in_app_update
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.1"
   internet_connection_checker:
     dependency: "direct main"
     description:
