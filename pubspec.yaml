@@ -60,7 +60,8 @@ dependencies:
   in_app_update: ^4.0.1
   easy_image_viewer: ^1.2.0
 
-  
+    
+
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:

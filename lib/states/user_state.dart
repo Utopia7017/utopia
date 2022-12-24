@@ -1,28 +1,39 @@
+import 'dart:core';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:logging/logging.dart';
-import 'package:utopia/controller/disposable_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/api/api_services.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
-import '../services/firebase/storage_service.dart';
+import 'package:utopia/services/firebase/storage_service.dart';
+import '../utils/common_api_calls.dart';
 
-class UserController extends DisposableProvider {
-  final Logger _logger = Logger("UserController");
+class UserSate {
+  // class menmbers
   final ApiServices _apiServices = ApiServices();
   ProfileStatus profileStatus = ProfileStatus.nil;
   FetchingPopularAuthors fetchingPopularAuthors = FetchingPopularAuthors.nil;
   UserUploadingImage userUploadingImage = UserUploadingImage.notLoading;
   FollowingUserStatus followingUserStatus = FollowingUserStatus.no;
-  List<User> popularAuthors = [];
+  List<User>? popularAuthors = [];
   User? user;
 
-  getPopularAuthors() async {
+  // Constructor
+  UserSate({this.user, this.popularAuthors});
+
+  // call this method to update the state from within the class
+  UserSate _updateState({User? user, List<User>? popularAuthors}) {
+    return UserSate(
+        popularAuthors: popularAuthors ?? this.popularAuthors,
+        user: user ?? this.user);
+  }
+
+  // Get the list of popular authors
+  Future<UserSate> getPopularAuthors() async {
     fetchingPopularAuthors = FetchingPopularAuthors.fetching;
     await Future.delayed(const Duration(milliseconds: 1));
-    notifyListeners();
     List<User> temp = [];
     try {
       final Response? response = await _apiServices.get(endUrl: 'users.json');
@@ -48,136 +59,93 @@ class UserController extends DisposableProvider {
     }
     popularAuthors = temp;
     fetchingPopularAuthors = FetchingPopularAuthors.fetched;
-    notifyListeners();
+    return _updateState(popularAuthors: popularAuthors);
   }
 
-  /// It fetches the user data from the server and stores it in the user variable
-  /// Args:
-  ///   userId (String): The user's id.
-  setUser(String userId) async {
+  // Set current user
+  /// Returning a future of type UserState.
+  Future<UserSate> setUser(String userId) async {
     profileStatus = ProfileStatus.loading;
+    User? currentUser;
     final endUrl = 'users/$userId.json';
     try {
       final Response? response = await _apiServices.get(endUrl: endUrl);
       if (response != null) {
-        user = User.fromJson(response.data);
+        currentUser = User.fromJson(response.data);
       }
     } catch (error) {
-      _logger.shout(error.toString());
+      debugPrint(error.toString());
     }
     profileStatus = ProfileStatus.fetched;
-    notifyListeners();
+    return _updateState(user: currentUser);
   }
 
-  // call this method and provide an user object to create a new user
-  createUser(User newUser) async {
+  // Creates a new user
+  Future<UserSate> createUser(User newUser) async {
+    User? currUser;
     try {
       final Response? response = await _apiServices.put(
           endUrl: 'users/${newUser.userId}.json', data: newUser.toJson());
       if (response != null) {
-        user = newUser;
+        currUser = newUser;
       }
     } catch (error) {
-      _logger.shout(error.toString());
+      debugPrint(error.toString());
     }
     profileStatus = ProfileStatus.fetched;
-    notifyListeners();
+    return _updateState(user: currUser);
   }
 
-  // This method returns an User object.
-  Future<User?> getUser(String uid) async {
-    Logger logger = Logger("GetUser");
-    try {
-      final response = await _apiServices.get(endUrl: 'users/$uid.json');
-      if (response != null) {
-        return User.fromJson(response.data);
-      }
-    } catch (error) {
-      return null;
-    }
-    return null;
-  }
-
-  // Change cover picture , user needs to pass an XFile
-  void changeCoverPhoto(CroppedFile imageFile) async {
-    Logger logger = Logger("ChangeCP");
+  /// It changes the cover photo of the user.
+  ///
+  /// Args:
+  ///   imageFile (CroppedFile): The image file that you want to upload.
+  Future<UserSate> changeCoverPhoto(CroppedFile imageFile) async {
     try {
       userUploadingImage = UserUploadingImage.loading;
       await Future.delayed(const Duration(milliseconds: 1));
-      notifyListeners();
+
       String? url = await getImageUrl(
           File(imageFile.path), 'users/${user!.userId}/coverphoto/cp');
       await _apiServices
           .update(endUrl: 'users/${user!.userId}.json', data: {'cp': url!});
       user!.changeCoverPhoto(url);
-      logger.info(url);
     } catch (error) {
-      return null;
+      debugPrint(error.toString());
     }
     userUploadingImage = UserUploadingImage.notLoading;
-    notifyListeners();
+    return _updateState(user: user);
   }
 
-  // Change display picture , user needs to pass an XFile
-  void changeDisplayPhoto(CroppedFile imageFile) async {
-    Logger logger = Logger("ChangeDP");
+  /// It changes the display photo of the user.
+  ///
+  /// Args:
+  ///   imageFile (CroppedFile): The cropped image file that you want to upload as your display photo.
+  Future<UserSate> changeDisplayPhoto(CroppedFile imageFile) async {
     try {
       userUploadingImage = UserUploadingImage.loading;
       await Future.delayed(const Duration(milliseconds: 1));
-      notifyListeners();
+
       String? url = await getImageUrl(
           File(imageFile.path), 'users/${user!.userId}/displayphoto/dp');
       await _apiServices
           .update(endUrl: 'users/${user!.userId}.json', data: {'dp': url!});
       user!.changeDisplayPicture(url);
-      logger.info(url);
     } catch (error) {
-      return null;
+      debugPrint(error.toString());
     }
     userUploadingImage = UserUploadingImage.notLoading;
-    notifyListeners();
+    return _updateState(user: user);
   }
 
-  // By calling this method currently signed in user can follow the user with the provided userd id.
-  void followUser({required userId}) async {
-    Logger logger = Logger("FollowAuthor");
+  /// It removes a follower from the user's list of followers.
+  ///
+  /// Args:
+  ///   followerId (String): The id of the user who is following you.
+  ///   myUid (String): The user's uid
+  Future<UserSate> removeFollower(String followerId, String myUid) async {
     followingUserStatus = FollowingUserStatus.yes;
     await Future.delayed(const Duration(microseconds: 1));
-    notifyListeners();
-    try {
-      User? userToFollow = await getUser(userId); // get user by user id
-      if (userToFollow != null) {
-        List<dynamic> followers =
-            userToFollow.followers; // get their followers.
-        followers.add(user!.userId); // increase their followers locally.
-        // update their profile to the server.
-        await _apiServices.update(
-            endUrl: 'users/$userId.json', data: {'followers': followers});
-        // update currently signed in user's profile (increase following list first)
-        List<dynamic> myFollowings = user!.following;
-        // increase my following locally.
-        myFollowings.add(userId);
-        // update following list to my profile (server)
-        await _apiServices.update(
-            endUrl: 'users/${user!.userId}.json',
-            data: {'following': myFollowings});
-        user!.following = myFollowings;
-        popularAuthors.removeWhere(
-          (element) => element.userId == userId,
-        );
-        notifyUserWhenFollowedUser(user!.userId, userId);
-      }
-    } catch (error) {
-      logger.shout(error.toString());
-    }
-    followingUserStatus = FollowingUserStatus.no;
-    notifyListeners();
-  }
-
-  removeFollower(String followerId, String myUid) async {
-    followingUserStatus = FollowingUserStatus.yes;
-    await Future.delayed(const Duration(microseconds: 1));
-    notifyListeners();
     try {
       User? userToRemoveFromFollowers =
           await getUser(followerId); // get user by user id
@@ -203,44 +171,56 @@ class UserController extends DisposableProvider {
       rethrow;
     }
     followingUserStatus = FollowingUserStatus.no;
-    notifyListeners();
+    return _updateState(user: user);
   }
 
-  // By calling this method currently signed in user can unfollow the user with the passed user id.
-  void unFollowUser({required String userId}) async {
+  /// It follows a user.
+  ///
+  /// Args:
+  ///   userId: The user id of the user you want to follow.
+  Future<UserSate> followUser({required userId}) async {
     followingUserStatus = FollowingUserStatus.yes;
-    await Future.delayed(const Duration(microseconds: 1));
-    notifyListeners();
+
     try {
       User? userToFollow = await getUser(userId); // get user by user id
       if (userToFollow != null) {
         List<dynamic> followers =
             userToFollow.followers; // get their followers.
-        followers.remove(user!.userId); // increase their followers locally.
+        followers.add(user!.userId); // increase their followers locally.
         // update their profile to the server.
         await _apiServices.update(
             endUrl: 'users/$userId.json', data: {'followers': followers});
         // update currently signed in user's profile (increase following list first)
         List<dynamic> myFollowings = user!.following;
         // increase my following locally.
-        myFollowings.remove(userId);
+        myFollowings.add(userId);
         // update following list to my profile (server)
         await _apiServices.update(
             endUrl: 'users/${user!.userId}.json',
             data: {'following': myFollowings});
         user!.following = myFollowings;
+        popularAuthors!.removeWhere(
+          (element) => element.userId == userId,
+        );
+        notifyUserWhenFollowedUser(user!.userId, userId);
       }
     } catch (error) {
-      rethrow;
+      debugPrint(error.toString());
     }
-    getPopularAuthors();
     followingUserStatus = FollowingUserStatus.no;
-    notifyListeners();
+    return _updateState(popularAuthors: popularAuthors, user: user);
   }
 
-  // Update profile -> username and bio
-  updateProfile({required String name, required String bio}) async {
-    Logger logger = Logger("UserController-updateProfile");
+  /// It updates the user's profile
+  ///
+  /// Args:
+  ///   name (String): The name of the user.
+  ///   bio (String): The user's bio.
+  ///
+  /// Returns:
+  ///   The user's state.
+  Future<UserSate> updateProfile(
+      {required String name, required String bio}) async {
     try {
       final Response? profileUpdateResponse = await _apiServices
           .update(endUrl: 'users/${user!.userId}.json', data: {
@@ -251,14 +231,22 @@ class UserController extends DisposableProvider {
         user!.updateProfile(name, bio);
       }
     } catch (error) {
-      logger.shout(error.toString());
+      debugPrint(error.toString());
     }
-    notifyListeners();
+    return _updateState(user: user);
   }
 
-  // Saves article id and article author id to the list
-  saveArticle({required String authorId, required String articleId}) async {
-    Logger logger = Logger("saveArticle");
+  /// It takes in an authorId and an articleId, creates a map with those values, adds that map to the
+  /// savedArticles list, and then updates the user's savedArticles list in the database
+  ///
+  /// Args:
+  ///   authorId (String): The id of the author of the article.
+  ///   articleId (String): The id of the article to be saved.
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserSate> saveArticle(
+      {required String authorId, required String articleId}) async {
     dynamic savedArticle = {'authorId': authorId, 'articleId': articleId};
     List<dynamic> savedArticleList = user!.savedArticles;
     savedArticleList.add(savedArticle);
@@ -270,15 +258,21 @@ class UserController extends DisposableProvider {
         user!.updateSavedArticleList(savedArticleList);
       }
     } catch (error) {
-      logger.shout(error.toString());
+      debugPrint(error.toString());
     }
-    notifyListeners();
+    return _updateState(user: user);
   }
 
-  // Unsave the article
-  unSaveArticle({required String authorId, required String articleId}) async {
-    Logger logger = Logger("unSaveArticle");
-
+  /// It removes the article from the user's saved article list and updates the user's state
+  ///
+  /// Args:
+  ///   authorId (String): The id of the author of the article.
+  ///   articleId (String): The id of the article to be saved.
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserSate> unSaveArticle(
+      {required String authorId, required String articleId}) async {
     List<dynamic> savedArticleList = user!.savedArticles;
     int indexTobeRemoved = savedArticleList.indexWhere((element) =>
         (element['articleId'] == articleId && element['authorId'] == authorId));
@@ -292,14 +286,26 @@ class UserController extends DisposableProvider {
         user!.updateSavedArticleList(savedArticleList);
       }
     } catch (error) {
-      logger.shout(error.toString());
+      debugPrint(error.toString());
     }
-    notifyListeners();
+
+    return _updateState(user: user);
   }
 
-  // method to unblock user ( user id of the persopn is required )
-  blockThisUser(String uid) async {
-    Logger logger = Logger("Block This User");
+  /// It takes a user id as a parameter, checks if the current user has blocked that user, if not, it
+  /// adds the user id to the current user's blocked list, updates the current user's blocked list in
+  /// the database, gets the user that was blocked, adds the current user's id to the blocked by list of
+  /// the user that was blocked, updates the blocked by list of the user that was blocked in the
+  /// database, checks if the user that was blocked is following the current user, if so, it removes the
+  /// user that was blocked from the current user's followers list, updates the current user's followers
+  /// list in the database, and returns the current user's state
+  ///
+  /// Args:
+  ///   uid (String): The user id of the user you want to block
+  ///
+  /// Returns:
+  ///   The user state
+  Future<UserSate> blockThisUser(String uid) async {
     try {
       if (!user!.blocked.contains(uid)) {
         List<dynamic> currentBlockedUsers = user!.blocked;
@@ -321,19 +327,26 @@ class UserController extends DisposableProvider {
         if (thatUserResponse != null) {
           thatUser.blockedByMe(user!.userId);
           if (thatUser.following.contains(user!.userId)) {
-            await removeFollower(uid, user!.userId);
+            // this will return the user state
+            return await removeFollower(uid, user!.userId);
           }
         }
       }
     } catch (error) {
-      logger.shout(error.toString());
+      debugPrint(error.toString());
     }
-    notifyListeners();
+    // Unreachable statement
+    return _updateState(user: user);
   }
 
-  // method to unblock user ( user id of the persopn is required )
-  unBlockThisUser(String uid) async {
-    Logger logger = Logger("Unblock This User");
+  /// It removes the user's id from the blocked list of the current user
+  ///
+  /// Args:
+  ///   uid (String): The user id of the user you want to unblock.
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserSate> unBlockThisUser(String uid) async {
     try {
       if (user!.blocked.contains(uid)) {
         List<dynamic> currentBlockedUsers = user!.blocked;
@@ -348,43 +361,34 @@ class UserController extends DisposableProvider {
         }
       }
     } catch (error) {
-      logger.shout(error.toString());
+      debugPrint(error.toString());
     }
-    notifyListeners();
+    return _updateState(user: user);
   }
 
-  void removeDp() async {
+  Future<UserSate> removeDp() async {
     try {
       final Response? response = await _apiServices
           .update(endUrl: 'users/${user!.userId}.json', data: {'dp': ''});
       if (response != null) {
         user!.removeDp();
       }
-    } catch (errror) {
-      print(errror);
+    } catch (error) {
+      debugPrint(error.toString());
     }
-    notifyListeners();
+    return _updateState(user: user);
   }
 
-  void removeCp() async {
+  Future<UserSate> removeCp() async {
     try {
       final Response? response = await _apiServices
           .update(endUrl: 'users/${user!.userId}.json', data: {'cp': ''});
       if (response != null) {
         user!.removeCp();
       }
-    } catch (errror) {
-      print(errror);
+    } catch (error) {
+      debugPrint(error.toString());
     }
-    notifyListeners();
-  }
-
-  // Dispose this provider
-  @override
-  void disposeValues() {
-    profileStatus = ProfileStatus.nil;
-    userUploadingImage = UserUploadingImage.notLoading;
-    followingUserStatus = FollowingUserStatus.no;
-    user = null;
+    return _updateState(user: user);
   }
 }
