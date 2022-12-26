@@ -64,7 +64,6 @@ class MyArticlesController extends DisposableProvider {
         }
       }
     }
-
     return false;
   }
 
@@ -348,7 +347,7 @@ class MyArticlesController extends DisposableProvider {
             showMessage: true);
 
         await fetchDraftArticles(userId);
-        // draftArticles.add(article);
+     
         clearForm();
       }
     } catch (error) {

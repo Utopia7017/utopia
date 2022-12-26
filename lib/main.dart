@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/help_screen.dart';
@@ -66,7 +67,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Logger("Root").fine("Utopia Initialised");
-  runApp(Utopia());
+  runApp(ProviderScope(child: Utopia()));
 }
 
 class Utopia extends StatelessWidget {
@@ -78,55 +79,28 @@ class Utopia extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return MultiProvider(
-      providers: [
-        // Auth Controllers
-        ChangeNotifierProvider(
-          create: (context) => AuthNotifier(),
-        ),
-        Provider<Authservice>(
-            create: (_) => Authservice(FirebaseAuth.instance)),
-        StreamProvider(
-          create: (context) => context.read<Authservice>().austhStateChanges,
-          initialData: null,
-        ),
-        // Screen Controllers
-        ChangeNotifierProvider(
-          create: (context) => AuthScreenController(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => UserController(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => ArticlesController(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => MyArticlesController(),
-        ),
-      ],
-      child: MaterialApp(
-        navigatorKey: GlobalContext.contextKey, // global context
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/auth': (context) => const AuthScreen(),
-          '/login': (context) => LoginScreen(),
-          '/signup': (context) => SignUpScreen(),
-          '/profile': (context) => const ProfileScreen(),
-          '/newArticle': (context) => NewArticleScreen(),
-          '/myArticles': (context) => MyArticleScreen(),
-          '/popAuthors': (context) => PopularAuthors(),
-          '/savedArticles': (context) => SavedArticlesScreen(),
-          '/search': (context) => SearchScreen(),
-          '/notifications': (context) => NotificationScreen(),
-          '/blockedUsers': (context) => BlockedUsersScreen(),
-          '/privacyPolicy': (context) => PrivacyPolicyScreen(),
-          '/terms': (context) => TermsOfUseScreen(),
-          '/help': (context) => HelpScreen(),
-        },
+    return MaterialApp(
+      navigatorKey: GlobalContext.contextKey, // global context
+      debugShowCheckedModeBanner: false,
+      routes: {
+        '/auth': (context) => const AuthScreen(),
+        '/login': (context) => LoginScreen(),
+        '/signup': (context) => SignUpScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/newArticle': (context) => NewArticleScreen(),
+        '/myArticles': (context) => MyArticleScreen(),
+        '/popAuthors': (context) => PopularAuthors(),
+        '/savedArticles': (context) => SavedArticlesScreen(),
+        '/search': (context) => SearchScreen(),
+        '/notifications': (context) => NotificationScreen(),
+        '/blockedUsers': (context) => BlockedUsersScreen(),
+        '/privacyPolicy': (context) => PrivacyPolicyScreen(),
+        '/terms': (context) => TermsOfUseScreen(),
+        '/help': (context) => HelpScreen(),
+      },
 
-        home: const SplashScreen(),
-        // home: NoConnectionScreen(),
-      ),
+      home: const SplashScreen(),
+      // home: NoConnectionScreen(),
     );
   }
 }
