@@ -41,7 +41,7 @@ class ExploreScreen extends ConsumerWidget {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SearchBox(),,
+          const SearchBox(),
           SizedBox(
               height: displayHeight(context) * 0.06,
               width: displayWidth(context),
@@ -113,11 +113,11 @@ class ExploreScreen extends ConsumerWidget {
                   triggerMode: RefreshIndicatorTriggerMode.anywhere,
                   child: Builder(
                     builder: (context) {
-                      if (dataController.articleState.articlesStatus ==
-                          ArticlesStatus.NOT_FETCHED) {
-                        logger.shout("Lets fetch articles");
-                        controller.fetchArticles();
-                      }
+                      // if (dataController.articleState.articlesStatus ==
+                      //     ArticlesStatus.NOT_FETCHED) {
+                      //   logger.shout("Lets fetch articles");
+                      //   controller.fetchArticles();
+                      // }
                       switch (dataController.articleState.articlesStatus) {
                         case ArticlesStatus.NOT_FETCHED:
                           return const Center(

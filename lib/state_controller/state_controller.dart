@@ -134,45 +134,43 @@ class GlobalStateNotifier extends StateNotifier<GlobalState> {
   /// The first thing we do is call the `startFetchingPopularAuthors` function on the `userState`. This
   /// function returns a new `UserState` object with the `isFetchingPopularAuthors` property set to
   /// `true`
-  startFetchingPopularAuthors() {
-    updateState(userState: state.userState.startFetchingPopularAuthors());
+  startFetchingPopularAuthors() async {
+    updateState(userState: await state.userState.startFetchingPopularAuthors());
   }
 
   /// > Stop fetching popular authors
-  stopFetchingPopularAuthors() {
-    updateState(userState: state.userState.stopFetchingPopularAuthors());
+  stopFetchingPopularAuthors() async {
+    updateState(userState: await state.userState.stopFetchingPopularAuthors());
   }
 
-  startFollowingUser() {
-    updateState(userState: state.userState.startFollowingUser());
+  startFollowingUser() async {
+    updateState(userState: await state.userState.startFollowingUser());
   }
 
   /// Stop following the user with the given ID.
-  stopFollowingUser() {
-    updateState(userState: state.userState.stopFollowingUser());
+  stopFollowingUser() async {
+    updateState(userState: await state.userState.stopFollowingUser());
   }
 
   /// It updates the state of the userState to startFetchingMyProfile.
-  startFetchingMyProfile() {
-    print(state.userState.profileStatus);
-    updateState(userState: state.userState.startFetchingMyProfile());
-    print(state.userState.profileStatus);
+  startFetchingMyProfile() async {
+    print("updating state from start fetching my profile method");
+    updateState(userState: await state.userState.startFetchingMyProfile());
   }
 
-  stopFetchingMyProfile() {
-    print(state.userState.profileStatus);
-    updateState(userState: state.userState.stopFetchingMyProfile());
-    print(state.userState.profileStatus);
+  stopFetchingMyProfile() async {
+    print("updating state from stop fetching my profile");
+    updateState(userState: await state.userState.stopFetchingMyProfile());
   }
 
   /// It updates the state of the userState to startUploadingImage.
-  startUploadingImage() {
-    updateState(userState: state.userState.startUploadingImage());
+  startUploadingImage() async {
+    updateState(userState: await state.userState.startUploadingImage());
   }
 
   /// Stop uploading the image and update the state.
-  stopUploadingImage() {
-    updateState(userState: state.userState.stopUploadingImage());
+  stopUploadingImage() async {
+    updateState(userState: await state.userState.stopUploadingImage());
   }
 
   /// It gets the popular authors from the server and updates the state.
@@ -188,9 +186,11 @@ class GlobalStateNotifier extends StateNotifier<GlobalState> {
   /// Args:
   ///   userId (String): The user's id.
   setUser(String userId) async {
-    startFetchingMyProfile();
-    await updateState(userState: await state.userState.setUser(userId));
-    stopFetchingMyProfile();
+    if (state.userState.user == null) {
+      startFetchingMyProfile();
+      await updateState(userState: await state.userState.setUser(userId));
+      stopFetchingMyProfile();
+    }
   }
 
   /// > Create a new user and update the state
@@ -322,24 +322,11 @@ class GlobalStateNotifier extends StateNotifier<GlobalState> {
   /// `fetchArticles()` is an async function that calls `fetchArticles()` on the `articleState` object,
   /// which is an instance of the `ArticleState` class
   fetchArticles() async {
-    if (state.userState.profileStatus == ProfileStatus.FETCHED) {
-      print("user is fetched and trying to fetch articles only");
-      startLoadingArticles();
-      await updateState(
-          articleState:
-              await state.articleState.fetchArticles(state.userState.user!));
-      stopLoadingArticles();
-    } else {
-      print("user is not fetched and , first we will try o fetch user and then articles");
-      startLoadingArticles();
-      startFetchingMyProfile();
-      await setUser(FirebaseAuth.instance.currentUser!.uid);
-      stopFetchingMyProfile();
-      await updateState(
-          articleState:
-              await state.articleState.fetchArticles(state.userState.user!));
-      stopLoadingArticles();
-    }
+    startLoadingArticles();
+    await updateState(
+        articleState:
+            await state.articleState.fetchArticles(state.userState.user!));
+    stopLoadingArticles();
 
     // }
   }

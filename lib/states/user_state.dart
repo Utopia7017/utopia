@@ -21,6 +21,20 @@ class UserState {
   List<User>? popularAuthors = [];
   User? user;
 
+  Map<String, dynamic> toJson() {
+    return {
+      'profileStatus': profileStatus,
+      'fetchingPopularAuthors': fetchingPopularAuthors,
+      'userUploadingImage': userUploadingImage,
+      'followingUserStatus': followingUserStatus,
+      'popularAuthors': popularAuthors,
+      'user': user
+    };
+  }
+
+  @override
+  String toString() => toJson().toString();
+
   /// A constructor for the UserState class.
   UserState({
     required this.user,
@@ -46,13 +60,14 @@ class UserState {
   }
 
   // call this method to update the state from within the class
-  UserState _updateState(
+  Future<UserState> _updateState(
       {User? user,
       List<User>? popularAuthors,
       FetchingPopularAuthors? fetchingPopularAuthors,
       FollowingUserStatus? followingUserStatus,
       ProfileStatus? profileStatus,
-      UserUploadingImage? userUploadingImage}) {
+      UserUploadingImage? userUploadingImage}) async {
+    Future.delayed(const Duration(microseconds: 1));
     return UserState(
       popularAuthors: popularAuthors ?? this.popularAuthors,
       user: user ?? this.user,
@@ -69,8 +84,8 @@ class UserState {
   ///
   /// Returns:
   ///   A new instance of the UserState class.
-  UserState startFetchingPopularAuthors() {
-    return _updateState(
+  Future<UserState> startFetchingPopularAuthors() async {
+    return await _updateState(
         fetchingPopularAuthors: FetchingPopularAuthors.FETCHING);
   }
 
@@ -78,7 +93,7 @@ class UserState {
   ///
   /// Returns:
   ///   A new UserState object with the fetchingPopularAuthors property set to FETCHED.
-  UserState stopFetchingPopularAuthors() {
+  Future<UserState> stopFetchingPopularAuthors() async {
     return _updateState(fetchingPopularAuthors: FetchingPopularAuthors.FETCHED);
   }
 
@@ -86,7 +101,7 @@ class UserState {
   ///
   /// Returns:
   ///   A new instance of the UserState class with the followingUserStatus property set to YES.
-  UserState startFollowingUser() {
+  Future<UserState> startFollowingUser() async {
     return _updateState(followingUserStatus: FollowingUserStatus.YES);
   }
 
@@ -94,7 +109,7 @@ class UserState {
   ///
   /// Returns:
   ///   A new UserState object with the followingUserStatus set to FollowingUserStatus.NO
-  UserState stopFollowingUser() {
+  Future<UserState> stopFollowingUser() async {
     return _updateState(followingUserStatus: FollowingUserStatus.NO);
   }
 
@@ -102,7 +117,7 @@ class UserState {
   ///
   /// Returns:
   ///   A new UserState object with the profileStatus set to FETCHING.
-  UserState startFetchingMyProfile() {
+  Future<UserState> startFetchingMyProfile() async{
     return _updateState(profileStatus: ProfileStatus.FETCHING);
   }
 
@@ -110,7 +125,7 @@ class UserState {
   ///
   /// Returns:
   ///   A new instance of the UserState class.
-  UserState stopFetchingMyProfile() {
+  Future<UserState> stopFetchingMyProfile()async {
     return _updateState(profileStatus: ProfileStatus.FETCHED);
   }
 
@@ -120,7 +135,7 @@ class UserState {
   /// Returns:
   ///   A new instance of the UserState class with the userUploadingImage property set to
   /// UserUploadingImage.LOADING.
-  UserState startUploadingImage() {
+  Future<UserState> startUploadingImage() async{
     return _updateState(userUploadingImage: UserUploadingImage.LOADING);
 
     /// "When the user clicks the button, we want to start fetching the popular authors."
@@ -135,7 +150,7 @@ class UserState {
   /// Returns:
   ///   A new instance of the UserState class with the userUploadingImage property set to
   /// UserUploadingImage.NOT_LOADING.
-  UserState stopUploadingImage() {
+  Future<UserState> stopUploadingImage() async{
     /// "When the user clicks the follow button, we want to start following the user."
     ///
     /// The first thing we do is call the `startFollowingUser` function on the `userState` object. This
@@ -181,6 +196,7 @@ class UserState {
   /// Returning a future of type UserState.
   Future<UserState> setUser(String userId) async {
     // start fecthing profile
+    print("print from user state : $profileStatus");
     User? currentUser;
     final endUrl = 'users/$userId.json';
     try {
@@ -192,6 +208,7 @@ class UserState {
       debugPrint(error.toString());
     }
     // stop fetching profile
+    print("print from user state :$profileStatus");
     return _updateState(user: currentUser);
   }
 
@@ -358,10 +375,10 @@ class UserState {
   /// > It removes the user id of the currently signed in user from the followers list of the user to be
   /// followed and also removes the user id of the user to be followed from the following list of the
   /// currently signed in user
-  /// 
+  ///
   /// Args:
   ///   userId (String): The user id of the user you want to follow.
-  /// 
+  ///
   /// Returns:
   ///   A Future<UserState>
   Future<UserState> unFollowUser({required String userId}) async {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:utopia/configs/provider_logger.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/help_screen.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/terms_of_use_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
@@ -59,7 +60,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Logger("Root").fine("Utopia Initialised");
-  runApp(ProviderScope(child: Utopia()));
+  runApp(ProviderScope(
+    observers: [
+      ProviderLogger(),
+    ],
+    child: const Utopia(),
+  ));
 }
 
 class Utopia extends StatelessWidget {

@@ -15,7 +15,7 @@ class UtopiaRoot extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print("Utopia Root ${ref.read(stateController).userState.profileStatus}");
+ 
     return StreamBuilder(
       stream: _auth.austhStateChanges,
       builder: (context, snapshot) {

@@ -28,21 +28,18 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    _logger.info("Reaching Custom drawer");
     final controller = ref.watch(stateController.notifier);
     final dataController = ref.watch(stateController);
+    _logger.info("reached drawer");
     return SafeArea(
       child: Container(
         width: displayWidth(context) * 0.3,
         padding: const EdgeInsets.only(left: 20, right: 14),
         child: Builder(
           builder: (context) {
-            _logger.info("reaching inside drawer's builder");
-            _logger.info(dataController.userState.profileStatus);
             if (dataController.userState.profileStatus ==
                 ProfileStatus.NOT_FETCHED) {
-              _logger.severe("Profile not fetched");
-
+              _logger.shout("User not fetched, let's fetch it.");
               controller.setUser(FirebaseAuth.instance.currentUser!.uid);
             }
 

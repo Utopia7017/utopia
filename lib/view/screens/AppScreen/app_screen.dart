@@ -82,7 +82,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     final controller = ref.watch(stateController.notifier);
     final dataController = ref.watch(stateController);
 
-    _logger.info("Entering App Screen");
+    
     return AdvancedDrawer(
       backdropColor: drawerBackground,
       controller: _advancedDrawerController,
