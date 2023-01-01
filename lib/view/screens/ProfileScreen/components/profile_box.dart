@@ -2,16 +2,16 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/my_articles_controller.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/auth_services.dart';
+import 'package:utopia/state_controller/state_controller.dart';
+import 'package:utopia/utils/common_api_calls.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
@@ -24,9 +24,8 @@ import 'package:utopia/view/screens/ProfileScreen/components/edit_profile_dialog
 import 'package:utopia/view/screens/ProfileScreen/components/request_verification.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/update_password.dart';
 import 'package:utopia/view/shimmers/my_followers_box_shimmer.dart';
-import '../../../../controller/articles_controller.dart';
 
-class ProfileBox extends StatelessWidget {
+class ProfileBox extends ConsumerWidget {
   final User user;
   ProfileBox({
     super.key,
@@ -37,7 +36,9 @@ class ProfileBox extends StatelessWidget {
   final Authservice _auth = Authservice(firebase.FirebaseAuth.instance);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     List<String> initials = user.name.split(" ");
     String firstLetter = "", lastLetter = "";
 
@@ -88,17 +89,14 @@ class ProfileBox extends StatelessWidget {
                               visualDensity: const VisualDensity(vertical: -2),
                               onTap: () async {
                                 final navigator = Navigator.of(context);
-                                final userController =
-                                    Provider.of<UserController>(context,
-                                        listen: false);
+
                                 XFile? pickCoverPhoto =
                                     await pickImage(context);
                                 if (pickCoverPhoto != null) {
                                   CroppedFile? croppedFile = await cropImage(
                                       File(pickCoverPhoto.path));
                                   if (croppedFile != null) {
-                                    userController
-                                        .changeCoverPhoto(croppedFile);
+                                    controller.changeCoverPhoto(croppedFile);
                                     navigator.pop();
                                   } else {
                                     // nothing to be done
@@ -119,10 +117,7 @@ class ProfileBox extends StatelessWidget {
                                     visualDensity:
                                         const VisualDensity(vertical: -2),
                                     onTap: () {
-                                      final userController =
-                                          Provider.of<UserController>(context,
-                                              listen: false);
-                                      userController.removeCp();
+                                      controller.removeCp();
                                       Navigator.pop(context);
                                     },
                                     title: Text(
@@ -165,42 +160,38 @@ class ProfileBox extends StatelessWidget {
               Positioned(
                 top: displayHeight(context) * 0.03,
                 right: displayWidth(context) * 0.01,
-                child: Consumer<MyArticlesController>(
-                  builder: (context, controller, child) {
-                    return PopupMenuButton(
-                      onSelected: (value) async {
-                        if (value == "Update Password") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UpdatePasswordScreen(),
-                              ));
-                        } else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RequestVerification(
-                                    currentUser: user,
-                                    publishedArticles:
-                                        controller.publishedArticles.length),
-                              ));
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.more_vert,
-                        color: Colors.white,
-                      ),
-                      itemBuilder: (context) => const [
-                        PopupMenuItem(
-                            value: "Update Password",
-                            child: Text('Update Password')),
-                        PopupMenuItem(
-                          value: "Request Verification",
-                          child: Text('Request Verification'),
-                        ),
-                      ],
-                    );
+                child: PopupMenuButton(
+                  onSelected: (value) async {
+                    if (value == "Update Password") {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdatePasswordScreen(),
+                          ));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RequestVerification(
+                                currentUser: user,
+                                publishedArticles: dataController
+                                    .myArticleState.publishedArticles.length),
+                          ));
+                    }
                   },
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                  ),
+                  itemBuilder: (context) => const [
+                    PopupMenuItem(
+                        value: "Update Password",
+                        child: Text('Update Password')),
+                    PopupMenuItem(
+                      value: "Request Verification",
+                      child: Text('Request Verification'),
+                    ),
+                  ],
                 ),
               ),
               Positioned(
@@ -264,10 +255,7 @@ class ProfileBox extends StatelessWidget {
                                             onTap: () async {
                                               final navigator =
                                                   Navigator.of(context);
-                                              final userController =
-                                                  Provider.of<UserController>(
-                                                      context,
-                                                      listen: false);
+
                                               XFile? pickDisplayPhoto =
                                                   await pickImage(context);
                                               if (pickDisplayPhoto != null) {
@@ -275,9 +263,8 @@ class ProfileBox extends StatelessWidget {
                                                     await cropImage(File(
                                                         pickDisplayPhoto.path));
                                                 if (croppedFile != null) {
-                                                  userController
-                                                      .changeDisplayPhoto(
-                                                          croppedFile);
+                                                  controller.changeDisplayPhoto(
+                                                      croppedFile);
                                                   navigator.pop();
                                                 } else {
                                                   // nothing to be done
@@ -299,12 +286,7 @@ class ProfileBox extends StatelessWidget {
                                                       const VisualDensity(
                                                           vertical: -2),
                                                   onTap: () {
-                                                    final userController =
-                                                        Provider.of<
-                                                                UserController>(
-                                                            context,
-                                                            listen: false);
-                                                    userController.removeDp();
+                                                    controller.removeDp();
                                                     Navigator.pop(context);
                                                   },
                                                   title: Text(
@@ -380,7 +362,6 @@ class ProfileBox extends StatelessWidget {
                                       Flexible(
                                         child: Text(
                                           user.name,
-                                          // "jkshkhkdhdkhkhhdshkfhjkdshfkhdskjhfkjdhkjfhjkhfkjhskfhdkjshfkjdhskfjhdskhfksdhfkshdkfhksdhkfhd",
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
@@ -410,8 +391,6 @@ class ProfileBox extends StatelessWidget {
                                     ? SizedBox(
                                         height: displayHeight(context) * 0.1,
                                         width: displayWidth(context) * 0.55,
-                                        // color: Colors
-                                        //     .blue.shade100,
                                         child: Text(
                                           user.bio,
                                           style: const TextStyle(
@@ -430,64 +409,60 @@ class ProfileBox extends StatelessWidget {
                         const SizedBox(
                           height: 15,
                         ),
-                        Consumer<UserController>(
-                          builder: (context, value, child) {
-                            return FutureBuilder(
-                              future: Provider.of<ArticlesController>(context)
-                                  .fetchThisUsersArticles(_auth.auth.currentUser!.uid,user.userId),
-                              builder: (context,
-                                  AsyncSnapshot<List<Article>> snapshot) {
-                                if (snapshot.hasData) {
-                                  return Container(
-                                    height: displayHeight(context) * 0.08,
-                                    width: displayWidth(context) * 0.6,
-                                    decoration: BoxDecoration(
-                                        color: Colors.blue.shade100
-                                            .withOpacity(0.25),
-                                        borderRadius: BorderRadius.circular(8)),
-                                    padding: const EdgeInsets.only(
-                                        top: 4, left: 12, right: 12, bottom: 4),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        ProfileDetailBox(
-                                          value: user.following.length,
-                                          label: "Followings",
-                                          callback: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    FollowingScreen(user: user),
-                                              )),
-                                        ),
-                                        ProfileDetailBox(
-                                          value: user.followers.length,
-                                          label: "Followers",
-                                          callback: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    FollowersScreen(user: user),
-                                              )),
-                                        ),
-                                        ProfileDetailBox(
-                                          value: snapshot.data!.length,
-                                          label: "Articles",
-                                          callback: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      MyArticleScreen())),
-                                        )
-                                      ],
+                        FutureBuilder(
+                          future: fetchThisUsersArticles(
+                              _auth.auth.currentUser!.uid, user.userId),
+                          builder:
+                              (context, AsyncSnapshot<List<Article>> snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                height: displayHeight(context) * 0.08,
+                                width: displayWidth(context) * 0.6,
+                                decoration: BoxDecoration(
+                                    color:
+                                        Colors.blue.shade100.withOpacity(0.25),
+                                    borderRadius: BorderRadius.circular(8)),
+                                padding: const EdgeInsets.only(
+                                    top: 4, left: 12, right: 12, bottom: 4),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ProfileDetailBox(
+                                      value: user.following.length,
+                                      label: "Followings",
+                                      callback: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                FollowingScreen(user: user),
+                                          )),
                                     ),
-                                  );
-                                } else {
-                                  return MyFollowerBoxShimmer();
-                                }
-                              },
-                            );
+                                    ProfileDetailBox(
+                                      value: user.followers.length,
+                                      label: "Followers",
+                                      callback: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                FollowersScreen(user: user),
+                                          )),
+                                    ),
+                                    ProfileDetailBox(
+                                      value: snapshot.data!.length,
+                                      label: "Articles",
+                                      callback: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MyArticleScreen())),
+                                    )
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return MyFollowerBoxShimmer();
+                            }
                           },
                         ),
                         const SizedBox(
@@ -506,17 +481,10 @@ class ProfileBox extends StatelessWidget {
                             ),
                             onPressed: () {
                               displayBox(
+                                  ref: ref,
                                   context: context,
                                   currentBio: user.bio,
                                   currentName: user.name);
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) {
-                              //     return EditProfileDialogbox(
-                              //         currentName: user.name,
-                              //         currentBio: user.bio);
-                              //   },
-                              // );
                             },
                             child: Text(
                               "Edit Profile",

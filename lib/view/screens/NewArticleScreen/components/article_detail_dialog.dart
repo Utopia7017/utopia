@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:utopia/constants/article_category_constants.dart';
-import 'package:utopia/controller/my_articles_controller.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_detail_textfield.dart';
 
-class ArticleDetailDialog extends StatelessWidget {
+class ArticleDetailDialog extends ConsumerWidget {
   String? dropdownValue;
   TextEditingController titleController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
@@ -16,7 +16,9 @@ class ArticleDetailDialog extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 2),
       backgroundColor: Colors.white,
@@ -44,41 +46,36 @@ class ArticleDetailDialog extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 20),
-                Consumer<MyArticlesController>(
-                  builder: (context, controller, child) {
-                    return DropdownButtonFormField(
-                      validator: (value) {
-                        if (value == null) {
-                          return "Please select any category";
-                        }
-                        if (value.toString().isEmpty) {
-                          return "Please select any category";
-                        }
-                        return null;
-                      },
-                      onChanged: (String? selected) {
-                        controller.changeCategory(selected!);
-                      },
-                      isExpanded: true,
-                      value: dropdownValue,
-                      decoration: InputDecoration(
-                        contentPadding:
-                            const EdgeInsets.only(left: 12, right: 10),
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white54),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      hint: const Text("Select Category"),
-                      items: articleCategoriesForPublishing
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    );
+                DropdownButtonFormField(
+                  validator: (value) {
+                    if (value == null) {
+                      return "Please select any category";
+                    }
+                    if (value.toString().isEmpty) {
+                      return "Please select any category";
+                    }
+                    return null;
                   },
+                  onChanged: (String? selected) {
+                    controller.changeCategory(selected!);
+                  },
+                  isExpanded: true,
+                  value: dropdownValue,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.only(left: 12, right: 10),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.white54),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  hint: const Text("Select Category"),
+                  items: articleCategoriesForPublishing
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
                 const SizedBox(height: 20),
                 const Text(
@@ -90,27 +87,27 @@ class ArticleDetailDialog extends StatelessWidget {
                     controller: tag1Controller,
                     label: "Tag 1",
                     validator: (p0) => null,
-                    prefixIcon: Icon(Icons.auto_fix_high_rounded)),
+                    prefixIcon: const Icon(Icons.auto_fix_high_rounded)),
                 const SizedBox(height: 14),
                 ArticleDetailTextField(
                   controller: tag2Controller,
                   label: "Tag 2",
                   validator: (p0) => null,
-                  prefixIcon: Icon(Icons.auto_fix_high_rounded),
+                  prefixIcon: const Icon(Icons.auto_fix_high_rounded),
                 ),
                 const SizedBox(height: 14),
                 ArticleDetailTextField(
                   controller: tag3Controller,
                   label: "Tag 2",
                   validator: (p0) => null,
-                  prefixIcon: Icon(Icons.auto_fix_high_rounded),
+                  prefixIcon: const Icon(Icons.auto_fix_high_rounded),
                 ),
               ],
             ),
           ),
         ),
       ),
-      actionsPadding: EdgeInsets.only(right: 20, top: 0, bottom: 8),
+      actionsPadding: const EdgeInsets.only(right: 20, top: 0, bottom: 8),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 10.0),
@@ -125,8 +122,8 @@ class ArticleDetailDialog extends StatelessWidget {
                     letterSpacing: 0.5)),
           ),
         ),
-        Consumer<MyArticlesController>(
-          builder: (context, controller, child) {
+        Builder(
+          builder: (context) {
             List<String> tags = [
               tag1Controller.text,
               tag2Controller.text,

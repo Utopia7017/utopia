@@ -1,18 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/article_body_component.dart';
+import 'package:utopia/utils/common_api_calls.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/utils/image_picker.dart';
 import 'package:utopia/view/screens/NewArticleScreen/components/article_detail_dialog.dart';
 
-class EditDraftScreen extends StatelessWidget {
+class EditDraftScreen extends ConsumerWidget {
   const EditDraftScreen(
       {super.key, required this.draftId, required this.authorId});
 
@@ -20,28 +21,25 @@ class EditDraftScreen extends StatelessWidget {
   final String authorId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
-        floatingActionButton: Consumer<MyArticlesController>(
-          builder: (context, controller, child) {
-            return FloatingActionButton(
-              onPressed: () async {
-                XFile? imageFile = await pickImage(context);
-                if (imageFile != null) {
-                  CroppedFile? croppedFile =
-                      await cropImage(File(imageFile.path));
-                  if (croppedFile != null) {
-                    controller.addImageField(croppedFile, null);
-                  }
-                }
-              },
-              backgroundColor: authBackground,
-              child: const Icon(
-                Icons.add_a_photo_outlined,
-                color: Colors.white,
-              ),
-            );
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            XFile? imageFile = await pickImage(context);
+            if (imageFile != null) {
+              CroppedFile? croppedFile = await cropImage(File(imageFile.path));
+              if (croppedFile != null) {
+                controller.addImageField(croppedFile, null);
+              }
+            }
           },
+          backgroundColor: authBackground,
+          child: const Icon(
+            Icons.add_a_photo_outlined,
+            color: Colors.white,
+          ),
         ),
         backgroundColor: primaryBackgroundColor,
         appBar: AppBar(
@@ -54,17 +52,18 @@ class EditDraftScreen extends StatelessWidget {
           iconTheme: const IconThemeData(color: Colors.black54),
           backgroundColor: primaryBackgroundColor,
           actions: [
-            Consumer<MyArticlesController>(
-              builder: (context, controller, child) {
-                switch (controller.uploadingStatus) {
-                  case ArticleUploadingStatus.uploading:
+            Builder(
+              builder: (context) {
+                switch (dataController.myArticleState.articleUploadingStatus) {
+                  case ArticleUploadingStatus.UPLOADING:
                     return const SizedBox();
-                  case ArticleUploadingStatus.notUploading:
+                  case ArticleUploadingStatus.NOT_UPLOADING:
                     return IconButton(
                       color: const Color(0xfb40B5AD),
                       icon: const Icon(Icons.arrow_forward_sharp),
                       onPressed: () {
-                        if (controller.validateArticleBody()) {
+                        if (validateArticleBody(
+                            dataController.myArticleState.bodyComponents)) {
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -86,20 +85,21 @@ class EditDraftScreen extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16, top: 12),
-          child: Consumer<MyArticlesController>(
-            builder: (context, controller, child) {
-              if (controller.bodyComponents.isEmpty) {
+          child: Builder(
+            builder: (context) {
+              if (dataController.myArticleState.bodyComponents.isEmpty) {
                 Future.delayed(const Duration(microseconds: 1))
                     .then((value) => controller.addTextField(null));
               }
-              List<BodyComponent> bodyComponents = controller.bodyComponents;
-              switch (controller.uploadingStatus) {
-                case ArticleUploadingStatus.uploading:
+              List<BodyComponent> bodyComponents =
+                  dataController.myArticleState.bodyComponents;
+              switch (dataController.myArticleState.articleUploadingStatus) {
+                case ArticleUploadingStatus.UPLOADING:
                   return const Center(
                       child: CircularProgressIndicator(
                     color: authMaterialButtonColor,
                   ));
-                case ArticleUploadingStatus.notUploading:
+                case ArticleUploadingStatus.NOT_UPLOADING:
                   return ListView.builder(
                     itemCount: bodyComponents.length,
                     itemBuilder: (context, index) {
@@ -165,9 +165,11 @@ class EditDraftScreen extends StatelessWidget {
                                           iconSize: 18,
                                           color: authMaterialButtonColor,
                                           onPressed: () {
-                                            controller.removeImage(controller
-                                                .bodyComponents
-                                                .sublist(index - 1, index + 2));
+                                            controller.removeImage(
+                                                dataController.myArticleState
+                                                    .bodyComponents
+                                                    .sublist(
+                                                        index - 1, index + 2));
                                           },
                                           icon: const Icon(
                                             Icons.close,

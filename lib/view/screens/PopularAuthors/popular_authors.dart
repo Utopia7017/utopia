@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/view/common_ui/author_card.dart';
 import 'package:utopia/view/shimmers/author_card_shimmer.dart';
 
-class PopularAuthors extends StatelessWidget {
+class PopularAuthors extends ConsumerWidget {
   const PopularAuthors({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -23,19 +25,19 @@ class PopularAuthors extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: Consumer<UserController>(
-          builder: (context, userController, child) {
-            if (userController.fetchingPopularAuthors ==
-                FetchingPopularAuthors.nil) {
-              userController.getPopularAuthors();
+        child: Builder(
+          builder: (context) {
+            if (dataController.userState.fetchingPopularAuthors ==
+                FetchingPopularAuthors.NOT_FETCHED) {
+              controller.getPopularAuthors();
             }
-            switch (userController.fetchingPopularAuthors) {
-              case FetchingPopularAuthors.nil:
+            switch (dataController.userState.fetchingPopularAuthors) {
+              case FetchingPopularAuthors.NOT_FETCHED:
                 return ListView(
                   children: [
                     RefreshIndicator(
                         onRefresh: () async {
-                          userController.getPopularAuthors();
+                          controller.getPopularAuthors();
                         },
                         backgroundColor: authBackground,
                         color: Colors.white,
@@ -44,7 +46,7 @@ class PopularAuthors extends StatelessWidget {
                         child: const Center(child: Text("Swipe to refresh"))),
                   ],
                 );
-              case FetchingPopularAuthors.fetching:
+              case FetchingPopularAuthors.FETCHING:
                 return GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       childAspectRatio: 0.62, crossAxisCount: 2),
@@ -65,10 +67,10 @@ class PopularAuthors extends StatelessWidget {
                   itemCount: 10,
                 );
 
-              case FetchingPopularAuthors.fetched:
+              case FetchingPopularAuthors.FETCHED:
                 return RefreshIndicator(
                   onRefresh: () async {
-                    userController.getPopularAuthors();
+                    controller.getPopularAuthors();
                   },
                   backgroundColor: authBackground,
                   color: Colors.white,
@@ -90,12 +92,13 @@ class PopularAuthors extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: AuthorCard(
                                     mainScreen: true,
-                                    user: userController.popularAuthors[index]),
+                                    user: dataController
+                                        .userState.popularAuthors![index]),
                               ),
                             ),
                           ));
                     },
-                    itemCount: userController.popularAuthors.length,
+                    itemCount: dataController.userState.popularAuthors!.length,
                   ),
                 );
             }

@@ -10,30 +10,145 @@ import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/services/firebase/storage_service.dart';
 import '../utils/common_api_calls.dart';
 
-class UserSate {
+class UserState {
   // class menmbers
   final ApiServices _apiServices = ApiServices();
-  ProfileStatus profileStatus = ProfileStatus.nil;
-  FetchingPopularAuthors fetchingPopularAuthors = FetchingPopularAuthors.nil;
-  UserUploadingImage userUploadingImage = UserUploadingImage.notLoading;
-  FollowingUserStatus followingUserStatus = FollowingUserStatus.no;
+  ProfileStatus profileStatus = ProfileStatus.NOT_FETCHED;
+  FetchingPopularAuthors fetchingPopularAuthors =
+      FetchingPopularAuthors.NOT_FETCHED;
+  UserUploadingImage userUploadingImage = UserUploadingImage.NOT_LOADING;
+  FollowingUserStatus followingUserStatus = FollowingUserStatus.NO;
   List<User>? popularAuthors = [];
   User? user;
 
-  // Constructor
-  UserSate({this.user, this.popularAuthors});
+  /// A constructor for the UserState class.
+  UserState({
+    required this.user,
+    required this.popularAuthors,
+    required this.fetchingPopularAuthors,
+    required this.followingUserStatus,
+    required this.profileStatus,
+    required this.userUploadingImage,
+  });
 
-  // call this method to update the state from within the class
-  UserSate _updateState({User? user, List<User>? popularAuthors}) {
-    return UserSate(
-        popularAuthors: popularAuthors ?? this.popularAuthors,
-        user: user ?? this.user);
+  /// A factory constructor that returns a UserState object.
+  ///
+  /// Returns:
+  ///   A UserState object with all of its properties set to their default values.
+  factory UserState.initUserState() {
+    return UserState(
+        user: null,
+        popularAuthors: [],
+        fetchingPopularAuthors: FetchingPopularAuthors.NOT_FETCHED,
+        followingUserStatus: FollowingUserStatus.NO,
+        profileStatus: ProfileStatus.NOT_FETCHED,
+        userUploadingImage: UserUploadingImage.NOT_LOADING);
   }
 
-  // Get the list of popular authors
-  Future<UserSate> getPopularAuthors() async {
-    fetchingPopularAuthors = FetchingPopularAuthors.fetching;
-    await Future.delayed(const Duration(milliseconds: 1));
+  // call this method to update the state from within the class
+  UserState _updateState(
+      {User? user,
+      List<User>? popularAuthors,
+      FetchingPopularAuthors? fetchingPopularAuthors,
+      FollowingUserStatus? followingUserStatus,
+      ProfileStatus? profileStatus,
+      UserUploadingImage? userUploadingImage}) {
+    return UserState(
+      popularAuthors: popularAuthors ?? this.popularAuthors,
+      user: user ?? this.user,
+      fetchingPopularAuthors:
+          fetchingPopularAuthors ?? this.fetchingPopularAuthors,
+      followingUserStatus: followingUserStatus ?? this.followingUserStatus,
+      profileStatus: profileStatus ?? this.profileStatus,
+      userUploadingImage: userUploadingImage ?? this.userUploadingImage,
+    );
+  }
+
+  /// > This function returns a new UserState object with the fetchingPopularAuthors property set to
+  /// FETCHING
+  ///
+  /// Returns:
+  ///   A new instance of the UserState class.
+  UserState startFetchingPopularAuthors() {
+    return _updateState(
+        fetchingPopularAuthors: FetchingPopularAuthors.FETCHING);
+  }
+
+  /// If the user is currently fetching popular authors, stop fetching them.
+  ///
+  /// Returns:
+  ///   A new UserState object with the fetchingPopularAuthors property set to FETCHED.
+  UserState stopFetchingPopularAuthors() {
+    return _updateState(fetchingPopularAuthors: FetchingPopularAuthors.FETCHED);
+  }
+
+  /// If the user is not already following the user, then start following the user.
+  ///
+  /// Returns:
+  ///   A new instance of the UserState class with the followingUserStatus property set to YES.
+  UserState startFollowingUser() {
+    return _updateState(followingUserStatus: FollowingUserStatus.YES);
+  }
+
+  /// If the user is following the user, stop following the user.
+  ///
+  /// Returns:
+  ///   A new UserState object with the followingUserStatus set to FollowingUserStatus.NO
+  UserState stopFollowingUser() {
+    return _updateState(followingUserStatus: FollowingUserStatus.NO);
+  }
+
+  /// It returns a new UserState object with the profileStatus set to FETCHING.
+  ///
+  /// Returns:
+  ///   A new UserState object with the profileStatus set to FETCHING.
+  UserState startFetchingMyProfile() {
+    return _updateState(profileStatus: ProfileStatus.FETCHING);
+  }
+
+  /// It returns a new UserState object with the profileStatus set to ProfileStatus.FETCHED.
+  ///
+  /// Returns:
+  ///   A new instance of the UserState class.
+  UserState stopFetchingMyProfile() {
+    return _updateState(profileStatus: ProfileStatus.FETCHED);
+  }
+
+  /// It returns a new UserState object with the userUploadingImage property set to
+  /// UserUploadingImage.LOADING.
+  ///
+  /// Returns:
+  ///   A new instance of the UserState class with the userUploadingImage property set to
+  /// UserUploadingImage.LOADING.
+  UserState startUploadingImage() {
+    return _updateState(userUploadingImage: UserUploadingImage.LOADING);
+
+    /// "When the user clicks the button, we want to start fetching the popular authors."
+    ///
+    /// The first thing we do is call the `startFetchingPopularAuthors` function on the `userState`. This
+    /// function returns a new `UserState` object with the `isFetchingPopularAuthors` property set to
+    /// `true`
+  }
+
+  /// It returns a new UserState object with the userUploadingImage property set to NOT_LOADING.
+  ///
+  /// Returns:
+  ///   A new instance of the UserState class with the userUploadingImage property set to
+  /// UserUploadingImage.NOT_LOADING.
+  UserState stopUploadingImage() {
+    /// "When the user clicks the follow button, we want to start following the user."
+    ///
+    /// The first thing we do is call the `startFollowingUser` function on the `userState` object. This
+    /// function returns a new `UserState` object with the `isFollowing` property set to `true`
+    return _updateState(userUploadingImage: UserUploadingImage.NOT_LOADING);
+  }
+
+  /// It fetches the popular authors from the server and stores them in the popularAuthors list.
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserState> getPopularAuthors() async {
+    // start fetching popular authors
     List<User> temp = [];
     try {
       final Response? response = await _apiServices.get(endUrl: 'users.json');
@@ -55,17 +170,17 @@ class UserSate {
         );
       }
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
     popularAuthors = temp;
-    fetchingPopularAuthors = FetchingPopularAuthors.fetched;
+    // stop fetching popular authors
     return _updateState(popularAuthors: popularAuthors);
   }
 
   // Set current user
   /// Returning a future of type UserState.
-  Future<UserSate> setUser(String userId) async {
-    profileStatus = ProfileStatus.loading;
+  Future<UserState> setUser(String userId) async {
+    // start fecthing profile
     User? currentUser;
     final endUrl = 'users/$userId.json';
     try {
@@ -76,12 +191,18 @@ class UserSate {
     } catch (error) {
       debugPrint(error.toString());
     }
-    profileStatus = ProfileStatus.fetched;
+    // stop fetching profile
     return _updateState(user: currentUser);
   }
 
-  // Creates a new user
-  Future<UserSate> createUser(User newUser) async {
+  /// It creates a new user in the database.
+  ///
+  /// Args:
+  ///   newUser (User): The user object that we want to create.
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserState> createUser(User newUser) async {
     User? currUser;
     try {
       final Response? response = await _apiServices.put(
@@ -92,18 +213,29 @@ class UserSate {
     } catch (error) {
       debugPrint(error.toString());
     }
-    profileStatus = ProfileStatus.fetched;
+    // stop fetching profile
     return _updateState(user: currUser);
   }
 
-  /// It changes the cover photo of the user.
+  /// It takes a cropped image file, uploads it to firebase storage, gets the image url, updates the
+  /// user's cover photo url in the database, and updates the user's cover photo url in the user object
   ///
   /// Args:
   ///   imageFile (CroppedFile): The image file that you want to upload.
-  Future<UserSate> changeCoverPhoto(CroppedFile imageFile) async {
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserState> changeCoverPhoto(CroppedFile imageFile) async {
     try {
-      userUploadingImage = UserUploadingImage.loading;
+      // userUploadingImage = UserUploadingImage.loading;
+      // start uploading image
       await Future.delayed(const Duration(milliseconds: 1));
+
+      /// It saves an article to the user's saved articles list.
+      ///
+      /// Args:
+      ///   authorId (String): The author's id
+      ///   articleId (String): The id of the article to be saved.
 
       String? url = await getImageUrl(
           File(imageFile.path), 'users/${user!.userId}/coverphoto/cp');
@@ -113,17 +245,23 @@ class UserSate {
     } catch (error) {
       debugPrint(error.toString());
     }
-    userUploadingImage = UserUploadingImage.notLoading;
+    // userUploadingImage = UserUploadingImage.notLoading;
+    // stop uploading image
     return _updateState(user: user);
   }
 
-  /// It changes the display photo of the user.
+  /// It takes a cropped image file, uploads it to firebase storage, gets the image url, updates the
+  /// user's display picture url in the database and updates the user object in the state
   ///
   /// Args:
-  ///   imageFile (CroppedFile): The cropped image file that you want to upload as your display photo.
-  Future<UserSate> changeDisplayPhoto(CroppedFile imageFile) async {
+  ///   imageFile (CroppedFile): The image file to be uploaded.
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserState> changeDisplayPhoto(CroppedFile imageFile) async {
     try {
-      userUploadingImage = UserUploadingImage.loading;
+      // userUploadingImage = UserUploadingImage.loading;
+      // start uploading image
       await Future.delayed(const Duration(milliseconds: 1));
 
       String? url = await getImageUrl(
@@ -134,17 +272,20 @@ class UserSate {
     } catch (error) {
       debugPrint(error.toString());
     }
-    userUploadingImage = UserUploadingImage.notLoading;
+    // userUploadingImage = UserUploadingImage.notLoading;
     return _updateState(user: user);
   }
 
-  /// It removes a follower from the user's list of followers.
+  /// > This function removes a user from the currently signed in user's followers list
   ///
   /// Args:
-  ///   followerId (String): The id of the user who is following you.
-  ///   myUid (String): The user's uid
-  Future<UserSate> removeFollower(String followerId, String myUid) async {
-    followingUserStatus = FollowingUserStatus.yes;
+  ///   followerId (String): The user id of the user you want to remove from your followers list.
+  ///   myUid (String): The user id of the currently signed in user.
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserState> removeFollower(String followerId, String myUid) async {
+    // followingUserStatus = FollowingUserStatus.yes;
     await Future.delayed(const Duration(microseconds: 1));
     try {
       User? userToRemoveFromFollowers =
@@ -170,16 +311,19 @@ class UserSate {
     } catch (error) {
       rethrow;
     }
-    followingUserStatus = FollowingUserStatus.no;
+    // followingUserStatus = FollowingUserStatus.no;
     return _updateState(user: user);
   }
 
   /// It follows a user.
   ///
   /// Args:
-  ///   userId: The user id of the user you want to follow.
-  Future<UserSate> followUser({required userId}) async {
-    followingUserStatus = FollowingUserStatus.yes;
+  ///   userId: The user id of the user to be followed.
+  ///
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserState> followUser({required userId}) async {
+    // followingUserStatus = FollowingUserStatus.yes;
 
     try {
       User? userToFollow = await getUser(userId); // get user by user id
@@ -207,8 +351,43 @@ class UserSate {
     } catch (error) {
       debugPrint(error.toString());
     }
-    followingUserStatus = FollowingUserStatus.no;
+    // followingUserStatus = FollowingUserStatus.no;
     return _updateState(popularAuthors: popularAuthors, user: user);
+  }
+
+  /// > It removes the user id of the currently signed in user from the followers list of the user to be
+  /// followed and also removes the user id of the user to be followed from the following list of the
+  /// currently signed in user
+  /// 
+  /// Args:
+  ///   userId (String): The user id of the user you want to follow.
+  /// 
+  /// Returns:
+  ///   A Future<UserState>
+  Future<UserState> unFollowUser({required String userId}) async {
+    try {
+      User? userToFollow = await getUser(userId); // get user by user id
+      if (userToFollow != null) {
+        List<dynamic> followers =
+            userToFollow.followers; // get their followers.
+        followers.remove(user!.userId); // increase their followers locally.
+        // update their profile to the server.
+        await _apiServices.update(
+            endUrl: 'users/$userId.json', data: {'followers': followers});
+        // update currently signed in user's profile (increase following list first)
+        List<dynamic> myFollowings = user!.following;
+        // increase my following locally.
+        myFollowings.remove(userId);
+        // update following list to my profile (server)
+        await _apiServices.update(
+            endUrl: 'users/${user!.userId}.json',
+            data: {'following': myFollowings});
+        user!.following = myFollowings;
+      }
+    } catch (error) {
+      rethrow;
+    }
+    return getPopularAuthors();
   }
 
   /// It updates the user's profile
@@ -219,7 +398,7 @@ class UserSate {
   ///
   /// Returns:
   ///   The user's state.
-  Future<UserSate> updateProfile(
+  Future<UserState> updateProfile(
       {required String name, required String bio}) async {
     try {
       final Response? profileUpdateResponse = await _apiServices
@@ -245,7 +424,7 @@ class UserSate {
   ///
   /// Returns:
   ///   A Future<UserState>
-  Future<UserSate> saveArticle(
+  Future<UserState> saveArticleDetail(
       {required String authorId, required String articleId}) async {
     dynamic savedArticle = {'authorId': authorId, 'articleId': articleId};
     List<dynamic> savedArticleList = user!.savedArticles;
@@ -271,7 +450,7 @@ class UserSate {
   ///
   /// Returns:
   ///   A Future<UserState>
-  Future<UserSate> unSaveArticle(
+  Future<UserState> unSaveArticleDetail(
       {required String authorId, required String articleId}) async {
     List<dynamic> savedArticleList = user!.savedArticles;
     int indexTobeRemoved = savedArticleList.indexWhere((element) =>
@@ -305,7 +484,7 @@ class UserSate {
   ///
   /// Returns:
   ///   The user state
-  Future<UserSate> blockThisUser(String uid) async {
+  Future<UserState> blockThisUser(String uid) async {
     try {
       if (!user!.blocked.contains(uid)) {
         List<dynamic> currentBlockedUsers = user!.blocked;
@@ -346,7 +525,7 @@ class UserSate {
   ///
   /// Returns:
   ///   A Future<UserState>
-  Future<UserSate> unBlockThisUser(String uid) async {
+  Future<UserState> unBlockThisUser(String uid) async {
     try {
       if (user!.blocked.contains(uid)) {
         List<dynamic> currentBlockedUsers = user!.blocked;
@@ -366,7 +545,7 @@ class UserSate {
     return _updateState(user: user);
   }
 
-  Future<UserSate> removeDp() async {
+  Future<UserState> removeDp() async {
     try {
       final Response? response = await _apiServices
           .update(endUrl: 'users/${user!.userId}.json', data: {'dp': ''});
@@ -379,7 +558,7 @@ class UserSate {
     return _updateState(user: user);
   }
 
-  Future<UserSate> removeCp() async {
+  Future<UserState> removeCp() async {
     try {
       final Response? response = await _apiServices
           .update(endUrl: 'users/${user!.userId}.json', data: {'cp': ''});

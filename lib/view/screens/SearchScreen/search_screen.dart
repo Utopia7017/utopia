@@ -2,27 +2,26 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/articles_controller.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'package:utopia/view/shimmers/follower_shimmer.dart';
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({
     super.key,
   });
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen>
+class _SearchScreenState extends ConsumerState<SearchScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
@@ -30,6 +29,9 @@ class _SearchScreenState extends State<SearchScreen>
   final String myUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController queryController = TextEditingController();
   Timer? _debounce;
+
+  @override
+  WidgetRef get ref => super.ref;
 
   @override
   void initState() {
@@ -45,22 +47,23 @@ class _SearchScreenState extends State<SearchScreen>
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
       body: SafeArea(
-        child: NestedScrollView(headerSliverBuilder:
-            (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar(
-                toolbarHeight: displayHeight(context) * 0.1,
-                backgroundColor: authBackground,
-                title: SizedBox(
-                  height: displayHeight(context) * 0.055,
-                  child: Consumer<ArticlesController>(
-                    builder: (context, controller, child) {
-                      return TextFormField(
-                        // controller: queryController,
+        child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverOverlapAbsorber(
+                  handle:
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    toolbarHeight: displayHeight(context) * 0.1,
+                    backgroundColor: authBackground,
+                    title: SizedBox(
+                      height: displayHeight(context) * 0.055,
+                      child: TextFormField(
                         onChanged: (query) {
                           if (_debounce?.isActive ?? false) _debounce!.cancel();
                           _debounce =
@@ -89,36 +92,33 @@ class _SearchScreenState extends State<SearchScreen>
                                 borderRadius: BorderRadius.circular(5),
                                 borderSide:
                                     const BorderSide(color: Colors.grey))),
-                      );
-                    },
+                      ),
+                    ),
+                    floating: true,
+                    pinned: true,
+                    snap: false,
+                    elevation: 0,
+                    forceElevated: innerBoxIsScrolled,
+                    bottom: TabBar(
+                        controller: _tabController,
+                        indicatorColor: Colors.white,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        indicator: const UnderlineTabIndicator(
+                          insets: EdgeInsets.only(bottom: 8),
+                        ),
+                        tabs: const [
+                          Tab(text: 'Articles'),
+                          Tab(text: 'Authors'),
+                        ]),
                   ),
                 ),
-                floating: true,
-                pinned: true,
-                snap: false,
-                elevation: 0,
-                forceElevated: innerBoxIsScrolled,
-                bottom: TabBar(
-                    controller: _tabController,
-                    indicatorColor: Colors.white,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicator: const UnderlineTabIndicator(
-                      insets: EdgeInsets.only(bottom: 8),
-                    ),
-                    tabs: const [
-                      Tab(text: 'Articles'),
-                      Tab(text: 'Authors'),
-                    ]),
-              ),
-            ),
-          ];
-        }, body: Consumer<ArticlesController>(
-          builder: (context, controller, child) {
-            return TabBarView(
+              ];
+            },
+            body: TabBarView(
               controller: _tabController,
               children: [
                 // Display searched articles
-                controller.searchedArticles.isEmpty
+                dataController.articleState.searchedArticles.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -140,15 +140,17 @@ class _SearchScreenState extends State<SearchScreen>
                     : ListView.builder(
                         padding:
                             EdgeInsets.only(top: displayHeight(context) * 0.06),
-                        itemCount: controller.searchedArticles.length,
+                        itemCount:
+                            dataController.articleState.searchedArticles.length,
                         itemBuilder: (context, index) {
                           return ArticleBox(
-                              article: controller.searchedArticles[index]);
+                              article: dataController
+                                  .articleState.searchedArticles[index]);
                         },
                       ),
 
                 // Display searched authors
-                (controller.searchedAuthors.isEmpty)
+                (dataController.articleState.searchedAuthors.isEmpty)
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -170,10 +172,12 @@ class _SearchScreenState extends State<SearchScreen>
                     : ListView.builder(
                         padding:
                             EdgeInsets.only(top: displayHeight(context) * 0.08),
-                        itemCount: controller.searchedAuthors.length,
+                        itemCount:
+                            dataController.articleState.searchedAuthors.length,
                         itemBuilder: (context, index) {
-                          List<String> initials =
-                              controller.searchedAuthors[index].name.split(" ");
+                          List<String> initials = dataController
+                              .articleState.searchedAuthors[index].name
+                              .split(" ");
                           String firstLetter = "", lastLetter = "";
 
                           if (initials.length == 1) {
@@ -182,31 +186,34 @@ class _SearchScreenState extends State<SearchScreen>
                             firstLetter = initials[0].characters.first;
                             lastLetter = initials[1].characters.first;
                           }
-                          return Consumer<UserController>(
-                            builder: (context, userController, child) {
-                              if (userController.profileStatus ==
-                                  ProfileStatus.nil) {
-                                userController.setUser(myUserId);
+                          return Builder(
+                            builder: (context) {
+                              if (dataController.userState.profileStatus ==
+                                  ProfileStatus.NOT_FETCHED) {
+                                controller.setUser(myUserId);
                               }
-
-                              switch (userController.profileStatus) {
-                                case ProfileStatus.nil:
+                              switch (dataController.userState.profileStatus) {
+                                case ProfileStatus.NOT_FETCHED:
                                   return const Center(
                                     child: Text("Something is wrong!!"),
                                   );
-                                case ProfileStatus.loading:
+                                case ProfileStatus.FETCHING:
                                   return const FollowerShimmer();
-                                case ProfileStatus.fetched:
+                                case ProfileStatus.FETCHED:
                                   return ListTile(
                                     onTap: () {
-                                      if (!controller
+                                      if (!dataController.articleState
                                               .searchedAuthors[index].blocked
                                               .contains(myUserId) &&
-                                          controller.searchedAuthors[index]
+                                          dataController
+                                                  .articleState
+                                                  .searchedAuthors[index]
                                                   .userId !=
                                               myUserId &&
-                                          !userController.user!.blocked
-                                              .contains(controller
+                                          !dataController
+                                              .userState.user!.blocked
+                                              .contains(dataController
+                                                  .articleState
                                                   .searchedAuthors[index]
                                                   .userId)) {
                                         Navigator.push(
@@ -214,14 +221,15 @@ class _SearchScreenState extends State<SearchScreen>
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   UserProfileScreen(
-                                                      userId: controller
+                                                      userId: dataController
+                                                          .articleState
                                                           .searchedAuthors[
                                                               index]
                                                           .userId),
                                             ));
                                       }
                                     },
-                                    leading: (controller
+                                    leading: (dataController.articleState
                                             .searchedAuthors[index].dp.isEmpty)
                                         ? CircleAvatar(
                                             backgroundColor:
@@ -250,19 +258,21 @@ class _SearchScreenState extends State<SearchScreen>
                                         : CircleAvatar(
                                             backgroundImage:
                                                 CachedNetworkImageProvider(
-                                                    controller
+                                                    dataController
+                                                        .articleState
                                                         .searchedAuthors[index]
                                                         .dp),
                                           ),
                                     title: Row(
                                       children: [
-                                        Text(controller
+                                        Text(dataController.articleState
                                             .searchedAuthors[index].name),
                                         const SizedBox(
                                           width: 5,
                                         ),
                                         Visibility(
-                                          visible: controller
+                                          visible: dataController
+                                              .articleState
                                               .searchedAuthors[index]
                                               .isVerified,
                                           child: Image.asset(
@@ -280,9 +290,7 @@ class _SearchScreenState extends State<SearchScreen>
                         },
                       )
               ],
-            );
-          },
-        )),
+            )),
       ),
     );
   }

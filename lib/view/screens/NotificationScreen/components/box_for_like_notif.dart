@@ -2,18 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
-class BoxForLikeNotification extends StatelessWidget {
+class BoxForLikeNotification extends ConsumerWidget {
   final String notifierDp;
   final String articleId;
   final String notificationId;
@@ -35,7 +35,9 @@ class BoxForLikeNotification extends StatelessWidget {
   String myUid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     RichText title = RichText(
         text: TextSpan(children: [
       TextSpan(
@@ -138,20 +140,22 @@ class BoxForLikeNotification extends StatelessWidget {
       trailing: SizedBox(
         height: 25,
         width: 28,
-        child: Consumer<MyArticlesController>(
-          builder: (context, controller, child) {
-            if (controller.fetchingMyArticleStatus == FetchingMyArticle.nil) {
+        child: Builder(
+          builder: (context) {
+            if (dataController.myArticleState.fetchingMyArticleStatus ==
+                FetchingMyArticle.NOT_FETCHED) {
               controller.fetchMyArticles(myUid);
             }
-            switch (controller.fetchingMyArticleStatus) {
-              case FetchingMyArticle.nil:
+            switch (dataController.myArticleState.fetchingMyArticleStatus) {
+              case FetchingMyArticle.NOT_FETCHED:
                 return Image.asset(notificationLikeIcon,
                     height: 25, fit: BoxFit.cover);
-              case FetchingMyArticle.fetching:
+              case FetchingMyArticle.FETCHING:
                 return Image.asset(notificationLikeIcon,
                     height: 25, fit: BoxFit.cover);
-              case FetchingMyArticle.fetched:
-                int indexOfArticle = controller.publishedArticles
+              case FetchingMyArticle.FETCHED:
+                int indexOfArticle = dataController
+                    .myArticleState.publishedArticles
                     .indexWhere((element) => element.articleId == articleId);
 
                 if (indexOfArticle == -1) {
@@ -160,14 +164,13 @@ class BoxForLikeNotification extends StatelessWidget {
                 } else {
                   String? imagePreview;
 
-                  for (var body
-                      in controller.publishedArticles[indexOfArticle].body) {
+                  for (var body in dataController
+                      .myArticleState.publishedArticles[indexOfArticle].body) {
                     if (body['type'] == 'image') {
                       imagePreview = body['image'];
                       break;
                     }
                   }
-
                   return (imagePreview != null)
                       ? CachedNetworkImage(
                           imageUrl: imagePreview, height: 25, fit: BoxFit.cover)

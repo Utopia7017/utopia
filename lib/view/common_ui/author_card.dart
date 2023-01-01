@@ -1,21 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/user_model.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 
-class AuthorCard extends StatelessWidget {
+class AuthorCard extends ConsumerWidget {
   User user;
   bool mainScreen;
   AuthorCard({super.key, required this.mainScreen, required this.user});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     List<String> initials = user.name.split(" ");
     String firstLetter = "", lastLetter = "";
 
@@ -179,39 +181,36 @@ class AuthorCard extends StatelessWidget {
                       wordSpacing: 0.4),
                 ),
               ),
-              Consumer<UserController>(
-                builder: (context, userController, child) {
-                  return SizedBox(
-                    width: displayWidth(context) * 0.32,
-                    child: MaterialButton(
-                      height: displayHeight(context) * 0.038,
-                      onPressed: () {
-                        if (userController.followingUserStatus ==
-                            FollowingUserStatus.no) {
-                          if (user.followers
-                              .contains(userController.user!.userId)) {
-                            userController.unFollowUser(userId: user.userId);
-                          } else {
-                            userController.followUser(userId: user.userId);
-                          }
-                        }
-                      },
-                      color: authBackground,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Text(
-                        user.followers.contains(userController.user!.userId)
-                            ? "Unfollow"
-                            : "Follow",
-                        style: TextStyle(
-                            fontFamily: "",
-                            letterSpacing: 0.4,
-                            fontSize: mainScreen ? 11.8 : 13.5,
-                            color: Colors.white.withOpacity(0.85)),
-                      ),
-                    ),
-                  );
-                },
+              SizedBox(
+                width: displayWidth(context) * 0.32,
+                child: MaterialButton(
+                  height: displayHeight(context) * 0.038,
+                  onPressed: () {
+                    if (dataController.userState.followingUserStatus ==
+                        FollowingUserStatus.NO) {
+                      if (user.followers
+                          .contains(dataController.userState.user!.userId)) {
+                        controller.unFollowUser(userId: user.userId);
+                      } else {
+                        controller.followUser(userId: user.userId);
+                      }
+                    }
+                  },
+                  color: authBackground,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Text(
+                    user.followers
+                            .contains(dataController.userState.user!.userId)
+                        ? "Unfollow"
+                        : "Follow",
+                    style: TextStyle(
+                        fontFamily: "",
+                        letterSpacing: 0.4,
+                        fontSize: mainScreen ? 11.8 : 13.5,
+                        color: Colors.white.withOpacity(0.85)),
+                  ),
+                ),
               ),
             ],
           ),

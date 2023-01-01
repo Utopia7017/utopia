@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/auth_screen_controller.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/user_model.dart' as user;
 import 'package:utopia/services/firebase/auth_services.dart' as firebase;
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
@@ -15,15 +14,18 @@ import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/terms_of_use_screen.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   final String? alreadyProvidedEmail;
   SignUpScreen({this.alreadyProvidedEmail});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  @override
+  WidgetRef get ref => super.ref;
+
   final Logger _logger = Logger("SignUpScreen");
 
   TextEditingController emailController = TextEditingController();
@@ -54,6 +56,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: authBackground,
@@ -65,39 +69,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
           child: Form(
             key: _formKey,
-            child: Consumer<AuthScreenController>(
-              builder: (context, controller, child) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        controller.registrationPageIndex == 2
-                            ? IconButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () =>
-                                    controller.decreaseRegistrationPageIndex(),
-                                icon: const Icon(
-                                    Icons.keyboard_backspace_outlined),
-                                color: Colors.white,
-                              )
-                            : const SizedBox(),
-                        Text(
-                          '( ${controller.registrationPageIndex.toString()}/2 )',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    dataController.authState.registrationPageIndex == 2
+                        ? IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () =>
+                                controller.decreaseRegistrationPageIndex(),
+                            icon: const Icon(Icons.keyboard_backspace_outlined),
+                            color: Colors.white,
+                          )
+                        : const SizedBox(),
+                    Text(
+                      '( ${dataController.authState.registrationPageIndex.toString()}/2 )',
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 15),
-                    controller.registrationPageIndex == 1
-                        ? formPage(context)
-                        : validateEmailPage(context)
                   ],
-                );
-              },
+                ),
+                const SizedBox(height: 15),
+                dataController.authState.registrationPageIndex == 1
+                    ? formPage(context)
+                    : validateEmailPage(context)
+              ],
             ),
           ),
         ),
@@ -107,6 +106,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   // Form page - 1
   Widget formPage(BuildContext context) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -150,94 +151,82 @@ class _SignUpScreenState extends State<SignUpScreen> {
           },
         ),
         space,
-        Consumer<AuthScreenController>(
-          builder: (context, controller, child) {
-            return AuthTextField(
-              controller: passwordController,
-              label: "Password",
-              visible: controller.showSignupPasswprd,
-              suffixIcon: IconButton(
-                  onPressed: () {
-                    controller.showSignupPasswprd
-                        ? controller.signupOffVisibility()
-                        : controller.signupOnVisibility();
-                  },
-                  icon: controller.showSignupPasswprd
-                      ? const Icon(
-                          Icons.visibility_off,
-                          color: Colors.white60,
-                        )
-                      : const Icon(
-                          Icons.visibility,
-                          color: Colors.white60,
-                        )),
-              prefixIcon: const Icon(
-                Icons.key,
-                color: Colors.white60,
-              ),
-              validator: (val) {
-                if (val!.isEmpty) return "Password cannot be empty";
+        AuthTextField(
+          controller: passwordController,
+          label: "Password",
+          visible: dataController.authState.showSignupPassword,
+          suffixIcon: IconButton(
+              onPressed: () {
+                dataController.authState.showSignupPassword
+                    ? controller.signupOffVisibility()
+                    : controller.signupOnVisibility();
               },
-            );
+              icon: dataController.authState.showSignupPassword
+                  ? const Icon(
+                      Icons.visibility_off,
+                      color: Colors.white60,
+                    )
+                  : const Icon(
+                      Icons.visibility,
+                      color: Colors.white60,
+                    )),
+          prefixIcon: const Icon(
+            Icons.key,
+            color: Colors.white60,
+          ),
+          validator: (val) {
+            if (val!.isEmpty) return "Password cannot be empty";
           },
         ),
         space,
-        Consumer<AuthScreenController>(
-          builder: (context, controller, child) {
-            return AuthTextField(
-              controller: confirmPasswordController,
-              label: "Confirm Password",
-              visible: controller.showSignupConfirmPassword,
-              suffixIcon: IconButton(
-                  onPressed: () {
-                    controller.showSignupConfirmPassword
-                        ? controller.signupOffConfirmOffVisibility()
-                        : controller.signupConfirmOnVisibility();
-                  },
-                  icon: controller.showSignupConfirmPassword
-                      ? const Icon(Icons.visibility_off, color: Colors.white60)
-                      : const Icon(
-                          Icons.visibility,
-                          color: Colors.white60,
-                        )),
-              prefixIcon: const Icon(
-                Icons.security,
-                color: Colors.white60,
-              ),
-              validator: (val) {
-                if (val!.isEmpty) {
-                  return "Textfield cannot be empty";
-                } else if (passwordController.value !=
-                    confirmPasswordController.value) {
-                  return "password didn't match";
-                } else {
-                  return null;
-                }
+        AuthTextField(
+          controller: confirmPasswordController,
+          label: "Confirm Password",
+          visible: dataController.authState.showSignupConfirmPassword,
+          suffixIcon: IconButton(
+              onPressed: () {
+                dataController.authState.showSignupConfirmPassword
+                    ? controller.signupConfirmOffVisibility()
+                    : controller.signupConfirmOnVisibility();
               },
-            );
+              icon: dataController.authState.showSignupConfirmPassword
+                  ? const Icon(Icons.visibility_off, color: Colors.white60)
+                  : const Icon(
+                      Icons.visibility,
+                      color: Colors.white60,
+                    )),
+          prefixIcon: const Icon(
+            Icons.security,
+            color: Colors.white60,
+          ),
+          validator: (val) {
+            if (val!.isEmpty) {
+              return "Textfield cannot be empty";
+            } else if (passwordController.value !=
+                confirmPasswordController.value) {
+              return "password didn't match";
+            } else {
+              return null;
+            }
           },
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Consumer<AuthScreenController>(
-              builder: (context, controller, child) {
-                return IconButton(
-                    onPressed: () {
-                      if (controller.termsCondition) {
-                        controller.declineTermsCondition();
-                      } else {
-                        controller.acceptTermsCondition();
-                      }
-                    },
-                    icon: Icon(
-                      controller.termsCondition
-                          ? Icons.check_box
-                          : Icons.check_box_outline_blank_outlined,
-                      color: Colors.white60,
-                    ));
-              },
-            ),
+            IconButton(
+                onPressed: () {
+                  if (dataController.authState.termsCondition) {
+                    controller.declineTermsCondition();
+                  } else {
+                    controller.acceptTermsCondition();
+                  }
+                },
+                icon: Icon(
+                  dataController.authState.termsCondition
+                      ? Icons.check_box
+                      : Icons.check_box_outline_blank_outlined,
+                  color: Colors.white60,
+                )),
             Row(
               children: [
                 const Text(
@@ -267,72 +256,62 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         Center(
           child: SizedBox(
-            width: displayWidth(context) * 0.55,
-            child: Consumer<AuthScreenController>(
-              builder: (context, controller, child) {
-                return MaterialButton(
-                  onPressed: () async {
-                    final sms = ScaffoldMessenger.of(context);
-                    if (_formKey.currentState!.validate() &&
-                        controller.signupStatus ==
-                            AuthSignUpStatus.notLoading) {
-                      if (controller.termsCondition) {
-                        controller.startSigningUp();
-                        final dynamic signupResponse = await _auth.signUp(
-                          email: emailController.text,
-                          password: passwordController.text,
-                        );
-                        controller.stopSigningUp();
+              width: displayWidth(context) * 0.55,
+              child: MaterialButton(
+                onPressed: () async {
+                  // final sms = ScaffoldMessenger.of(context);
+                  if (_formKey.currentState!.validate() &&
+                      dataController.authState.signupStatus ==
+                          AuthSignUpStatus.NOT_LOADING) {
+                    if (dataController.authState.termsCondition) {
+                      controller.startSigningUp();
+                      final dynamic signupResponse = await _auth.signUp(
+                        email: emailController.text,
+                        password: passwordController.text,
+                      );
+                      controller.stopSigningUp();
 
-                        if (signupResponse.runtimeType == UserCredential) {
-                          // successfully created new account
-                          controller.increaseRegistrationPageIndex();
-                        } else {
-                          showCustomSnackBar(
-                              context: context, text: signupResponse);
-                        }
+                      if (signupResponse.runtimeType == UserCredential) {
+                        // successfully created new account
+                        controller.increaseRegistrationPageIndex();
                       } else {
                         showCustomSnackBar(
-                            context: context,
-                            text: 'Please accept the Terms And Conditions ');
+                            context: context, text: signupResponse);
                       }
+                    } else {
+                      showCustomSnackBar(
+                          context: context,
+                          text: 'Please accept the Terms And Conditions ');
                     }
-                  },
-                  height: displayHeight(context) * 0.055,
-                  color: authMaterialButtonColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Text(
-                    "Next",
-                    style: TextStyle(fontSize: 15.5),
-                  ),
-                );
-              },
-            ),
-          ),
+                  }
+                },
+                height: displayHeight(context) * 0.055,
+                color: authMaterialButtonColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Text(
+                  "Next",
+                  style: TextStyle(fontSize: 15.5),
+                ),
+              )),
         ),
         space,
-        Consumer<AuthScreenController>(
-          builder: (context, controller, child) {
-            switch (controller.signupStatus) {
-              case AuthSignUpStatus.loading:
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: authMaterialButtonColor,
-                  ),
-                );
-              case AuthSignUpStatus.notLoading:
-                return const SizedBox();
-            }
-          },
-        )
+        dataController.authState.signupStatus == AuthSignUpStatus.LOADING
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: authMaterialButtonColor,
+                ),
+              )
+            : const SizedBox()
       ],
     );
   }
 
   // Email validation page -2
   Widget validateEmailPage(BuildContext context) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Column(
       children: [
         Image.asset(
@@ -365,72 +344,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Center(
           child: SizedBox(
             width: displayWidth(context) * 0.55,
-            child: Consumer<AuthScreenController>(
-              builder: (context, controller, child) {
-                return MaterialButton(
-                  onPressed: () async {
-                    controller.startSigningUp();
-                    final navigator = Navigator.of(context);
-                    final sms = ScaffoldMessenger.of(context);
-                    final userController =
-                        Provider.of<UserController>(context, listen: false);
-                    await FirebaseAuth.instance.currentUser!.reload();
-                    if (FirebaseAuth.instance.currentUser!.emailVerified) {
-                      await userController.createUser(user.User(
-                          blockedBy: [],
-                          draftArticles: [],
-                          blocked: [],
-                          isVerified: false,
-                          savedArticles: [],
-                          cp: '',
-                          name: nameController.text.trim(),
-                          dp: '',
-                          email: emailController.text,
-                          followers: [],
-                          userId: FirebaseAuth.instance.currentUser!.uid,
-                          bio: 'I am new to Utopia',
-                          following: []));
-                      controller.stopSigningUp();
-                      navigator.pushReplacement(MaterialPageRoute(
-                        builder: (context) => AppScreen(true),
-                      ));
-                    } else {
-                      controller.stopSigningUp();
+            child: MaterialButton(
+              onPressed: () async {
+                controller.startSigningUp();
+                final navigator = Navigator.of(context);
+                final sms = ScaffoldMessenger.of(context);
 
-                      showCustomSnackBar(
-                          context: context,
-                          text: "Please verify your email and try again !");
-                    }
-                  },
-                  height: displayHeight(context) * 0.055,
-                  color: authMaterialButtonColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Text(
-                    "Register",
-                    style: TextStyle(fontSize: 15.5),
-                  ),
-                );
+                await FirebaseAuth.instance.currentUser!.reload();
+                if (FirebaseAuth.instance.currentUser!.emailVerified) {
+                  await controller.createUser(user.User(
+                      blockedBy: [],
+                      draftArticles: [],
+                      blocked: [],
+                      isVerified: false,
+                      savedArticles: [],
+                      cp: '',
+                      name: nameController.text.trim(),
+                      dp: '',
+                      email: emailController.text,
+                      followers: [],
+                      userId: FirebaseAuth.instance.currentUser!.uid,
+                      bio: 'I am new to Utopia',
+                      following: []));
+                  controller.stopSigningUp();
+                  navigator.pushReplacement(MaterialPageRoute(
+                    builder: (context) => AppScreen(true),
+                  ));
+                } else {
+                  controller.stopSigningUp();
+
+                  showCustomSnackBar(
+                      context: context,
+                      text: "Please verify your email and try again !");
+                }
               },
+              height: displayHeight(context) * 0.055,
+              color: authMaterialButtonColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Text(
+                "Register",
+                style: TextStyle(fontSize: 15.5),
+              ),
             ),
           ),
         ),
         space,
-        Consumer<AuthScreenController>(
-          builder: (context, controller, child) {
-            switch (controller.signupStatus) {
-              case AuthSignUpStatus.loading:
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: authMaterialButtonColor,
-                  ),
-                );
-              case AuthSignUpStatus.notLoading:
-                return const SizedBox();
-            }
-          },
-        )
+        dataController.authState.signupStatus == AuthSignUpStatus.LOADING
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: authMaterialButtonColor,
+                ),
+              )
+            : const SizedBox()
       ],
     );
   }

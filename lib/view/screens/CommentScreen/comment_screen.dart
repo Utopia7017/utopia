@@ -2,18 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comment_box/comment/comment.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/controller/articles_controller.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
+import 'package:utopia/state_controller/state_controller.dart';
+import 'package:utopia/utils/common_api_calls.dart';
 import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
 
-class CommentScreen extends StatelessWidget {
+class CommentScreen extends ConsumerWidget {
   final String articleId;
   final String authorId;
   CommentScreen({super.key, required this.articleId, required this.authorId});
@@ -22,7 +22,10 @@ class CommentScreen extends StatelessWidget {
   TextEditingController commentController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
+
     var commentStream = FirebaseFirestore.instance
         .collection('articles')
         .doc(articleId)
@@ -40,20 +43,22 @@ class CommentScreen extends StatelessWidget {
           style: TextStyle(fontFamily: "Open", fontSize: 14),
         ),
         actions: [
-          Consumer<ArticlesController>(
-            builder: (context, controller, child) {
-              if (controller.articlesStatus == ArticlesStatus.nil) {
+          Builder(
+            builder: (context) {
+              if (dataController.articleState.articlesStatus ==
+                  ArticlesStatus.NOT_FETCHED) {
                 controller.fetchArticles();
               }
-              switch (controller.articlesStatus) {
-                case ArticlesStatus.nil:
+              switch (dataController.articleState.articlesStatus) {
+                case ArticlesStatus.NOT_FETCHED:
                   return const SizedBox();
-                case ArticlesStatus.fetching:
+                case ArticlesStatus.FETCHING:
                   return const SizedBox();
-                case ArticlesStatus.fetched:
+                case ArticlesStatus.FETCHED:
                   late Article article;
-                  for (var key in controller.articles.keys) {
-                    List<Article> list = controller.articles[key]!;
+                  for (var key in dataController.articleState.articles.keys) {
+                    List<Article> list =
+                        dataController.articleState.articles[key]!;
                     int indexOfArticle = list.indexWhere((element) =>
                         element.articleId == articleId &&
                         element.authorId == authorId);
@@ -63,8 +68,7 @@ class CommentScreen extends StatelessWidget {
                     }
                   }
                   return FutureBuilder<User?>(
-                    future: Provider.of<UserController>(context, listen: false)
-                        .getUser(authorId),
+                    future: getUser(authorId),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return PopupMenuButton(
@@ -100,57 +104,53 @@ class CommentScreen extends StatelessWidget {
         },
         backgroundColor: authBackground,
         color: Colors.white,
-        child: Consumer<UserController>(
-          builder: (context, controller, child) {
-            return CommentBox(
-              sendButtonMethod: () async {
-                // add the comment to firestore db
-                if (commentController.text.trim().isNotEmpty) {
-                  await addComment(
-                      articleId: articleId,
-                      comment: commentController.text.trim(),
-                      createdAt: DateTime.now().toString(),
-                      userId: myUserId);
+        child: CommentBox(
+          sendButtonMethod: () async {
+            // add the comment to firestore db
+            if (commentController.text.trim().isNotEmpty) {
+              await addComment(
+                  articleId: articleId,
+                  comment: commentController.text.trim(),
+                  createdAt: DateTime.now().toString(),
+                  userId: myUserId);
 
-                  // notify the user
-                  await notifyUserWhenCommentOnArticle(myUserId, authorId,
-                      articleId, commentController.text.trim());
-                  commentController.clear();
-                }
-              },
-              withBorder: true,
-              errorText: 'Comment cannot be blank',
-              commentController: commentController,
-              labelText: "Write your comment",
-              sendWidget:
-                  const Icon(Icons.send_sharp, size: 30, color: authBackground),
-              backgroundColor: Colors.white,
-              formKey: formKey,
-              textColor: Colors.black87,
-              userImage: controller.user != null &&
-                      controller.user!.dp.isNotEmpty
-                  ? controller.user!.dp
-                  : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d',
-              child: StreamBuilder(
-                stream: commentStream,
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData &&
-                      (snapshot.connectionState == ConnectionState.active ||
-                          snapshot.connectionState == ConnectionState.done)) {
-                    dynamic commentData = snapshot.data.docs;
-                    return ListComments(
-                      articleOwnerId: authorId,
-                      commentData: commentData,
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            );
+              // notify the user
+              await notifyUserWhenCommentOnArticle(
+                  myUserId, authorId, articleId, commentController.text.trim());
+              commentController.clear();
+            }
           },
+          withBorder: true,
+          errorText: 'Comment cannot be blank',
+          commentController: commentController,
+          labelText: "Write your comment",
+          sendWidget:
+              const Icon(Icons.send_sharp, size: 30, color: authBackground),
+          backgroundColor: Colors.white,
+          formKey: formKey,
+          textColor: Colors.black87,
+          userImage: dataController.userState.user != null &&
+                  dataController.userState.user!.dp.isNotEmpty
+              ? dataController.userState.user!.dp
+              : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d',
+          child: StreamBuilder(
+            stream: commentStream,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData &&
+                  (snapshot.connectionState == ConnectionState.active ||
+                      snapshot.connectionState == ConnectionState.done)) {
+                dynamic commentData = snapshot.data.docs;
+                return ListComments(
+                  articleOwnerId: authorId,
+                  commentData: commentData,
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
         ),
       ),
     );

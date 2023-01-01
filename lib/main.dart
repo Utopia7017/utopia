@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/help_screen.dart';
 import 'package:utopia/view/screens/AboutUtopiaScreens/terms_of_use_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
@@ -20,12 +18,6 @@ import 'package:utopia/view/screens/ProfileScreen/profile_screen.dart';
 import 'package:utopia/view/screens/SavedArticlesScreen/saved_article_screen.dart';
 import 'package:utopia/view/screens/SearchScreen/search_screen.dart';
 import 'package:utopia/view/screens/SplashScreen/splash_screen.dart';
-import 'controller/articles_controller.dart';
-import 'controller/auth_screen_controller.dart';
-import 'controller/my_articles_controller.dart';
-import 'controller/user_controller.dart';
-import 'services/firebase/auth_services.dart';
-import 'services/firebase/firebase_user_service.dart';
 import 'utils/global_context.dart';
 import 'package:flutter/services.dart';
 

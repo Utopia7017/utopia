@@ -1,23 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 import 'package:utopia/view/common_ui/draft_article_box.dart';
 import 'package:utopia/view/shimmers/article_shimmer.dart';
-
 import '../../../constants/image_constants.dart';
 
-class MyArticleScreen extends StatefulWidget {
+class MyArticleScreen extends ConsumerStatefulWidget {
   @override
-  State<MyArticleScreen> createState() => _MyArticleScreenState();
+  ConsumerState<MyArticleScreen> createState() => _MyArticleScreenState();
 }
 
-class _MyArticleScreenState extends State<MyArticleScreen>
+class _MyArticleScreenState extends ConsumerState<MyArticleScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   final String myUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -30,6 +29,8 @@ class _MyArticleScreenState extends State<MyArticleScreen>
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
@@ -77,21 +78,23 @@ class _MyArticleScreenState extends State<MyArticleScreen>
               backgroundColor: authBackground,
               color: Colors.white,
               child: TabBarView(controller: _tabController, children: [
-                Consumer<MyArticlesController>(
-                  builder: (context, controller, child) {
-                    if (controller.fetchingMyArticleStatus ==
-                        FetchingMyArticle.nil) {
+                Builder(
+                  builder: (context) {
+                    if (dataController.myArticleState.fetchingMyArticleStatus ==
+                        FetchingMyArticle.NOT_FETCHED) {
                       controller.fetchMyArticles(myUserId);
                     }
 
-                    switch (controller.fetchingMyArticleStatus) {
-                      case FetchingMyArticle.nil:
+                    switch (
+                        dataController.myArticleState.fetchingMyArticleStatus) {
+                      case FetchingMyArticle.NOT_FETCHED:
                         return const Center(child: Text('Swipe to refresh'));
-                      case FetchingMyArticle.fetching:
+                      case FetchingMyArticle.FETCHING:
                         return const ShimmerForArticles();
 
-                      case FetchingMyArticle.fetched:
-                        if (controller.publishedArticles.isEmpty) {
+                      case FetchingMyArticle.FETCHED:
+                        if (dataController
+                            .myArticleState.publishedArticles.isEmpty) {
                           return Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -128,10 +131,12 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                     showCancelBtn: true,
                                     onConfirmBtnTap: () {
                                       controller.deleteThisArticle(
-                                          myUid: controller
+                                          myUid: dataController
+                                              .myArticleState
                                               .publishedArticles[index]
                                               .authorId,
-                                          articleId: controller
+                                          articleId: dataController
+                                              .myArticleState
                                               .publishedArticles[index]
                                               .articleId);
                                       Navigator.pop(context);
@@ -143,34 +148,38 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                   );
                                 },
                                 child: ArticleBox(
-                                    article:
-                                        controller.publishedArticles[index]),
+                                    article: dataController.myArticleState
+                                        .publishedArticles[index]),
                               );
                             },
-                            itemCount: controller.publishedArticles.length,
+                            itemCount: dataController
+                                .myArticleState.publishedArticles.length,
                           ),
                         );
                     }
                   },
                 ),
-                Consumer<MyArticlesController>(
-                  builder: (context, controller, child) {
-                    if (controller.fetchingDraftArticlesStatus ==
-                        FetchingDraftArticles.nil) {
+                Builder(
+                  builder: (context) {
+                    if (dataController
+                            .myArticleState.fetchingDraftArticlesStatus ==
+                        FetchingDraftArticles.NOT_FETCHED) {
                       controller.fetchDraftArticles(myUserId);
                     }
 
-                    switch (controller.fetchingDraftArticlesStatus) {
-                      case FetchingDraftArticles.nil:
+                    switch (dataController
+                        .myArticleState.fetchingDraftArticlesStatus) {
+                      case FetchingDraftArticles.NOT_FETCHED:
                         return const Center(child: Text('Swipe to refresh'));
-                      case FetchingDraftArticles.fetching:
+                      case FetchingDraftArticles.FETCHING:
                         return const Center(
                           child: CircularProgressIndicator(
                             color: authMaterialButtonColor,
                           ),
                         );
-                      case FetchingDraftArticles.fetched:
-                        if (controller.draftArticles.isEmpty) {
+                      case FetchingDraftArticles.FETCHED:
+                        if (dataController
+                            .myArticleState.draftArticles.isEmpty) {
                           return Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -206,10 +215,12 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                     showCancelBtn: true,
                                     onConfirmBtnTap: () {
                                       controller.deleteDraftArticle(
-                                          myUid: controller
+                                          myUid: dataController.myArticleState
                                               .draftArticles[index].authorId,
-                                          articleId: controller
-                                              .draftArticles[index].articleId);
+                                          articleId: dataController
+                                              .myArticleState
+                                              .draftArticles[index]
+                                              .articleId);
                                       Navigator.pop(context);
                                     },
                                     onCancelBtnTap: () {
@@ -219,10 +230,12 @@ class _MyArticleScreenState extends State<MyArticleScreen>
                                   );
                                 },
                                 child: DraftArticleBox(
-                                    article: controller.draftArticles[index]),
+                                    article: dataController
+                                        .myArticleState.draftArticles[index]),
                               );
                             },
-                            itemCount: controller.draftArticles.length,
+                            itemCount: dataController
+                                .myArticleState.draftArticles.length,
                           ),
                         );
                     }

@@ -2,25 +2,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
-import 'package:utopia/utils/all_controllers.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/screens/FollowersScreen/followers_screen.dart';
 import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import '../../../services/firebase/auth_services.dart';
 
-class CustomDrawer extends StatefulWidget {
+class CustomDrawer extends ConsumerStatefulWidget {
   @override
-  State<CustomDrawer> createState() => _CustomDrawerState();
+  ConsumerState<CustomDrawer> createState() => _CustomDrawerState();
 }
 
-class _CustomDrawerState extends State<CustomDrawer> {
+class _CustomDrawerState extends ConsumerState<CustomDrawer> {
   final Logger _logger = Logger('CustomDrawer');
 
   final Authservice _auth = Authservice(FirebaseAuth.instance);
@@ -29,18 +28,26 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.info("Reaching Custom drawer");
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return SafeArea(
       child: Container(
         width: displayWidth(context) * 0.3,
         padding: const EdgeInsets.only(left: 20, right: 14),
-        child: Consumer<UserController>(
-          builder: (context, controller, child) {
-            if (controller.profileStatus == ProfileStatus.nil) {
+        child: Builder(
+          builder: (context) {
+            _logger.info("reaching inside drawer's builder");
+            _logger.info(dataController.userState.profileStatus);
+            if (dataController.userState.profileStatus ==
+                ProfileStatus.NOT_FETCHED) {
+              _logger.severe("Profile not fetched");
+
               controller.setUser(FirebaseAuth.instance.currentUser!.uid);
             }
 
-            switch (controller.profileStatus) {
-              case ProfileStatus.nil:
+            switch (dataController.userState.profileStatus) {
+              case ProfileStatus.NOT_FETCHED:
                 return Center(
                   child: MaterialButton(
                     color: authMaterialButtonColor,
@@ -51,14 +58,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     child: const Text('Refresh Profile'),
                   ),
                 );
-              case ProfileStatus.loading:
+              case ProfileStatus.FETCHING:
                 return const Center(
                   child:
                       CircularProgressIndicator(color: authMaterialButtonColor),
                 );
-              case ProfileStatus.fetched:
-                if (controller.user != null) {
-                  List<String> initials = controller.user!.name.split(" ");
+              case ProfileStatus.FETCHED:
+                if (dataController.userState.user != null) {
+                  List<String> initials =
+                      dataController.userState.user!.name.split(" ");
                   String firstLetter = "", lastLetter = "";
 
                   if (initials.length == 1) {
@@ -82,7 +90,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               CircleAvatar(
                                 radius: displayWidth(context) * 0.12,
                                 backgroundColor: Colors.white,
-                                child: (controller.user!.dp.isEmpty)
+                                child: (dataController
+                                        .userState.user!.dp.isEmpty)
                                     ? CircleAvatar(
                                         backgroundColor:
                                             authMaterialButtonColor,
@@ -112,7 +121,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         radius: displayWidth(context) * 0.115,
                                         backgroundImage:
                                             CachedNetworkImageProvider(
-                                                controller.user!.dp),
+                                                dataController
+                                                    .userState.user!.dp),
                                       ),
                               ),
                             ],
@@ -134,7 +144,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               children: [
                                 Flexible(
                                   child: Text(
-                                    '@${controller.user!.name}',
+                                    '@${dataController.userState.user!.name}',
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     style: const TextStyle(
@@ -146,7 +156,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                (controller.user!.isVerified)
+                                (dataController.userState.user!.isVerified)
                                     ? Image.asset(
                                         verifyIcon,
                                         height: 17.5,
@@ -173,7 +183,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => FollowersScreen(
-                                            user: controller.user!),
+                                            user:
+                                                dataController.userState.user!),
                                       ));
                                 },
                                 child: Column(
@@ -181,7 +192,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      controller.user!.followers.length
+                                      dataController
+                                          .userState.user!.followers.length
                                           .toString(),
                                       style: const TextStyle(
                                           fontSize: 15,
@@ -208,7 +220,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => FollowingScreen(
-                                            user: controller.user!),
+                                            user:
+                                                dataController.userState.user!),
                                       ));
                                 },
                                 child: Column(
@@ -216,7 +229,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      controller.user!.following.length
+                                      dataController
+                                          .userState.user!.following.length
                                           .toString(),
                                       style: const TextStyle(
                                           fontSize: 15,
@@ -265,7 +279,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           trailing: StreamBuilder(
                             stream: FirebaseFirestore.instance
                                 .collection('notifications')
-                                .doc(controller.user!.userId)
+                                .doc(dataController.userState.user!.userId)
                                 .collection('notification')
                                 .where('read', isEqualTo: false)
                                 .snapshots(),
@@ -382,7 +396,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 'https://play.google.com/store/apps/details?id=com.starcoding.utopia')),
                         drawerTile('Logout', logoutIcon, () async {
                           final navigator = Navigator.of(context);
-                          AppProviders.disposeAllDisposableProviders(context);
+                          // reset app state
                           await _auth.signOut();
                           navigator.pushReplacementNamed('/auth');
                         }),

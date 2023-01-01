@@ -1,19 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/my_articles_controller.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 
-class SavedArticlesScreen extends StatelessWidget {
+class SavedArticlesScreen extends ConsumerWidget {
   const SavedArticlesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: authBackground,
@@ -22,36 +23,40 @@ class SavedArticlesScreen extends StatelessWidget {
           style: TextStyle(fontSize: 15.5),
         ),
       ),
-      body: Consumer<UserController>(
-        builder: (context, userController, child) {
-          if (userController.profileStatus == ProfileStatus.nil) {
-            userController.setUser(FirebaseAuth.instance.currentUser!.uid);
+      body: Builder(
+        builder: (context) {
+          if (dataController.userState.profileStatus ==
+              ProfileStatus.NOT_FETCHED) {
+            controller.setUser(FirebaseAuth.instance.currentUser!.uid);
           }
-          switch (userController.profileStatus) {
-            case ProfileStatus.nil:
+          switch (dataController.userState.profileStatus) {
+            case ProfileStatus.NOT_FETCHED:
               return const Center(
                 child: Text('Swipe to fetch profile'),
               );
-            case ProfileStatus.loading:
+            case ProfileStatus.FETCHING:
               return const Center(child: CircularProgressIndicator());
-            case ProfileStatus.fetched:
-              return Consumer<MyArticlesController>(
-                builder: (context, myArticleController, child) {
-                  if (myArticleController.fetchingSavedArticlesStatus ==
-                      FetchingSavedArticles.nil) {
-                    myArticleController
-                        .fetchSavedArticles(userController.user!);
+            case ProfileStatus.FETCHED:
+              return Builder(
+                builder: (context) {
+                  if (dataController
+                          .myArticleState.fetchingSavedArticlesStatus ==
+                      FetchingSavedArticles.NOT_FETCHED) {
+                    controller
+                        .fetchSavedArticles(dataController.userState.user!);
                   }
 
-                  switch (myArticleController.fetchingSavedArticlesStatus) {
-                    case FetchingSavedArticles.nil:
+                  switch (dataController
+                      .myArticleState.fetchingSavedArticlesStatus) {
+                    case FetchingSavedArticles.NOT_FETCHED:
                       return const Center(
                         child: Text('Swipe to fetch saved articles'),
                       );
-                    case FetchingSavedArticles.fetching:
+                    case FetchingSavedArticles.FETCHING:
                       return const Center(child: CircularProgressIndicator());
-                    case FetchingSavedArticles.fetched:
-                      if (myArticleController.savedArticlesDetails.isEmpty) {
+                    case FetchingSavedArticles.FETCHED:
+                      if (dataController
+                          .myArticleState.savedArticlesDetails.isEmpty) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -75,11 +80,11 @@ class SavedArticlesScreen extends StatelessWidget {
                           // padding: const EdgeInsets.all(16),
                           itemBuilder: (context, index) {
                             return ArticleBox(
-                                article: myArticleController
+                                article: dataController.myArticleState
                                     .savedArticlesDetails[index]);
                           },
-                          itemCount:
-                              myArticleController.savedArticlesDetails.length,
+                          itemCount: dataController
+                              .myArticleState.savedArticlesDetails.length,
                         );
                       }
                   }

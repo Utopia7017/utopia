@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/view/common_ui/article_box.dart';
 
@@ -28,8 +26,7 @@ class ViewAllArticles extends StatelessWidget {
       body: ListView.builder(
           itemCount: articles.length,
           itemBuilder: (context, index) {
-            return ArticleBox(
-                article: articles[index]);
+            return ArticleBox(article: articles[index]);
           }),
     );
   }

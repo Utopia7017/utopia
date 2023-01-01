@@ -1,31 +1,21 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:utopia/controller/user_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:utopia/models/user_model.dart';
+import 'package:utopia/state_controller/state_controller.dart';
+import 'package:utopia/utils/common_api_calls.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/screens/ProfileScreen/components/top_articles_list.dart';
-import 'package:utopia/view/screens/Skeletons/profile_screen_skeleton.dart';
 import 'package:utopia/view/shimmers/profile_screen_shimmer.dart';
-
 import 'components/user_profile_box.dart';
 
-class UserProfileScreen extends StatelessWidget {
+class UserProfileScreen extends ConsumerWidget {
   final String userId;
   UserProfileScreen({Key? key, required this.userId}) : super(key: key);
 
-  final space = const SizedBox(height: 10);
-  final verticalSpace = VerticalDivider(
-    indent: 12,
-    endIndent: 12,
-    thickness: 0.5,
-    color: Colors.grey.shade400,
-    width: 15,
-  );
-  Random random = Random();
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -34,12 +24,11 @@ class UserProfileScreen extends StatelessWidget {
             height: displayHeight(context),
             width: displayWidth(context),
             child: FutureBuilder(
-              future: Provider.of<UserController>(context).getUser(userId),
+              future: getUser(userId),
               builder: (context, AsyncSnapshot<User?> userSnapshot) {
                 // If user is fetched
                 if (userSnapshot.hasData) {
                   User thisUser = userSnapshot.data!;
-
                   return SingleChildScrollView(
                     padding: EdgeInsets.zero,
                     child: Column(
@@ -56,8 +45,6 @@ class UserProfileScreen extends StatelessWidget {
                 }
                 // if user is not fetched
                 else {
-                  // TODO : return shimmer effect for whole screen
-
                   return const ProfileScreenShimmer();
                 }
               },

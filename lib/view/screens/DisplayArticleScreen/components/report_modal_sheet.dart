@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:utopia/controller/articles_controller.dart';
+import 'package:utopia/state_controller/state_controller.dart';
+import 'package:utopia/utils/common_api_calls.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/skeleton.dart';
 
-class ReportModalSheet extends StatelessWidget {
+class ReportModalSheet extends ConsumerWidget {
   final String articleId;
   final String articleOwnerId;
   ReportModalSheet(
@@ -24,10 +25,11 @@ class ReportModalSheet extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     void report(String reason) {
-      Provider.of<ArticlesController>(context, listen: false)
-          .reportArticle(articleOwnerId, articleId, myUid, reason);
+      reportArticle(articleOwnerId, articleId, myUid, reason);
     }
 
     return SingleChildScrollView(
@@ -69,9 +71,7 @@ class ReportModalSheet extends StatelessWidget {
                         context: context,
                         type: QuickAlertType.success,
                         onConfirmBtnTap: () {
-                          Provider.of<ArticlesController>(context,
-                                  listen: false)
-                              .fetchArticles();
+                         controller.fetchArticles();
                           Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.pop(context);

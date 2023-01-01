@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:utopia/controller/user_controller.dart';
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/helper_widgets.dart';
 
-displayBox(
-    {required BuildContext context,
-    required String currentName,
-    required String currentBio}) {
+displayBox({
+  required WidgetRef ref,
+  required BuildContext context,
+  required String currentName,
+  required String currentBio,
+}) {
+  final controller = ref.watch(stateController.notifier);
+  final dataController = ref.watch(stateController);
   TextEditingController currentNameController =
       TextEditingController(text: currentName);
   TextEditingController currentBioController =
@@ -19,7 +23,7 @@ displayBox(
     showCancelBtn: true,
     onConfirmBtnTap: () {
       if (formKey.currentState!.validate()) {
-        Provider.of<UserController>(context, listen: false).updateProfile(
+        controller.updateProfile(
             name: currentNameController.text, bio: currentBioController.text);
         Navigator.pop(context);
         showCustomSnackBar(context: context, text: 'Updating profile...');

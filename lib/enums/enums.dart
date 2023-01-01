@@ -1,21 +1,21 @@
-enum AuthLoginStatus { loading, notloading }
+enum AuthLoginStatus { LOADING, NOT_LOADING }
 
-enum AuthSignUpStatus { loading, notLoading }
+enum AuthSignUpStatus { LOADING, NOT_LOADING }
 
-enum ProfileStatus {nil , loading , fetched}
+enum ProfileStatus {NOT_FETCHED , FETCHING , FETCHED}
 
-enum ArticleUploadingStatus {uploading,notUploading}
+enum ArticleUploadingStatus {UPLOADING,NOT_UPLOADING}
 
-enum ArticlesStatus {nil,fetched,fetching}
+enum ArticlesStatus {NOT_FETCHED,FETCHED,FETCHING}
 
-enum UserUploadingImage {loading,notLoading}
+enum UserUploadingImage {LOADING,NOT_LOADING}
 
-enum FetchingMyArticle {nil,fetching,fetched}
+enum FetchingMyArticle {NOT_FETCHED,FETCHING,FETCHED}
 
-enum FollowingUserStatus {yes,no}
+enum FollowingUserStatus {YES,NO}
 
-enum FetchingSavedArticles {nil,fetching,fetched}
+enum FetchingSavedArticles {NOT_FETCHED,FETCHING,FETCHED}
 
-enum FetchingDraftArticles {nil,fetching,fetched}
+enum FetchingDraftArticles {NOT_FETCHED,FETCHING,FETCHED}
 
-enum FetchingPopularAuthors {nil,fetching,fetched}
+enum FetchingPopularAuthors {NOT_FETCHED,FETCHED,FETCHING}

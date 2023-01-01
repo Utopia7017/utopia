@@ -3,30 +3,29 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/articles_controller.dart';
-import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart' as usermodel;
+import 'package:utopia/state_controller/state_controller.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/view/common_ui/display_full_image.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/components/report_modal_sheet.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'components/floating_button_for_article_options.dart';
 
-class DisplayArticleScreen extends StatefulWidget {
+class DisplayArticleScreen extends ConsumerStatefulWidget {
   final Article article;
   final usermodel.User author;
   DisplayArticleScreen({required this.article, required this.author});
 
   @override
-  State<DisplayArticleScreen> createState() => _DisplayArticleScreenState();
+  ConsumerState<DisplayArticleScreen> createState() =>
+      _DisplayArticleScreenState();
 }
 
-class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
+class _DisplayArticleScreenState extends ConsumerState<DisplayArticleScreen> {
   ScrollController? _hideBottomNavController;
   String firstLetter = "", lastLetter = "";
   bool? _isVisible;
@@ -70,6 +69,8 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
       floatingActionButton: FloatingButtonForArticleOptions(
@@ -177,17 +178,12 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                         barrierDismissible: true,
                         onCancelBtnTap: () => Navigator.pop(context),
                         onConfirmBtnTap: () async {
-                          final myArticlesProvider =
-                              Provider.of<MyArticlesController>(context,
-                                  listen: false);
-                          final articlesProvider =
-                              Provider.of<ArticlesController>(context,
-                                  listen: false);
                           final navigator = Navigator.of(context);
-                          await myArticlesProvider.deleteThisArticle(
+                          await controller.deleteThisArticle(
                               myUid: myUserId,
                               articleId: widget.article.articleId);
-                          await articlesProvider.fetchArticles();
+
+                          await controller.fetchArticles();
 
                           navigator.pop();
                           navigator.pop();
@@ -249,37 +245,13 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                         children: [
                           InkWell(
                             onTap: () {
-
                               showImageViewer(
-                                    context,
-                                    CachedNetworkImageProvider(
-                              widget.article.body[index]['image']!,
-                              // placeholder: (context, url) {
-                              //   return const Center(
-                              //     child: CircularProgressIndicator(
-                              //       color: authMaterialButtonColor,
-                              //     ),
-                              //   );
-                              // },
-                              // errorWidget: (context, url, error) {
-                              //   return const Text(
-                              //     "Could not load image",
-                              //     style: TextStyle(
-                              //         color: Colors.black87, fontSize: 10),
-                              //   );
-                              // },
-                            ),
-                                    swipeDismissible: true,
-                                    doubleTapZoomable: true);
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) => DisplayFullImage(
-                              //           caption: widget.article.body[index]
-                              //               ['imageCaption'],
-                              //           imageurl: widget.article.body[index]
-                              //               ['image']!),
-                              //     ));
+                                  context,
+                                  CachedNetworkImageProvider(
+                                    widget.article.body[index]['image']!,
+                                  ),
+                                  swipeDismissible: true,
+                                  doubleTapZoomable: true);
                             },
                             child: CachedNetworkImage(
                               imageUrl: widget.article.body[index]['image']!,

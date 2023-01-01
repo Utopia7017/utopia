@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logging/logging.dart';
 import 'package:utopia/constants/image_constants.dart';
@@ -11,17 +12,18 @@ import 'package:utopia/view/screens/AppScreen/components/notification_bell.dart'
 import 'package:utopia/view/screens/Drawer/drawer.dart';
 import 'package:utopia/view/screens/ExploreScreen/explore_screen.dart';
 import '../../../constants/color_constants.dart';
+import '../../../state_controller/state_controller.dart';
 
-class AppScreen extends StatefulWidget {
+class AppScreen extends ConsumerStatefulWidget {
   bool internetConnection;
 
   AppScreen(this.internetConnection);
 
   @override
-  State<AppScreen> createState() => _AppScreenState();
+  ConsumerState<AppScreen> createState() => _AppScreenState();
 }
 
-class _AppScreenState extends State<AppScreen> {
+class _AppScreenState extends ConsumerState<AppScreen> {
   final _advancedDrawerController = AdvancedDrawerController();
 
   final Logger _logger = Logger("AppScreen");
@@ -39,7 +41,7 @@ class _AppScreenState extends State<AppScreen> {
   }
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     getConnectivity();
   }
@@ -69,12 +71,18 @@ class _AppScreenState extends State<AppScreen> {
               style: TextStyle(color: Colors.white),
             )));
       }
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
+
+    _logger.info("Entering App Screen");
     return AdvancedDrawer(
       backdropColor: drawerBackground,
       controller: _advancedDrawerController,

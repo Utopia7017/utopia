@@ -1,22 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseUser;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/user_model.dart';
+import 'package:utopia/state_controller/state_controller.dart';
+import 'package:utopia/utils/common_api_calls.dart';
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'package:utopia/view/shimmers/follower_shimmer.dart';
 
-class BlockedUsersScreen extends StatelessWidget {
+class BlockedUsersScreen extends ConsumerWidget {
   const BlockedUsersScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -28,21 +30,16 @@ class BlockedUsersScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: Consumer<UserController>(
-          builder: (context, userController, child) {
-            if (userController.profileStatus == ProfileStatus.nil) {
-              userController
-                  .setUser(firebaseUser.FirebaseAuth.instance.currentUser!.uid);
-            }
-            switch (userController.profileStatus) {
-              case ProfileStatus.nil:
+        child: Builder(
+          builder: (context) {
+            switch (dataController.userState.profileStatus) {
+              case ProfileStatus.NOT_FETCHED:
                 return const Text("Pull to refresh");
-              case ProfileStatus.loading:
-                // Todo : add shimmer effect for this screen
+              case ProfileStatus.FETCHING:
                 return const FollowerShimmer();
 
-              case ProfileStatus.fetched:
-                if (userController.user!.blocked.isEmpty) {
+              case ProfileStatus.FETCHED:
+                if (dataController.userState.user!.blocked.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -60,108 +57,110 @@ class BlockedUsersScreen extends StatelessWidget {
                       ],
                     ),
                   );
-                }
-                return ListView.builder(
-                  padding: const EdgeInsets.only(top: 6),
-                  itemBuilder: (context, index) {
-                    return FutureBuilder(
-                      future: userController
-                          .getUser(userController.user!.blocked[index]),
-                      builder: (context, AsyncSnapshot<User?> snapshot) {
-                        if (snapshot.hasData) {
-                          User blockedUser = snapshot.data!;
-                          List<String> initials = blockedUser.name.split(" ");
-                          String firstLetter = "", lastLetter = "";
+                } else {
+                  return ListView.builder(
+                    padding: const EdgeInsets.only(top: 6),
+                    itemBuilder: (context, index) {
+                      return FutureBuilder(
+                        future: getUser(
+                            dataController.userState.user!.blocked[index]),
+                        builder: (context, AsyncSnapshot<User?> snapshot) {
+                          if (snapshot.hasData) {
+                            User blockedUser = snapshot.data!;
+                            List<String> initials = blockedUser.name.split(" ");
+                            String firstLetter = "", lastLetter = "";
 
-                          if (initials.length == 1) {
-                            firstLetter = initials[0].characters.first;
-                          } else {
-                            firstLetter = initials[0].characters.first;
-                            lastLetter = initials[1].characters.first;
-                          }
-                          return ListTile(
-                            onTap: () {},
-                            leading: (blockedUser.dp.isEmpty)
-                                ? CircleAvatar(
-                                    backgroundColor: authMaterialButtonColor,
-                                    child: Center(
-                                      child: initials.length > 1
-                                          ? Text(
-                                              "$firstLetter.$lastLetter"
-                                                  .toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white),
-                                            )
-                                          : Text(
-                                              firstLetter.toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white),
-                                            ),
+                            if (initials.length == 1) {
+                              firstLetter = initials[0].characters.first;
+                            } else {
+                              firstLetter = initials[0].characters.first;
+                              lastLetter = initials[1].characters.first;
+                            }
+                            return ListTile(
+                              onTap: () {},
+                              leading: (blockedUser.dp.isEmpty)
+                                  ? CircleAvatar(
+                                      backgroundColor: authMaterialButtonColor,
+                                      child: Center(
+                                        child: initials.length > 1
+                                            ? Text(
+                                                "$firstLetter.$lastLetter"
+                                                    .toUpperCase(),
+                                                style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.white),
+                                              )
+                                            : Text(
+                                                firstLetter.toUpperCase(),
+                                                style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.white),
+                                              ),
+                                      ),
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                              blockedUser.dp),
                                     ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        blockedUser.dp),
+                              title: Row(
+                                children: [
+                                  Text(blockedUser.name),
+                                  const SizedBox(
+                                    width: 5,
                                   ),
-                            title: Row(
-                              children: [
-                                Text(blockedUser.name),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                blockedUser.isVerified
-                                    ? Image.asset(
-                                        verifyIcon,
-                                        height: 17.5,
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            ),
-                            dense: true,
-                            trailing: MaterialButton(
-                              elevation: 1,
-                              onPressed: () {
-                                QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.confirm,
-                                  confirmBtnText: "Yes",
-                                  text:
-                                      "Are you sure you want to unblock this user?",
-                                  title: "Confirm unblocking",
-                                  onConfirmBtnTap: () {
-                                    userController
-                                        .unBlockThisUser(blockedUser.userId);
+                                  blockedUser.isVerified
+                                      ? Image.asset(
+                                          verifyIcon,
+                                          height: 17.5,
+                                        )
+                                      : const SizedBox(),
+                                ],
+                              ),
+                              dense: true,
+                              trailing: MaterialButton(
+                                elevation: 1,
+                                onPressed: () {
+                                  QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.confirm,
+                                    confirmBtnText: "Yes",
+                                    text:
+                                        "Are you sure you want to unblock this user?",
+                                    title: "Confirm unblocking",
+                                    onConfirmBtnTap: () {
+                                      controller
+                                          .unBlockThisUser(blockedUser.userId);
 
-                                    Navigator.pop(context);
-                                  },
-                                );
-                              },
-                              height: 30,
-                              color: authMaterialButtonColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: const Text(
-                                'Unblock',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.normal,
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                                height: 30,
+                                color: authMaterialButtonColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text(
+                                  'Unblock',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        } else {
-                          return const FollowerShimmer();
-                        }
-                      },
-                    );
-                  },
-                  itemCount: userController.user!.blocked.length,
-                );
+                            );
+                          } else {
+                            return const FollowerShimmer();
+                          }
+                        },
+                      );
+                    },
+                    itemCount: dataController.userState.user!.blocked.length,
+                  );
+                }
             }
           },
         ),

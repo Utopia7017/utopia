@@ -1,23 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebaseuser;
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
-import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart';
+import 'package:utopia/state_controller/state_controller.dart';
+import 'package:utopia/utils/common_api_calls.dart';
 import 'package:utopia/utils/device_size.dart';
 import 'package:utopia/view/common_ui/display_full_image.dart';
 import 'package:utopia/view/common_ui/profile_detail_box.dart';
 import 'package:utopia/view/screens/FollowersScreen/followers_screen.dart';
 import 'package:utopia/view/screens/FollowingScreen/following_screen.dart';
 import 'package:utopia/view/shimmers/user_follower_detail_shimmer.dart';
-import '../../../../controller/articles_controller.dart';
 
-class UserProfileBox extends StatelessWidget {
+class UserProfileBox extends ConsumerWidget {
   final User user;
   UserProfileBox({
     super.key,
@@ -27,7 +27,10 @@ class UserProfileBox extends StatelessWidget {
   String myUid = firebaseuser.FirebaseAuth.instance.currentUser!.uid;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(stateController.notifier);
+    final dataController = ref.watch(stateController);
+
     List<String> initials = user.name.split(" ");
     String firstLetter = "", lastLetter = "";
 
@@ -224,13 +227,11 @@ class UserProfileBox extends StatelessWidget {
                         const SizedBox(
                           height: 15,
                         ),
-                        Consumer<UserController>(
-                          builder: (context, userController, child) {
-                            if (userController.followingUserStatus ==
-                                FollowingUserStatus.no) {
-                              return FutureBuilder(
-                                future: Provider.of<ArticlesController>(context)
-                                    .fetchThisUsersArticles(myUid, user.userId),
+                        dataController.userState.followingUserStatus ==
+                                FollowingUserStatus.NO
+                            ? FutureBuilder(
+                                future:
+                                    fetchThisUsersArticles(myUid, user.userId),
                                 builder: (context,
                                     AsyncSnapshot<List<Article>> snapshot) {
                                   if (snapshot.hasData) {
@@ -317,44 +318,45 @@ class UserProfileBox extends StatelessWidget {
                                                     type:
                                                         QuickAlertType.confirm,
                                                     confirmBtnText: "Yes",
-                                                    text: userController
-                                                            .user!.blocked
+                                                    text: dataController
+                                                            .userState
+                                                            .user!
+                                                            .blocked
                                                             .contains(
                                                                 user.userId)
                                                         ? "Are you sure you want to unblock this user?"
                                                         : "Are you sure you want to block this user?",
-                                                    title: userController
-                                                            .user!.blocked
+                                                    title: dataController
+                                                            .userState
+                                                            .user!
+                                                            .blocked
                                                             .contains(
                                                                 user.userId)
                                                         ? "Confirm unblocking"
                                                         : "Confirm blocking",
                                                     onConfirmBtnTap: () {
-                                                      if (userController
-                                                          .user!.blocked
+                                                      if (dataController
+                                                          .userState
+                                                          .user!
+                                                          .blocked
                                                           .contains(
                                                               user.userId)) {
                                                         // unblock user
-                                                        userController
+                                                        controller
                                                             .unBlockThisUser(
                                                                 user.userId);
-                                                        Provider.of<ArticlesController>(
-                                                                context,
-                                                                listen: false)
+                                                        controller
                                                             .fetchArticles();
                                                         Navigator.pop(context);
                                                       } else {
                                                         // block user
-                                                        userController
+                                                        controller
                                                             .blockThisUser(
                                                                 user.userId);
-                                                        userController
-                                                            .unFollowUser(
-                                                                userId: user
-                                                                    .userId);
-                                                        Provider.of<ArticlesController>(
-                                                                context,
-                                                                listen: false)
+                                                        controller.unFollowUser(
+                                                            userId:
+                                                                user.userId);
+                                                        controller
                                                             .fetchArticles();
                                                         Navigator.pop(context);
                                                         Navigator.pop(context);
@@ -363,7 +365,8 @@ class UserProfileBox extends StatelessWidget {
                                                   );
                                                 },
                                                 child: Text(
-                                                  userController.user!.blocked
+                                                  dataController.userState.user!
+                                                          .blocked
                                                           .contains(user.userId)
                                                       ? "Unblock"
                                                       : "Block",
@@ -396,21 +399,19 @@ class UserProfileBox extends StatelessWidget {
                                                                 authBackground),
                                                   ),
                                                   onPressed: () {
-                                                    if (userController
+                                                    if (dataController.userState
                                                             .followingUserStatus ==
                                                         FollowingUserStatus
-                                                            .no) {
+                                                            .NO) {
                                                       if (user.followers
                                                           .contains(myUid)) {
-                                                        userController
-                                                            .unFollowUser(
-                                                                userId: user
-                                                                    .userId);
+                                                        controller.unFollowUser(
+                                                            userId:
+                                                                user.userId);
                                                       } else {
-                                                        userController
-                                                            .followUser(
-                                                                userId: user
-                                                                    .userId);
+                                                        controller.followUser(
+                                                            userId:
+                                                                user.userId);
                                                       }
                                                     }
                                                   },
@@ -434,12 +435,8 @@ class UserProfileBox extends StatelessWidget {
                                     return UserFollowerDetailShimmer();
                                   }
                                 },
-                              );
-                            } else {
-                              return UserFollowerDetailShimmer();
-                            }
-                          },
-                        ),
+                              )
+                            : UserFollowerDetailShimmer()
                       ],
                     ),
                   ),

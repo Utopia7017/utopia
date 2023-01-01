@@ -18,18 +18,31 @@ import '../view/common_ui/article_textfield.dart';
 class MyArticleState {
   // Data members of the class
   ArticleUploadingStatus articleUploadingStatus =
-      ArticleUploadingStatus.notUploading;
+      ArticleUploadingStatus.NOT_UPLOADING;
   List<BodyComponent> bodyComponents = [];
   List<Article> publishedArticles = [];
   List<Article> draftArticles = [];
   List<SavedArticle> savedArticles = [];
   List<Article> savedArticlesDetails = [];
-  FetchingMyArticle fetchingMyArticleStatus = FetchingMyArticle.nil;
-  FetchingDraftArticles fetchingDraftArticlesStatus = FetchingDraftArticles.nil;
+  FetchingMyArticle fetchingMyArticleStatus = FetchingMyArticle.NOT_FETCHED;
+  FetchingDraftArticles fetchingDraftArticlesStatus =
+      FetchingDraftArticles.NOT_FETCHED;
   String? category;
   final ApiServices _apiServices = ApiServices();
-  FetchingSavedArticles fetchingSavedArticlesStatus = FetchingSavedArticles.nil;
+  FetchingSavedArticles fetchingSavedArticlesStatus =
+      FetchingSavedArticles.NOT_FETCHED;
 
+  /// A constructor that takes in the following parameters:
+  /// - bodyComponents
+  /// - draftArticles
+  /// - savedArticles
+  /// - savedArticlesDetails
+  /// - category
+  /// - fetchingDraftArticlesStatus
+  /// - fetchingMyArticleStatus
+  /// - articleUploadingStatus
+  /// - fetchingSavedArticlesStatus
+  /// - publishedArticles
   MyArticleState(
       {required this.bodyComponents,
       required this.draftArticles,
@@ -42,7 +55,24 @@ class MyArticleState {
       required this.fetchingSavedArticlesStatus,
       required this.publishedArticles});
 
-  final Logger _logger = Logger("MyArticlesController");
+  /// It returns a new instance of the MyArticleState class with all the properties set to their default
+  /// values
+  ///
+  /// Returns:
+  ///   A new instance of MyArticleState
+  factory MyArticleState.initMyArticleState() {
+    return MyArticleState(
+        bodyComponents: [],
+        draftArticles: [],
+        savedArticles: [],
+        savedArticlesDetails: [],
+        category: null,
+        fetchingDraftArticlesStatus: FetchingDraftArticles.NOT_FETCHED,
+        fetchingMyArticleStatus: FetchingMyArticle.NOT_FETCHED,
+        articleUploadingStatus: ArticleUploadingStatus.NOT_UPLOADING,
+        fetchingSavedArticlesStatus: FetchingSavedArticles.NOT_FETCHED,
+        publishedArticles: []);
+  }
 
   /// It returns a new state with the updated values passed in as parameters
   ///
@@ -97,7 +127,7 @@ class MyArticleState {
     );
   }
 
-  /// It creates a new `TextEditingController` with the given text, creates a new `ArticleTextField`
+  /// It creates a new `TextEditingController` with the given text, creates a new `ArticleTextField`https://marketplace.visualstudio.com/items?itemname=mintlify.document
   /// with the new `TextEditingController`, and adds the new `ArticleTextField` to the list of
   /// `bodyComponents`
   ///
@@ -134,22 +164,6 @@ class MyArticleState {
   ///   A new instance of the MyArticleState class.
   MyArticleState changeCategory(String newCategory) {
     return _updateState(updatedCategory: newCategory);
-  }
-
-  /// If the textEditingController is not null and the text is not empty, return true
-  ///
-  /// Returns:
-  ///   A boolean value.
-  bool validateArticleBody() {
-    for (BodyComponent bc in bodyComponents) {
-      if (bc.type == 'text') {
-        if (bc.textEditingController != null &&
-            bc.textEditingController!.text.trim().isNotEmpty) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   /// It adds an image to the bodyComponents list, which is a list of BodyComponent objects
@@ -241,7 +255,7 @@ class MyArticleState {
   /// ArticleUploadingStatus.uploading
   MyArticleState startUploadingArticle() {
     return _updateState(
-        updatedArticleUploadingStatus: ArticleUploadingStatus.uploading);
+        updatedArticleUploadingStatus: ArticleUploadingStatus.UPLOADING);
   }
 
   /// It updates the state of the article to not uploading.
@@ -251,7 +265,7 @@ class MyArticleState {
   /// ArticleUploadingStatus.notUploading
   MyArticleState stopUploadingArticle() {
     return _updateState(
-        updatedArticleUploadingStatus: ArticleUploadingStatus.notUploading);
+        updatedArticleUploadingStatus: ArticleUploadingStatus.NOT_UPLOADING);
   }
 
   /// > This function returns a new state object with the updatedFetchingMyArticleStatus set to
@@ -261,7 +275,7 @@ class MyArticleState {
   ///   A new instance of the MyArticleState class.
   MyArticleState startFetchingMyArticles() {
     return _updateState(
-        updatedFetchingMyArticleStatus: FetchingMyArticle.fetching);
+        updatedFetchingMyArticleStatus: FetchingMyArticle.FETCHING);
   }
 
   /// > This function is called when the user has successfully fetched all the articles that they have
@@ -271,7 +285,7 @@ class MyArticleState {
   ///   A new instance of the MyArticleState class.
   MyArticleState stopFetchingMyArticles() {
     return _updateState(
-        updatedFetchingMyArticleStatus: FetchingMyArticle.fetched);
+        updatedFetchingMyArticleStatus: FetchingMyArticle.FETCHED);
   }
 
   /// When the user clicks the 'Saved Articles' button, we want to update the state to reflect that we
@@ -282,7 +296,7 @@ class MyArticleState {
   /// FetchingSavedArticles.fetching.
   MyArticleState startFetchingSavedArticles() {
     return _updateState(
-        updatedFetchingSavedArticlesStatus: FetchingSavedArticles.fetching);
+        updatedFetchingSavedArticlesStatus: FetchingSavedArticles.FETCHING);
   }
 
   /// It updates the state of the app.
@@ -292,7 +306,7 @@ class MyArticleState {
   /// FetchingSavedArticles.fetched.
   MyArticleState stopFetchingSavedArticles() {
     return _updateState(
-        updatedFetchingSavedArticlesStatus: FetchingSavedArticles.fetched);
+        updatedFetchingSavedArticlesStatus: FetchingSavedArticles.FETCHED);
   }
 
   /// "When the user clicks the 'Fetch Draft Articles' button, we want to update the state to indicate
@@ -306,7 +320,7 @@ class MyArticleState {
   /// FetchingDraftArticles.fetching.
   MyArticleState startFetchingDraftArticles() {
     return _updateState(
-        updatedFetchingDraftArticlesStatus: FetchingDraftArticles.fetching);
+        updatedFetchingDraftArticlesStatus: FetchingDraftArticles.FETCHING);
   }
 
   /// Stop fetching draft articles
@@ -316,7 +330,7 @@ class MyArticleState {
   /// FetchingDraftArticles.fetched.
   MyArticleState stopFetchingDraftArticles() {
     return _updateState(
-        updatedFetchingDraftArticlesStatus: FetchingDraftArticles.fetched);
+        updatedFetchingDraftArticlesStatus: FetchingDraftArticles.FETCHED);
   }
 
   /// We are uploading the article to the server and then updating the article with the article id
@@ -384,11 +398,22 @@ class MyArticleState {
         clearForm();
         return fetchMyArticles(userId); // call fetch my articles
       }
+
+      /// > Save an article to the user's list of saved articles
+      ///
+      /// Args:
+      ///   article: The article to be saved.
     } catch (error) {
       Logger("Publish Article Method").shout(error.toString());
     }
     // uploadingStatus = ArticleUploadingStatus.notUploading; // call stop loading
     return _updateState(updatedPublishedArticle: publishedArticles);
+
+    /// It unsaves an article.
+    ///
+    /// Args:
+    ///   authorId (String): The authorId of the article you want to unsave.
+    ///   articleId (String): The id of the article you want to unsave.
   }
 
   /// It fetches the articles from the firebase database and stores it in the publishedArticles list.
@@ -528,12 +553,12 @@ class MyArticleState {
 
   /// It takes in a userId, title and tags and then creates an article object and saves it to the
   /// database
-  /// 
+  ///
   /// Args:
   ///   userId (String): The userId of the user who is uploading the article.
   ///   title (String): The title of the article
   ///   tags (List<String>): List of tags
-  /// 
+  ///
   /// Returns:
   ///   The return type is a Future<MyArticleState>
   Future<MyArticleState> draftMyArticle({
@@ -592,10 +617,10 @@ class MyArticleState {
   }
 
   /// It fetches the draft articles from the firebase database.
-  /// 
+  ///
   /// Args:
   ///   myUid (String): The uid of the user who is logged in.
-  /// 
+  ///
   /// Returns:
   ///   A Future<MyArticleState>
   Future<MyArticleState> fetchDraftArticles(String myUid) async {
@@ -615,7 +640,7 @@ class MyArticleState {
             .sort((a, b) => b.articleCreated.compareTo(a.articleCreated));
       }
     } catch (error) {
-      _logger.shout(error.toString());
+      debugPrint(error.toString());
     }
     return _updateState(updatedDraftArticle: draftArticles);
     // stopfetchingdraft article
