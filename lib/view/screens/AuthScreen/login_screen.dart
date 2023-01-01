@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia/constants/color_constants.dart';
+import 'package:utopia/constants/image_constants.dart';
 import 'package:utopia/controller/auth_screen_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/services/api/api_services.dart';
@@ -170,6 +171,25 @@ class LoginScreen extends StatelessWidget {
                       },
                     ),
                   ),
+                ),
+                SizedBox(
+                  height: displayHeight(context)* 0.08,
+                ),
+                Divider(
+                  color: authMaterialButtonColor,
+                  indent: 10,
+                  endIndent: 10,
+                ),
+                SizedBox(height: displayHeight(context)* 0.07,),
+                Center(
+                  child: FloatingActionButton.extended(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    icon: Image.asset("assets/images/googlelogo.png",width: 21,height: 21,),
+                    label: Text("Sign in with google"),
+                    onPressed: () {
+                    
+                  },),
                 ),
                 space,
                 Consumer<AuthScreenController>(
