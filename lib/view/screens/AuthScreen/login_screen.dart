@@ -3,8 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utopia/constants/color_constants.dart';
-import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/constants/string_constants.dart';
 import 'package:utopia/controller/auth_screen_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/services/api/api_services.dart';
@@ -129,6 +130,12 @@ class LoginScreen extends StatelessWidget {
                                               'users/${loginResponse.user!.uid}.json');
                                   if (response != null &&
                                       response.data != null) {
+                                    SharedPreferences preferences =
+                                        await SharedPreferences.getInstance();
+                                    await preferences.setBool(
+                                        loginStatePreference, true);
+                                    await preferences.setString(
+                                        loginPerformedBy, 'email');
                                     navigator.pushReplacement(MaterialPageRoute(
                                       builder: (context) => AppScreen(true),
                                     ));
