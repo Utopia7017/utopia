@@ -59,6 +59,7 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   in_app_update: ^4.0.1
   easy_image_viewer: ^1.2.0
+  google_sign_in: ^5.4.2
 
   
 dev_dependencies:
