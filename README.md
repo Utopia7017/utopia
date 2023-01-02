@@ -1,6 +1,6 @@
 # Utopia
 
-<img src = "assets/images/banner.png" height = 480 width = 1000/>
+![banner](https://user-images.githubusercontent.com/57010722/210256696-d8f7e8d0-0643-44ae-8d91-ba6aeebe637f.png)
 
 ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white) ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
 
@@ -8,8 +8,12 @@
 
 A blogging application where users can publish their blogs and articles and can connect with other authors, developed using Flutter and Firebase.
 
+<a href='https://play.google.com/store/apps/details?id=com.starcoding.utopia&hl=en&gl=US'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+
 ## Snaphots                                              
-<img src = "snaps/1.png" height = "400em" /> | <img src = "snaps/2.png" height = "400em" /> | <img src = "snaps/3.png" height = "400em" /> | <img src = "snaps/4.png" height = "400em"/> 
+![1](https://user-images.githubusercontent.com/57010722/210256803-5c7dd5de-66a6-485a-a536-b9f89b37e08b.png)|![4](https://user-images.githubusercontent.com/57010722/210256790-706a7e43-2694-4eda-bf49-ab29d0e480ec.png)
+![3](https://user-images.githubusercontent.com/57010722/210256782-d844fac4-40e3-4d1f-9d70-c4f6503b28b9.png)|![2](https://user-images.githubusercontent.com/57010722/210256798-5f329262-4880-420c-8f7f-128fdfc0a64b.png)
+
 
 ## License
 ```
