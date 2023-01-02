@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:utopia/models/user_model.dart' as um;
 
 class Authservice {
   // Create an instance of firebase authentication.
@@ -16,24 +17,39 @@ class Authservice {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-//sign in with email and password  !!
+  /// It signs in the user with the email and password provided.
+  ///
+  /// Args:
+  ///   email (String): The email address of the user.
+  ///   password (String): The user's password.
+  ///
+  /// Returns:
+  ///   The return type is dynamic.
   Future<dynamic> signIn(
       {required String email, required String password}) async {
     try {
-      print("reaching here");
       UserCredential? userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      print(userCredential.toString());
       return userCredential;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
 
-  Future<dynamic> signUp(
-      {required String email,
-      required String password,
-      }) async {
+  /// It creates a new user with the given email and password, sends an email verification, and returns
+  /// the userCredential
+  ///
+  /// Args:
+  ///   email (String): The email address of the user.
+  ///   password (String): The password for the new account.
+  ///
+  /// Returns:
+  ///   The return type is dynamic.
+
+  Future<dynamic> signUp({
+    required String email,
+    required String password,
+  }) async {
     try {
       UserCredential? userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -41,6 +57,24 @@ class Authservice {
       return userCredential;
     } on FirebaseAuthException catch (e) {
       return e.message;
+    }
+  }
+
+  Future<dynamic> googleLogin() async {
+    try {
+      final gUser = await GoogleSignIn().signIn();
+      if (gUser != null) {
+        final gauth = await gUser.authentication;
+        final gCred = GoogleAuthProvider.credential(
+            accessToken: gauth.accessToken, idToken: gauth.idToken);
+        final UserCredential userCredential =
+            await auth.signInWithCredential(gCred);
+        return userCredential;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return e.toString();
     }
   }
 }

@@ -61,7 +61,7 @@ void main() async {
     debugPrint(
         '${record.loggerName} -> ${record.level.name}: ${record.message}');
   });
- 
+
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -108,13 +108,13 @@ class Utopia extends StatelessWidget {
         navigatorKey: GlobalContext.contextKey, // global context
         debugShowCheckedModeBanner: false,
         routes: {
-          '/auth': (context) => const AuthScreen(),
+          '/auth': (context) => AuthScreen(),
           '/login': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
           '/profile': (context) => const ProfileScreen(),
           '/newArticle': (context) => NewArticleScreen(),
           '/myArticles': (context) => MyArticleScreen(),
-          '/popAuthors':(context) => PopularAuthors(),
+          '/popAuthors': (context) => PopularAuthors(),
           '/savedArticles': (context) => SavedArticlesScreen(),
           '/search': (context) => SearchScreen(),
           '/notifications': (context) => NotificationScreen(),

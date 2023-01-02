@@ -7,13 +7,17 @@ import 'package:utopia/view/screens/AuthScreen/auth_screen.dart';
 
 class UtopiaRoot extends StatelessWidget {
   bool internetConnected;
- UtopiaRoot({super.key,required this.internetConnected});
+  UtopiaRoot({super.key, required this.internetConnected});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthNotifier>(
       builder: (context, notifier, child) {
-        return notifier.user != null ? AppScreen(internetConnected) : Wrapper(internetConnected: internetConnected,);
+        return notifier.user != null
+            ? AppScreen(internetConnected)
+            : Wrapper(
+                internetConnected: internetConnected,
+              );
       },
     );
   }
@@ -21,7 +25,7 @@ class UtopiaRoot extends StatelessWidget {
 
 class Wrapper extends StatelessWidget {
   bool internetConnected;
-  Wrapper({Key? key,required this.internetConnected}) : super(key: key);
+  Wrapper({Key? key, required this.internetConnected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class Wrapper extends StatelessWidget {
     if (firebaseUser != null && firebaseUser.emailVerified) {
       return AppScreen(internetConnected);
     } else {
-      return const AuthScreen();
+      return AuthScreen();
     }
   }
 }

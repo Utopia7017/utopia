@@ -114,8 +114,6 @@ class LoginScreen extends StatelessWidget {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               final navigator = Navigator.of(context);
-                              final sms = ScaffoldMessenger.of(context);
-
                               controller.startLogin();
                               var loginResponse = await _auth.signIn(
                                   email: emailController.text,
@@ -149,9 +147,6 @@ class LoginScreen extends StatelessWidget {
                                             emailProvided:
                                                 loginResponse.user!.email!),
                                   ));
-                                  // showCustomSnackBar(
-                                  //     context: context,
-                                  //     text: "Please verify your email first");
                                 }
                               } else {
                                 showCustomSnackBar(
@@ -173,23 +168,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: displayHeight(context)* 0.08,
-                ),
-                Divider(
-                  color: authMaterialButtonColor,
-                  indent: 10,
-                  endIndent: 10,
-                ),
-                SizedBox(height: displayHeight(context)* 0.07,),
-                Center(
-                  child: FloatingActionButton.extended(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    icon: Image.asset("assets/images/googlelogo.png",width: 21,height: 21,),
-                    label: Text("Sign in with google"),
-                    onPressed: () {
-                    
-                  },),
+                  height: displayHeight(context) * 0.08,
                 ),
                 space,
                 Consumer<AuthScreenController>(
