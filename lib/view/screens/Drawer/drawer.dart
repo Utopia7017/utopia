@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utopia/constants/color_constants.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/constants/string_constants.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
 import 'package:utopia/utils/all_controllers.dart';
@@ -380,9 +382,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             playStoreIcon,
                             () => openUrl(
                                 'https://play.google.com/store/apps/details?id=com.starcoding.utopia')),
+
+                        /// The above code is a function that is called when the user clicks on the
+                        /// logout button.
                         drawerTile('Logout', logoutIcon, () async {
                           final navigator = Navigator.of(context);
                           AppProviders.disposeAllDisposableProviders(context);
+                          final SharedPreferences preferences =
+                              await SharedPreferences.getInstance();
+                          await preferences.setBool(
+                              loginStatePreference, false);
+                          await preferences.setString(loginPerformedBy, "");
                           await _auth.signOut();
                           navigator.pushReplacementNamed('/auth');
                         }),

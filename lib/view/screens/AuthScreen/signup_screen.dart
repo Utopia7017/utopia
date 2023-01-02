@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utopia/constants/image_constants.dart';
+import 'package:utopia/constants/string_constants.dart';
 import 'package:utopia/controller/auth_screen_controller.dart';
 import 'package:utopia/controller/user_controller.dart';
 import 'package:utopia/enums/enums.dart';
@@ -390,6 +392,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           userId: FirebaseAuth.instance.currentUser!.uid,
                           bio: 'I am new to Utopia',
                           following: []));
+                      SharedPreferences preferences =
+                          await SharedPreferences.getInstance();
+                      await preferences.setBool(loginStatePreference, true);
+                      await preferences.setString(loginPerformedBy, 'email');
                       controller.stopSigningUp();
                       navigator.pushReplacement(MaterialPageRoute(
                         builder: (context) => AppScreen(true),
