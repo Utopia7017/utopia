@@ -102,6 +102,23 @@ class LoginScreen extends StatelessWidget {
                     );
                   },
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      child: const Text(
+                        "Forgot Password",
+                        style: TextStyle(
+                            // fontFamily: "Open",
+                            color: authMaterialButtonColor,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.end,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
                 const SizedBox(
                   height: 40,
                 ),
