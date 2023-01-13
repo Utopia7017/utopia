@@ -24,7 +24,6 @@ import 'controller/auth_screen_controller.dart';
 import 'controller/my_articles_controller.dart';
 import 'controller/user_controller.dart';
 import 'services/firebase/auth_services.dart';
-import 'services/firebase/firebase_user_service.dart';
 import 'utils/global_context.dart';
 import 'package:flutter/services.dart';
 
@@ -80,16 +79,6 @@ class Utopia extends StatelessWidget {
     ]);
     return MultiProvider(
       providers: [
-        // Auth Controllers
-        ChangeNotifierProvider(
-          create: (context) => AuthNotifier(),
-        ),
-        Provider<Authservice>(
-            create: (_) => Authservice(FirebaseAuth.instance)),
-        StreamProvider(
-          create: (context) => context.read<Authservice>().austhStateChanges,
-          initialData: null,
-        ),
         // Screen Controllers
         ChangeNotifierProvider(
           create: (context) => AuthScreenController(),
