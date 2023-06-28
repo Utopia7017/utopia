@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +28,10 @@ class NotificationBell extends StatelessWidget {
               color: Colors.black,
             );
           } else {
-            return Badge(
+            return badge.Badge(
               elevation: 2,
-              position: const BadgePosition(top: 3, isCenter: false, end: -6),
+              position:
+                  const badge.BadgePosition(top: 3, isCenter: false, end: -6),
               badgeColor: Colors.red.shade400,
               badgeContent: Text(
                 numberOfNewNotification.toString(),
