@@ -15,9 +15,11 @@ import 'package:utopia/utils/helper_widgets.dart';
 import 'package:utopia/view/common_ui/auth_textfields.dart';
 import 'package:utopia/view/screens/AppScreen/app_screen.dart';
 import 'package:utopia/view/screens/AuthScreen/continue_registering_screen.dart';
+import 'package:utopia/view/screens/AuthScreen/reset_password_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final Logger _logger = Logger("LoginScreen");
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -101,6 +103,29 @@ class LoginScreen extends StatelessWidget {
                       },
                     );
                   },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      child: const Text(
+                        "Forgot Password",
+                        style: TextStyle(
+                            // fontFamily: "Open",
+                            color: authMaterialButtonColor,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.end,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResetPasswordScreen(),
+                            ));
+                      },
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 40,

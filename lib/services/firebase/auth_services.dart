@@ -8,8 +8,6 @@ class Authservice {
 
   Authservice(this._auth);
 
-  Stream<User?> get austhStateChanges => _auth.authStateChanges();
-
 //sign out
   Future<void> signOut() async {
     await _auth.signOut();

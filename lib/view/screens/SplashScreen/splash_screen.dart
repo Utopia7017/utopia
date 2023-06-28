@@ -17,25 +17,29 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    checkForUpdate();
+    if (!kDebugMode) {
+      checkForUpdate();
+    } else {
+      navigateToHome();
+    }
   }
 
   Future<void> checkForUpdate() async {
-
     InAppUpdate.checkForUpdate().then((info) async {
       // print(info.packageName);
       // print(info.availableVersionCode);
-      
+
       if (info.updateAvailability == UpdateAvailability.updateAvailable) {
-        AppUpdateResult updateResult =await InAppUpdate.performImmediateUpdate();
-        
-         if(updateResult==AppUpdateResult.userDeniedUpdate || updateResult == AppUpdateResult.inAppUpdateFailed) {
-            await Future.delayed(const Duration(seconds: 2));
-            checkForUpdate();
-          }
-          else{
-            navigateToHome();
-          }
+        AppUpdateResult updateResult =
+            await InAppUpdate.performImmediateUpdate();
+
+        if (updateResult == AppUpdateResult.userDeniedUpdate ||
+            updateResult == AppUpdateResult.inAppUpdateFailed) {
+          await Future.delayed(const Duration(seconds: 2));
+          checkForUpdate();
+        } else {
+          navigateToHome();
+        }
       } else {
         navigateToHome();
       }
