@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comment_box/comment/comment.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseUser;
@@ -152,10 +153,11 @@ class ReplyCommentScreen extends StatelessWidget {
               backgroundColor: Colors.white,
               formKey: formKey,
               textColor: Colors.black87,
-              userImage: userController.user != null &&
+              userImage: CachedNetworkImageProvider(userController.user !=
+                          null &&
                       userController.user!.dp.isNotEmpty
                   ? userController.user!.dp
-                  : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d',
+                  : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d'),
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 4, vertical: 12),

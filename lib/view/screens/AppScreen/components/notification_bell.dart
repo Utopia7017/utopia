@@ -29,10 +29,12 @@ class NotificationBell extends StatelessWidget {
             );
           } else {
             return badge.Badge(
-              elevation: 2,
+              badgeStyle: badge.BadgeStyle(
+                elevation: 2,
+                badgeColor: Colors.red.shade400,
+              ),
               position:
-                  const badge.BadgePosition(top: 3, isCenter: false, end: -6),
-              badgeColor: Colors.red.shade400,
+                  badge.BadgePosition.custom(top: 3, isCenter: false, end: -6),
               badgeContent: Text(
                 numberOfNewNotification.toString(),
                 style: const TextStyle(color: Colors.white, fontSize: 12),

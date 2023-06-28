@@ -12,6 +12,7 @@ import 'package:utopia/models/user_model.dart';
 import 'package:utopia/services/firebase/notification_service.dart';
 import 'package:utopia/view/screens/CommentScreen/components/list_comments.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/display_article_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CommentScreen extends StatelessWidget {
   final String articleId;
@@ -127,10 +128,10 @@ class CommentScreen extends StatelessWidget {
               backgroundColor: Colors.white,
               formKey: formKey,
               textColor: Colors.black87,
-              userImage: controller.user != null &&
+              userImage: CachedNetworkImageProvider(controller.user != null &&
                       controller.user!.dp.isNotEmpty
                   ? controller.user!.dp
-                  : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d',
+                  : 'https://firebasestorage.googleapis.com/v0/b/utopia-a7a8a.appspot.com/o/res%2Fprofile.png?alt=media&token=6f5c39a1-ffe0-441e-b6e3-cfdd3609e24d'),
               child: StreamBuilder(
                 stream: commentStream,
                 builder: (context, AsyncSnapshot snapshot) {

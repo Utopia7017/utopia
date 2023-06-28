@@ -41,7 +41,8 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
       firstLetter = initials[0].characters.first;
     } else {
       firstLetter = initials[0].characters.first;
-      lastLetter = initials[1].characters.first;
+      lastLetter =
+          initials[1].characters.isEmpty ? "" : initials[1].characters.first;
     }
 
     _isVisible = true;
@@ -249,28 +250,27 @@ class _DisplayArticleScreenState extends State<DisplayArticleScreen> {
                         children: [
                           InkWell(
                             onTap: () {
-
                               showImageViewer(
-                                    context,
-                                    CachedNetworkImageProvider(
-                              widget.article.body[index]['image']!,
-                              // placeholder: (context, url) {
-                              //   return const Center(
-                              //     child: CircularProgressIndicator(
-                              //       color: authMaterialButtonColor,
-                              //     ),
-                              //   );
-                              // },
-                              // errorWidget: (context, url, error) {
-                              //   return const Text(
-                              //     "Could not load image",
-                              //     style: TextStyle(
-                              //         color: Colors.black87, fontSize: 10),
-                              //   );
-                              // },
-                            ),
-                                    swipeDismissible: true,
-                                    doubleTapZoomable: true);
+                                  context,
+                                  CachedNetworkImageProvider(
+                                    widget.article.body[index]['image']!,
+                                    // placeholder: (context, url) {
+                                    //   return const Center(
+                                    //     child: CircularProgressIndicator(
+                                    //       color: authMaterialButtonColor,
+                                    //     ),
+                                    //   );
+                                    // },
+                                    // errorWidget: (context, url, error) {
+                                    //   return const Text(
+                                    //     "Could not load image",
+                                    //     style: TextStyle(
+                                    //         color: Colors.black87, fontSize: 10),
+                                    //   );
+                                    // },
+                                  ),
+                                  swipeDismissible: true,
+                                  doubleTapZoomable: true);
                               // Navigator.push(
                               //     context,
                               //     MaterialPageRoute(
