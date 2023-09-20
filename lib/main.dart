@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -23,7 +22,6 @@ import 'controller/articles_controller.dart';
 import 'controller/auth_screen_controller.dart';
 import 'controller/my_articles_controller.dart';
 import 'controller/user_controller.dart';
-import 'services/firebase/auth_services.dart';
 import 'utils/global_context.dart';
 import 'package:flutter/services.dart';
 
@@ -53,7 +51,7 @@ import 'package:flutter/services.dart';
 
 */
 
-void main() async {
+ void main() async {
   // logger configuration
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {

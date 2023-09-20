@@ -54,7 +54,7 @@ class _ArticleBoxState extends State<ArticleBox> {
                 firstLetter = initials[0].characters.first;
               } else {
                 firstLetter = initials[0].characters.first;
-                lastLetter = initials[1].characters.first;
+                lastLetter = initials[1].characters.isEmpty ? "" :initials[1].characters.first;
               }
               return Consumer<MyArticlesController>(
                 builder: (context, myArticlesController, child) {

@@ -12,7 +12,6 @@ import 'package:utopia/controller/my_articles_controller.dart';
 import 'package:utopia/models/article_model.dart';
 import 'package:utopia/models/user_model.dart' as usermodel;
 import 'package:utopia/utils/device_size.dart';
-import 'package:utopia/view/common_ui/display_full_image.dart';
 import 'package:utopia/view/screens/DisplayArticleScreen/components/report_modal_sheet.dart';
 import 'package:utopia/view/screens/UserProfileScreen/user_profile_screen.dart';
 import 'components/floating_button_for_article_options.dart';
