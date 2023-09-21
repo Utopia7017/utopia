@@ -45,7 +45,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   cached_network_image: ^3.2.2
   cloud_firestore: ^4.0.4
-  comment_box: ^0.0.17
+  comment_box: ^0.0.18
   cupertino_icons: ^1.0.2
   dio: ^5.2.1+1
   firebase_auth: ^4.1.1
