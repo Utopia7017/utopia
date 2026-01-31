@@ -54,7 +54,8 @@ class _SplashScreenState extends State<SplashScreen> {
   navigateToHome() async {
     if (mounted) {
       final navigator = Navigator.of(context);
-      bool internetConnection = await InternetConnectionChecker().hasConnection;
+      bool internetConnection =
+          await InternetConnectionChecker.createInstance().hasConnection;
 
       await Future.delayed(const Duration(seconds: 1));
       navigator.pushReplacement(MaterialPageRoute(

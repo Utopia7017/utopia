@@ -13,7 +13,7 @@ import 'package:utopia/view/screens/ExploreScreen/explore_screen.dart';
 import '../../../constants/color_constants.dart';
 
 class AppScreen extends StatefulWidget {
-  bool internetConnection;
+  final bool internetConnection;
 
   AppScreen(this.internetConnection);
 
@@ -23,6 +23,8 @@ class AppScreen extends StatefulWidget {
 
 class _AppScreenState extends State<AppScreen> {
   final _advancedDrawerController = AdvancedDrawerController();
+
+  bool _internetConnection = false;
 
   final Logger _logger = Logger("AppScreen");
 
@@ -41,6 +43,7 @@ class _AppScreenState extends State<AppScreen> {
   @override
   void initState() {
     super.initState();
+    _internetConnection = widget.internetConnection;
     getConnectivity();
   }
 
@@ -50,18 +53,18 @@ class _AppScreenState extends State<AppScreen> {
 
     internetSubscription = Connectivity()
         .onConnectivityChanged
-        .listen((ConnectivityResult result) async {
-      bool oldInternetConnection = widget.internetConnection;
-      widget.internetConnection =
-          await InternetConnectionChecker().hasConnection;
-      if (!oldInternetConnection && widget.internetConnection) {
+        .listen((List<ConnectivityResult> results) async {
+      bool oldInternetConnection = _internetConnection;
+      _internetConnection =
+          await InternetConnectionChecker.createInstance().hasConnection;
+      if (!oldInternetConnection && _internetConnection) {
         scaffold.showSnackBar(SnackBar(
             backgroundColor: Colors.green.shade400,
             content: const Text(
               "Reconnected !",
               style: TextStyle(color: Colors.white),
             )));
-      } else if (oldInternetConnection && !widget.internetConnection) {
+      } else if (oldInternetConnection && !_internetConnection) {
         scaffold.showSnackBar(SnackBar(
             backgroundColor: Colors.red.shade400,
             content: const Text(
@@ -86,7 +89,7 @@ class _AppScreenState extends State<AppScreen> {
       childDecoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
-      drawer: widget.internetConnection ? CustomDrawer() : const SizedBox(),
+      drawer: _internetConnection ? CustomDrawer() : const SizedBox(),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -101,7 +104,7 @@ class _AppScreenState extends State<AppScreen> {
           ),
           centerTitle: true,
           leading: InkWell(
-            onTap: () => (widget.internetConnection)
+            onTap: () => (_internetConnection)
                 ? _handleMenuButtonPressed()
                 : _logger.info("Not connected to internet"),
             child: ValueListenableBuilder<AdvancedDrawerValue>(
@@ -121,7 +124,7 @@ class _AppScreenState extends State<AppScreen> {
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
               child: InkWell(
-                  onTap: () => (widget.internetConnection)
+                  onTap: () => (_internetConnection)
                       ? Navigator.pushNamed(context, '/notifications')
                       : _logger.info("Not connected to internet"),
                   child: Container(
@@ -132,7 +135,7 @@ class _AppScreenState extends State<AppScreen> {
           ],
         ),
         backgroundColor: primaryBackgroundColor,
-        body: (widget.internetConnection)
+        body: (_internetConnection)
             ? SafeArea(child: ExploreScreen())
             : SafeArea(
                 child: Center(
@@ -174,12 +177,11 @@ class _AppScreenState extends State<AppScreen> {
                     onPressed: () async {
                       final scaffold = ScaffoldMessenger.of(
                           GlobalContext.contextKey.currentContext!);
-                      widget.internetConnection =
-                          await InternetConnectionChecker().hasConnection;
-                      bool oldInternetConnection = widget.internetConnection;
-                      widget.internetConnection =
-                          await InternetConnectionChecker().hasConnection;
-                      if (!oldInternetConnection && widget.internetConnection) {
+                      bool oldInternetConnection = _internetConnection;
+                      _internetConnection =
+                          await InternetConnectionChecker.createInstance()
+                              .hasConnection;
+                      if (!oldInternetConnection && _internetConnection) {
                         scaffold.showSnackBar(SnackBar(
                             backgroundColor: Colors.green.shade400,
                             content: const Text(
@@ -187,7 +189,7 @@ class _AppScreenState extends State<AppScreen> {
                               style: TextStyle(color: Colors.white),
                             )));
                       } else if (oldInternetConnection &&
-                          !widget.internetConnection) {
+                          !_internetConnection) {
                         scaffold.showSnackBar(SnackBar(
                             backgroundColor: Colors.red.shade400,
                             content: const Text(

@@ -1,3 +1,10 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -20,10 +27,6 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '11.0'
 }
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
@@ -32,16 +35,17 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
+    namespace 'com.starcoding.utopia'
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     sourceSets {
@@ -53,9 +57,8 @@ android {
         applicationId "com.starcoding.utopia"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 23
-        targetSdkVersion 33
-        compileSdkVersion 33
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -83,4 +86,11 @@ flutter {
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:30.3.2')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    
+    // Force older versions of AndroidX components that are compatible with AGP 8.7.2
+    implementation 'androidx.core:core:1.13.1'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.browser:browser:1.8.0'
+    implementation 'androidx.activity:activity:1.9.3'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
 }

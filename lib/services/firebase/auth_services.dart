@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:utopia/models/user_model.dart' as um;
+// import 'package:google_sign_in/google_sign_in.dart'; // Temporarily disabled
 
 class Authservice {
   // Create an instance of firebase authentication.
@@ -30,6 +29,7 @@ class Authservice {
           email: email, password: password);
       return userCredential;
     } on FirebaseAuthException catch (e) {
+      print("error in login $e");
       return e.message;
     }
   }
@@ -60,10 +60,16 @@ class Authservice {
 
   Future<dynamic> googleLogin() async {
     try {
-      final gUser = await GoogleSignIn().signIn();
+      // Temporarily disable Google Sign-In due to API changes in version 7.2.0
+      // TODO: Fix Google Sign-In implementation for new API
+      return "Google Sign-In temporarily disabled due to API changes";
+
+      /*
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? gUser = await googleSignIn.signIn();
       if (gUser != null) {
-        final gauth = await gUser.authentication;
-        final gCred = GoogleAuthProvider.credential(
+        final GoogleSignInAuthentication gauth = await gUser.authentication;
+        final AuthCredential gCred = GoogleAuthProvider.credential(
             accessToken: gauth.accessToken, idToken: gauth.idToken);
         final UserCredential userCredential =
             await auth.signInWithCredential(gCred);
@@ -71,6 +77,7 @@ class Authservice {
       } else {
         return null;
       }
+      */
     } catch (e) {
       return e.toString();
     }

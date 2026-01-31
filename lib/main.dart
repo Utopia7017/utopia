@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -62,6 +63,11 @@ import 'package:flutter/services.dart';
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseAppCheck.instance.activate(
+    // androidProvider: AndroidProvider.playIntegrity,
+    // For local testing 👇
+    androidProvider: AndroidProvider.debug,
+  );
   Logger("Root").fine("Utopia Initialised");
   runApp(Utopia());
 }

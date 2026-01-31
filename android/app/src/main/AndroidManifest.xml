@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.utopia">
+    package="com.starcoding.utopia">
 
   <queries>
   <!-- If your app checks for SMS support -->
